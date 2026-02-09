@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback } from "react";
 import html2canvas from "html2canvas-pro";
+import SocialShare from "@/components/SocialShare";
 
 interface ShareCardProps {
   dogName: string;
@@ -53,6 +54,7 @@ export default function ShareCard({
 }: ShareCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
+  const [showSharePanel, setShowSharePanel] = useState(false);
 
   const captureCard = useCallback(async (): Promise<Blob | null> => {
     if (!cardRef.current) return null;
@@ -75,35 +77,6 @@ export default function ShareCard({
       a.download = `${dogName}_멍BTI_${code}.png`;
       a.click();
       URL.revokeObjectURL(url);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleShare = async () => {
-    setSaving(true);
-    try {
-      const blob = await captureCard();
-      if (!blob) return;
-      const file = new File([blob], `${dogName}_멍BTI.png`, { type: "image/png" });
-
-      const linkUrl = shareUrl || window.location.href;
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({
-          title: `${dogName}는 ${nickname} 타입!`,
-          text: `${dogName}의 강아지 MBTI 결과를 확인해 보세요!`,
-          files: [file],
-        });
-      } else if (navigator.share) {
-        await navigator.share({
-          title: `${dogName}는 ${nickname} 타입!`,
-          text: `${dogName}의 강아지 MBTI 결과를 확인해 보세요!`,
-          url: linkUrl,
-        });
-      } else {
-        await navigator.clipboard.writeText(linkUrl);
-        alert("링크가 복사되었어요!");
-      }
     } finally {
       setSaving(false);
     }
@@ -250,19 +223,29 @@ export default function ShareCard({
           {saving ? "저장 중..." : "📥 카드 저장"}
         </button>
         <button
-          onClick={handleShare}
-          disabled={saving}
-          className="flex-1 py-3.5 bg-white border-2 border-[#E879A4] text-[#E879A4] rounded-2xl text-sm font-bold hover:bg-[#E879A4]/5 active:scale-[0.98] transition-all disabled:opacity-50"
+          onClick={() => setShowSharePanel((v) => !v)}
+          className="flex-1 py-3.5 bg-white border-2 border-[#E879A4] text-[#E879A4] rounded-2xl text-sm font-bold hover:bg-[#E879A4]/5 active:scale-[0.98] transition-all"
         >
-          {saving ? "준비 중..." : "📤 공유하기"}
+          {showSharePanel ? "✕ 닫기" : "📤 공유하기"}
         </button>
       </div>
-      <button
-        onClick={handleCopyLink}
-        className="w-full mt-2 py-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
-      >
-        🔗 링크 복사
-      </button>
+
+      {/* === SNS 공유 패널 === */}
+      {showSharePanel && (
+        <div className="animate-slide-up">
+          <SocialShare
+            url={shareUrl || window.location.href}
+            title={`${dogName}는 ${nickname} 타입! 🐾`}
+            description={`${dogName}의 멍BTI 결과: ${code} (${nickname}) - 우리 강아지 성향 테스트`}
+          />
+          <button
+            onClick={handleCopyLink}
+            className="w-full mt-2 py-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            🔗 링크 복사
+          </button>
+        </div>
+      )}
     </div>
   );
 }

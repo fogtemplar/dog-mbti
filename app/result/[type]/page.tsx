@@ -8,7 +8,6 @@ import { breeds } from "@/data/breeds";
 import { ownerMatches, generateSynergyMessage } from "@/data/ownerMbti";
 import { computeScores, getAxisPercentages, fillName } from "@/lib/calculate";
 import ShareCard from "@/components/ShareCard";
-import SocialShare from "@/components/SocialShare";
 
 export default function ResultPage({
   params,
@@ -444,15 +443,6 @@ export default function ResultPage({
         <button className="px-6 py-3 bg-white text-[#E879A4] rounded-xl font-bold text-sm hover:bg-gray-50 transition-colors">
           준비 중이에요 (Coming Soon)
         </button>
-      </div>
-
-      {/* SNS 공유 */}
-      <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.55s" }}>
-        <SocialShare
-          url={shareUrl}
-          title={`${displayName}는 ${result.nickname} 타입! 🐾`}
-          description={`${displayName}의 멍BTI 결과: ${result.code} (${result.nickname}) - 우리 강아지 성향 테스트`}
-        />
       </div>
 
       {/* 네비게이션 */}
