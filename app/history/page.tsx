@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getHistory, clearHistory, type HistoryEntry } from "@/store/quizStore";
 import { resultData } from "@/data/results";
 import { breeds } from "@/data/breeds";
+import { encodeSharePayload } from "@/lib/share";
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -70,7 +71,18 @@ export default function HistoryPage() {
               return (
                 <button
                   key={entry.id}
-                  onClick={() => router.push(`/result/${entry.resultCode}`)}
+                  onClick={() => {
+                    const payload = encodeSharePayload({
+                      v: 1,
+                      t: entry.resultCode,
+                      d: entry.dogName || undefined,
+                      o: entry.ownerName || undefined,
+                      b: entry.breedId || undefined,
+                      m: entry.ownerMbti || undefined,
+                      p: entry.percentages || [],
+                    });
+                    router.push(`/result?d=${payload}`);
+                  }}
                   className="w-full bg-white rounded-2xl p-4 text-left hover:shadow-md transition-shadow border border-gray-100"
                 >
                   <div className="flex items-center gap-3">

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { Answer } from "@/lib/calculate";
-import { computeScores, calculateType } from "@/lib/calculate";
+import { computeScores, calculateType, getAxisPercentages } from "@/lib/calculate";
+import type { AxisPercentage } from "@/lib/share";
 import { allQuestions } from "@/data/questions";
 
 export interface HistoryEntry {
@@ -12,6 +13,7 @@ export interface HistoryEntry {
   ownerMbti: string;
   resultCode: string;
   photoUrl: string | null;
+  percentages: AxisPercentage[];
 }
 
 interface QuizState {
@@ -40,7 +42,15 @@ function loadHistory(): HistoryEntry[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem("mungbti-history");
-    return raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((entry) => {
+      const safePercentages = Array.isArray(entry?.percentages) ? entry.percentages : [];
+      return {
+        ...entry,
+        percentages: safePercentages,
+      };
+    });
   } catch {
     return [];
   }
@@ -106,8 +116,9 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   },
 
   saveToHistory: () => {
-    const { dogName, ownerName, breedId, ownerMbti, resultCode, photoUrl } = get();
+    const { dogName, ownerName, breedId, ownerMbti, resultCode, photoUrl, answers } = get();
     if (!resultCode) return;
+    const percentages = getAxisPercentages(computeScores(answers));
     const entry: HistoryEntry = {
       id: Date.now().toString(),
       date: new Date().toISOString(),
@@ -117,6 +128,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       ownerMbti,
       resultCode,
       photoUrl,
+      percentages,
     };
     const history = loadHistory();
     saveHistory([entry, ...history]);

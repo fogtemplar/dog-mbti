@@ -3,15 +3,27 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
+import { computeScores, getAxisPercentages } from "@/lib/calculate";
+import { encodeSharePayload } from "@/lib/share";
 
 export default function AnalyzingPage() {
   const router = useRouter();
-  const { dogName, calculateResult } = useQuizStore();
+  const { dogName, ownerName, breedId, ownerMbti, answers, calculateResult } = useQuizStore();
 
   useEffect(() => {
     const timer = setTimeout(() => {
       const code = calculateResult();
-      router.replace(`/result/${code}`);
+      const percentages = getAxisPercentages(computeScores(answers));
+      const payload = encodeSharePayload({
+        v: 1,
+        t: code,
+        d: dogName || undefined,
+        o: ownerName || undefined,
+        b: breedId || undefined,
+        m: ownerMbti || undefined,
+        p: percentages,
+      });
+      router.replace(`/result?d=${payload}`);
     }, 2500);
     return () => clearTimeout(timer);
   }, [calculateResult, router]);
