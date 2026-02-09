@@ -4,6 +4,8 @@ import { use } from "react";
 import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 import { resultData } from "@/data/results";
+import { breeds } from "@/data/breeds";
+import { ownerMatches } from "@/data/ownerMbti";
 import { computeScores, getAxisPercentages, fillName } from "@/lib/calculate";
 import AxisBar from "@/components/AxisBar";
 import ShareCard from "@/components/ShareCard";
@@ -15,11 +17,13 @@ export default function ResultPage({
 }) {
   const { type } = use(params);
   const router = useRouter();
-  const { dogName, photoUrl, answers, reset } = useQuizStore();
+  const { dogName, breedId, photoUrl, answers, reset } = useQuizStore();
 
   const result = resultData[type];
   const scores = computeScores(answers);
   const percentages = getAxisPercentages(scores);
+  const breed = breeds.find((b) => b.id === breedId);
+  const ownerMatch = ownerMatches[type];
 
   if (!result) {
     return (
@@ -36,6 +40,10 @@ export default function ResultPage({
   }
 
   const displayName = dogName || "강아지";
+
+  // 견종 평균 타입과 현재 결과 비교
+  const breedTypicalResult = breed?.typicalType ? resultData[breed.typicalType] : null;
+  const isSameAsBreed = breed?.typicalType === type;
 
   return (
     <div className="flex flex-col min-h-dvh px-6 py-8">
@@ -89,6 +97,35 @@ export default function ResultPage({
         </ul>
       </div>
 
+      {/* 견종 평균 성격 비교 */}
+      {breed && breed.id !== "other" && (
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-5 mb-6">
+          <h3 className="text-sm font-bold text-indigo-700 mb-3">
+            🐕 {breed.name}의 평균 성격과 비교
+          </h3>
+          <p className="text-sm text-gray-600 leading-relaxed mb-3">
+            {breed.personality}
+          </p>
+          {breed.typicalType && breedTypicalResult && (
+            <div className="bg-white/70 rounded-xl p-3 mt-2">
+              {isSameAsBreed ? (
+                <p className="text-sm text-indigo-600 font-medium">
+                  ✨ {displayName}는 {breed.name}의 전형적인 성격과 일치해요! {breed.name}다운 매력이 가득한 아이네요.
+                </p>
+              ) : (
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium text-indigo-600">
+                    {breed.name}의 평균 타입은 {breed.typicalType} ({breedTypicalResult.nickname})
+                  </span>
+                  인데, {displayName}는 <span className="font-medium text-[#6C63FF]">{type} ({result.nickname})</span>으로 나왔어요.
+                  같은 {breed.name}라도 각자의 개성이 있답니다!
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 주의 포인트 */}
       <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
         <h3 className="text-sm font-bold text-amber-700 mb-3">참고 포인트</h3>
@@ -112,6 +149,27 @@ export default function ResultPage({
         </p>
       </div>
 
+      {/* 어울리는 견주 MBTI */}
+      {ownerMatch && (
+        <div className="bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-100 rounded-2xl p-5 mb-6">
+          <h3 className="text-sm font-bold text-purple-700 mb-3">
+            💜 {displayName}와 찰떡인 견주 MBTI
+          </h3>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+              <span className="text-xl font-black text-purple-600">{ownerMatch.mbti}</span>
+            </div>
+            <div>
+              <p className="font-bold text-sm">{ownerMatch.title}</p>
+              <p className="text-xs text-gray-500">{ownerMatch.mbti} 유형</p>
+            </div>
+          </div>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {fillName(ownerMatch.reason, displayName)}
+          </p>
+        </div>
+      )}
+
       {/* 공유 카드 */}
       <div className="mb-6">
         <ShareCard
@@ -123,6 +181,8 @@ export default function ResultPage({
           bgColor={result.bgColor}
           photoUrl={photoUrl}
           percentages={percentages}
+          breedName={breed?.name}
+          ownerMbti={ownerMatch?.mbti}
         />
       </div>
 

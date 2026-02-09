@@ -5,12 +5,14 @@ import { allQuestions } from "@/data/questions";
 
 interface QuizState {
   dogName: string;
+  breedId: string;
   photoUrl: string | null;
   currentIndex: number;
   answers: Answer[];
   resultCode: string | null;
 
   setDogName: (name: string) => void;
+  setBreedId: (id: string) => void;
   setPhotoUrl: (url: string | null) => void;
   selectAnswer: (questionId: string, axis: Answer["axis"], value: string) => void;
   goBack: () => void;
@@ -20,12 +22,14 @@ interface QuizState {
 
 export const useQuizStore = create<QuizState>((set, get) => ({
   dogName: "",
+  breedId: "",
   photoUrl: null,
   currentIndex: 0,
   answers: [],
   resultCode: null,
 
   setDogName: (name) => set({ dogName: name }),
+  setBreedId: (id) => set({ breedId: id }),
   setPhotoUrl: (url) => set({ photoUrl: url }),
 
   selectAnswer: (questionId, axis, value) => {
@@ -58,6 +62,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   reset: () =>
     set({
       dogName: "",
+      breedId: "",
       photoUrl: null,
       currentIndex: 0,
       answers: [],
