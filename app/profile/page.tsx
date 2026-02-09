@@ -16,8 +16,9 @@ function fileToBase64(file: File): Promise<string> {
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { setDogName, setBreedId, setOwnerMbti, setPhotoUrl } = useQuizStore();
+  const { setDogName, setOwnerName, setBreedId, setOwnerMbti, setPhotoUrl } = useQuizStore();
   const [name, setName] = useState("");
+  const [ownerNameInput, setOwnerNameInput] = useState("");
   const [breed, setBreed] = useState("");
   const [mbti, setMbti] = useState(["", "", "", ""]);
   const [preview, setPreview] = useState<string | null>(null);
@@ -49,6 +50,7 @@ export default function ProfilePage() {
   const handleStart = () => {
     if (!name.trim() || !breed) return;
     setDogName(name.trim());
+    setOwnerName(ownerNameInput.trim());
     setBreedId(breed);
     setOwnerMbti(mbtiCode);
     router.push("/quiz/intro");
@@ -160,6 +162,20 @@ export default function ProfilePage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* 견주 이름 */}
+      <div className="mb-8">
+        <h2 className="text-base font-bold mb-1">견주님 이름 (선택)</h2>
+        <p className="text-xs text-gray-400 mb-3">입력하면 결과에 견주님 이름이 표시돼요</p>
+        <input
+          type="text"
+          value={ownerNameInput}
+          onChange={(e) => setOwnerNameInput(e.target.value)}
+          placeholder="예: 홍길동"
+          maxLength={10}
+          className="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-2xl text-base font-medium focus:border-[#6C63FF] focus:outline-none transition-colors placeholder:text-gray-300"
+        />
       </div>
 
       {/* 견주 MBTI 선택 */}

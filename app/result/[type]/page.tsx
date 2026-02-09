@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 import { resultData } from "@/data/results";
@@ -17,7 +17,7 @@ export default function ResultPage({
 }) {
   const { type } = use(params);
   const router = useRouter();
-  const { dogName, breedId, ownerMbti, photoUrl, answers, reset } = useQuizStore();
+  const { dogName, ownerName, breedId, ownerMbti, photoUrl, answers, reset, saveToHistory } = useQuizStore();
 
   const result = resultData[type];
   const scores = computeScores(answers);
@@ -40,6 +40,16 @@ export default function ResultPage({
   }
 
   const displayName = dogName || "강아지";
+  const displayOwner = ownerName || "견주님";
+
+  // 히스토리 저장 (최초 1회)
+  const savedRef = useRef(false);
+  useEffect(() => {
+    if (result && !savedRef.current) {
+      savedRef.current = true;
+      saveToHistory();
+    }
+  }, [result, saveToHistory]);
 
   // 견종 평균 타입과 현재 결과 비교
   const breedTypicalResult = breed?.typicalType ? resultData[breed.typicalType] : null;
@@ -152,7 +162,7 @@ export default function ResultPage({
       {ownerMbti ? (
         <div className="bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-100 rounded-2xl p-5 mb-6">
           <h3 className="text-sm font-bold text-purple-700 mb-3">
-            💜 {ownerMbti} 견주님 × {result.code} {displayName}
+            💜 {ownerMbti} {displayOwner} × {result.code} {displayName}
           </h3>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
@@ -164,12 +174,12 @@ export default function ResultPage({
             </div>
           </div>
           <p className="text-sm text-gray-600 leading-relaxed">
-            {generateSynergyMessage(type, ownerMbti, displayName)}
+            {generateSynergyMessage(type, ownerMbti, displayName, ownerName || undefined)}
           </p>
           {ownerMatch && ownerMbti === ownerMatch.mbti && (
             <div className="mt-3 bg-white/70 rounded-xl p-3">
               <p className="text-sm text-purple-600 font-medium">
-                ✨ 견주님은 {displayName}에게 가장 이상적인 MBTI 타입이에요! 최고의 궁합이에요!
+                ✨ {displayOwner}은(는) {displayName}에게 가장 이상적인 MBTI 타입이에요! 최고의 궁합이에요!
               </p>
             </div>
           )}
@@ -223,16 +233,27 @@ export default function ResultPage({
         </button>
       </div>
 
-      {/* 다시하기 */}
-      <button
-        onClick={() => {
-          reset();
-          router.push("/");
-        }}
-        className="text-center text-sm text-gray-400 hover:text-gray-600 mb-4"
-      >
-        다시 테스트하기
-      </button>
+      {/* 네비게이션 */}
+      <div className="flex gap-3 mb-4">
+        <button
+          onClick={() => {
+            reset();
+            router.push("/profile");
+          }}
+          className="flex-1 py-3.5 bg-[#6C63FF] text-white rounded-2xl text-sm font-bold hover:bg-[#5B54E6] active:scale-[0.98] transition-all"
+        >
+          다시 테스트하기
+        </button>
+        <button
+          onClick={() => {
+            reset();
+            router.push("/");
+          }}
+          className="flex-1 py-3.5 bg-white border-2 border-gray-200 text-gray-600 rounded-2xl text-sm font-bold hover:bg-gray-50 active:scale-[0.98] transition-all"
+        >
+          처음으로
+        </button>
+      </div>
 
       {/* 고지문 */}
       <p className="text-center text-xs text-gray-400 leading-relaxed pb-8">

@@ -59,7 +59,7 @@ const leadSynergy: Record<string, Record<string, string>> = {
   },
 };
 
-export function generateSynergyMessage(dogType: string, ownerMbti: string, dogName: string): string {
+export function generateSynergyMessage(dogType: string, ownerMbti: string, dogName: string, ownerName?: string): string {
   const dogS = dogType[0]; // S or L
   const dogE = dogType[1]; // H or C
   const dogX = dogType[2]; // X or G
@@ -85,7 +85,8 @@ export function generateSynergyMessage(dogType: string, ownerMbti: string, dogNa
   if (s4) messages.push(s4);
 
   const picked = messages.slice(0, 3);
-  return picked.map((m) => m.replace(/\{name\}/g, dogName)).join(" ");
+  const display = ownerName || "견주님";
+  return picked.map((m) => m.replace(/\{name\}/g, dogName).replace(/견주님/g, `${display}`)).join(" ");
 }
 
 // 멍BTI 타입별 어울리는 견주 MBTI

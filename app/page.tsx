@@ -39,6 +39,13 @@ export default function LandingPage() {
         <span>무료</span>
       </div>
 
+      <Link
+        href="/history"
+        className="mt-4 text-sm text-[#6C63FF]/70 hover:text-[#6C63FF] font-medium transition-colors"
+      >
+        📋 이전 테스트 기록 보기
+      </Link>
+
       <p className="mt-12 text-xs text-gray-400 leading-relaxed px-4">
         본 테스트는 보호자의 관찰을 기반으로 한 재미 해석이며,
         <br />
