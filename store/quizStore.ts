@@ -6,6 +6,7 @@ import { allQuestions } from "@/data/questions";
 interface QuizState {
   dogName: string;
   breedId: string;
+  ownerMbti: string;
   photoUrl: string | null;
   currentIndex: number;
   answers: Answer[];
@@ -13,6 +14,7 @@ interface QuizState {
 
   setDogName: (name: string) => void;
   setBreedId: (id: string) => void;
+  setOwnerMbti: (mbti: string) => void;
   setPhotoUrl: (url: string | null) => void;
   selectAnswer: (questionId: string, axis: Answer["axis"], value: string) => void;
   goBack: () => void;
@@ -23,6 +25,7 @@ interface QuizState {
 export const useQuizStore = create<QuizState>((set, get) => ({
   dogName: "",
   breedId: "",
+  ownerMbti: "",
   photoUrl: null,
   currentIndex: 0,
   answers: [],
@@ -30,6 +33,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
 
   setDogName: (name) => set({ dogName: name }),
   setBreedId: (id) => set({ breedId: id }),
+  setOwnerMbti: (mbti) => set({ ownerMbti: mbti }),
   setPhotoUrl: (url) => set({ photoUrl: url }),
 
   selectAnswer: (questionId, axis, value) => {
@@ -63,6 +67,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
     set({
       dogName: "",
       breedId: "",
+      ownerMbti: "",
       photoUrl: null,
       currentIndex: 0,
       answers: [],

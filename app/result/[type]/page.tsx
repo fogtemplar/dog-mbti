@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 import { resultData } from "@/data/results";
 import { breeds } from "@/data/breeds";
-import { ownerMatches } from "@/data/ownerMbti";
+import { ownerMatches, generateSynergyMessage } from "@/data/ownerMbti";
 import { computeScores, getAxisPercentages, fillName } from "@/lib/calculate";
 import AxisBar from "@/components/AxisBar";
 import ShareCard from "@/components/ShareCard";
@@ -17,7 +17,7 @@ export default function ResultPage({
 }) {
   const { type } = use(params);
   const router = useRouter();
-  const { dogName, breedId, photoUrl, answers, reset } = useQuizStore();
+  const { dogName, breedId, ownerMbti, photoUrl, answers, reset } = useQuizStore();
 
   const result = resultData[type];
   const scores = computeScores(answers);
@@ -148,8 +148,33 @@ export default function ResultPage({
         )}
       </div>
 
-      {/* 어울리는 견주 MBTI */}
-      {ownerMatch && (
+      {/* 견주 × 강아지 MBTI 궁합 */}
+      {ownerMbti ? (
+        <div className="bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-100 rounded-2xl p-5 mb-6">
+          <h3 className="text-sm font-bold text-purple-700 mb-3">
+            💜 {ownerMbti} 견주님 × {result.code} {displayName}
+          </h3>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+              <span className="text-lg font-black text-purple-600">{ownerMbti}</span>
+            </div>
+            <div className="text-2xl">🤝</div>
+            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+              <span className="text-lg font-black text-[#6C63FF]">{result.code}</span>
+            </div>
+          </div>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {generateSynergyMessage(type, ownerMbti, displayName)}
+          </p>
+          {ownerMatch && ownerMbti === ownerMatch.mbti && (
+            <div className="mt-3 bg-white/70 rounded-xl p-3">
+              <p className="text-sm text-purple-600 font-medium">
+                ✨ 견주님은 {displayName}에게 가장 이상적인 MBTI 타입이에요! 최고의 궁합이에요!
+              </p>
+            </div>
+          )}
+        </div>
+      ) : ownerMatch ? (
         <div className="bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-100 rounded-2xl p-5 mb-6">
           <h3 className="text-sm font-bold text-purple-700 mb-3">
             💜 {displayName}와 찰떡인 견주 MBTI
@@ -167,7 +192,7 @@ export default function ResultPage({
             {fillName(ownerMatch.reason, displayName)}
           </p>
         </div>
-      )}
+      ) : null}
 
       {/* 공유 카드 */}
       <div className="mb-6">
@@ -181,7 +206,7 @@ export default function ResultPage({
           photoUrl={photoUrl}
           percentages={percentages}
           breedName={breed?.name}
-          ownerMbti={ownerMatch?.mbti}
+          ownerMbti={ownerMbti || ownerMatch?.mbti}
         />
       </div>
 

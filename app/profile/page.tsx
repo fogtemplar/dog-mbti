@@ -16,12 +16,22 @@ function fileToBase64(file: File): Promise<string> {
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { setDogName, setBreedId, setPhotoUrl } = useQuizStore();
+  const { setDogName, setBreedId, setOwnerMbti, setPhotoUrl } = useQuizStore();
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
+  const [mbti, setMbti] = useState(["", "", "", ""]);
   const [preview, setPreview] = useState<string | null>(null);
   const [showBreedPicker, setShowBreedPicker] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const mbtiAxes = [
+    { index: 0, options: [{ letter: "E", label: "외향" }, { letter: "I", label: "내향" }] },
+    { index: 1, options: [{ letter: "S", label: "감각" }, { letter: "N", label: "직관" }] },
+    { index: 2, options: [{ letter: "T", label: "사고" }, { letter: "F", label: "감정" }] },
+    { index: 3, options: [{ letter: "J", label: "판단" }, { letter: "P", label: "인식" }] },
+  ];
+  const mbtiComplete = mbti.every((m) => m !== "");
+  const mbtiCode = mbtiComplete ? mbti.join("") : "";
 
   const selectedBreed = breedGroups
     .flatMap((g) => g.breeds)
@@ -40,6 +50,7 @@ export default function ProfilePage() {
     if (!name.trim() || !breed) return;
     setDogName(name.trim());
     setBreedId(breed);
+    setOwnerMbti(mbtiCode);
     router.push("/quiz/intro");
   };
 
@@ -147,6 +158,49 @@ export default function ProfilePage() {
                 ))}
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* 견주 MBTI 선택 */}
+      <div className="mb-8">
+        <h2 className="text-base font-bold mb-1">견주님의 MBTI는?</h2>
+        <p className="text-xs text-gray-400 mb-3">선택하면 결과에서 궁합을 분석해 드려요 (선택)</p>
+        <div className="grid grid-cols-4 gap-2">
+          {mbtiAxes.map((axis) => (
+            <div key={axis.index} className="flex flex-col gap-1.5">
+              {axis.options.map((opt) => (
+                <button
+                  key={opt.letter}
+                  onClick={() => {
+                    const next = [...mbti];
+                    next[axis.index] = opt.letter;
+                    setMbti(next);
+                  }}
+                  className={`py-2.5 rounded-xl text-center transition-all ${
+                    mbti[axis.index] === opt.letter
+                      ? "bg-[#6C63FF] text-white font-bold shadow-md"
+                      : "bg-white border-2 border-gray-200 text-gray-500 hover:border-[#6C63FF]/30"
+                  }`}
+                >
+                  <span className="text-base font-black">{opt.letter}</span>
+                  <span className="text-[10px] block -mt-0.5">{opt.label}</span>
+                </button>
+              ))}
+            </div>
+          ))}
+        </div>
+        {mbtiComplete && (
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-sm text-[#6C63FF] font-bold">
+              {mbtiCode} 유형이시군요!
+            </p>
+            <button
+              onClick={() => setMbti(["", "", "", ""])}
+              className="text-xs text-gray-400 hover:text-gray-600"
+            >
+              초기화
+            </button>
           </div>
         )}
       </div>

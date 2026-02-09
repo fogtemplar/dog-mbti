@@ -4,6 +4,90 @@ export interface OwnerMatch {
   reason: string;
 }
 
+// ────────────────────────────────────────────
+// 견주 실제 MBTI × 강아지 멍BTI  시너지 메시지
+// ────────────────────────────────────────────
+const socialSynergy: Record<string, Record<string, string>> = {
+  S: {
+    E: "{name}의 넘치는 사교성, 역시 외향적인 견주님을 닮아 어디서든 인기쟁이예요!",
+    I: "내향적인 견주님 곁에서도 이렇게 사교적으로 자란 건, 견주님이 {name}의 사회성을 세심하게 키워준 덕분이에요.",
+  },
+  L: {
+    E: "독립적인 {name}도 활발한 견주님 덕분에 필요할 때 세상 밖으로 나올 용기를 얻고 있어요.",
+    I: "{name}와 견주님은 서로의 공간을 존중하면서도 깊은 유대감을 나누는, 정말 잘 어울리는 조합이에요.",
+  },
+};
+
+const energySynergy: Record<string, Record<string, string>> = {
+  H: {
+    T: "에너지 넘치는 {name}를 견주님의 논리적이고 체계적인 방식으로 잘 이끌어주고 계시네요!",
+    F: "활발한 {name}의 에너지를 견주님이 따뜻한 애정으로 감싸주니 정서적으로 안정된 아이로 자라고 있어요.",
+    S: "활동적인 {name}에게 현실적이고 꼼꼼한 견주님의 케어는 최고의 건강 관리 비결이에요.",
+    N: "에너지 폭발하는 {name}에게 견주님의 창의적인 놀이 아이디어가 늘 새로운 즐거움을 선사하고 있어요.",
+  },
+  C: {
+    T: "차분한 {name}와 논리적인 견주님은 효율적이고 안정적인 일상을 완벽하게 만들어가고 있어요.",
+    F: "조용한 {name}의 미묘한 감정 변화까지 감성적인 견주님이 놓치지 않고 챙겨주고 있어요.",
+    S: "여유로운 {name}에게 현실적인 견주님의 꼼꼼한 돌봄은 편안한 일상의 핵심이에요.",
+    N: "차분한 {name}에게 직관적인 견주님이 조금씩 새로운 세계를 열어주고 있어요.",
+  },
+};
+
+const exploreSynergy: Record<string, Record<string, string>> = {
+  X: {
+    J: "모험을 사랑하는 {name}를 계획적인 견주님이 안전하게 가이드해주니 마음껏 탐험할 수 있어요!",
+    P: "탐험가 {name}와 즉흥적인 견주님은 매일매일이 새로운 모험! 둘 다 예측불가한 하루를 즐기고 있어요.",
+  },
+  G: {
+    J: "안정을 추구하는 {name}와 계획적인 견주님은 규칙적인 생활 속에서 서로에게 편안한 안식처가 되어주고 있어요.",
+    P: "신중한 {name}도 유연한 견주님과 함께라면 새로운 경험에 점점 마음을 열어가고 있어요.",
+  },
+};
+
+const leadSynergy: Record<string, Record<string, string>> = {
+  B: {
+    E: "주도적인 {name}도 외향적인 견주님의 자연스러운 리더십 앞에서는 찰떡처럼 호흡을 맞추고 있어요.",
+    I: "{name}가 드센 성격을 타고났는데도 이렇게 잘 자란 건, 견주님의 조용하지만 일관된 리더십 덕분이에요!",
+    T: "자기 주장이 강한 {name}도 견주님의 논리적이고 단호한 태도에 자연스럽게 따르고 있어요.",
+    F: "주도적인 {name}가 이렇게 사랑스럽게 자란 건, 견주님의 끝없는 애정과 인내 덕분이에요!",
+  },
+  A: {
+    E: "순한 {name}와 활기찬 견주님의 조합은 서로에게 에너지를 주고받는 이상적인 관계예요.",
+    I: "조용히 곁을 지키는 {name}와 내향적인 견주님은 말없이도 통하는 깊은 교감을 나누고 있어요.",
+    T: "순응적인 {name}와 체계적인 견주님은 규칙적이고 안정된 행복한 일상을 만들어가고 있어요.",
+    F: "{name}의 순한 성격에 견주님의 따뜻한 감성이 더해져, 누구나 부러워하는 행복한 반려 생활을 하고 있어요.",
+  },
+};
+
+export function generateSynergyMessage(dogType: string, ownerMbti: string, dogName: string): string {
+  const dogS = dogType[0]; // S or L
+  const dogE = dogType[1]; // H or C
+  const dogX = dogType[2]; // X or G
+  const dogB = dogType[3]; // B or A
+
+  const oEI = ownerMbti[0]; // E or I
+  const oSN = ownerMbti[1]; // S or N
+  const oTF = ownerMbti[2]; // T or F
+  const oJP = ownerMbti[3]; // J or P
+
+  const messages: string[] = [];
+
+  const s1 = socialSynergy[dogS]?.[oEI];
+  if (s1) messages.push(s1);
+
+  const s2 = energySynergy[dogE]?.[oTF] || energySynergy[dogE]?.[oSN];
+  if (s2) messages.push(s2);
+
+  const s3 = exploreSynergy[dogX]?.[oJP];
+  if (s3) messages.push(s3);
+
+  const s4 = leadSynergy[dogB]?.[oEI] || leadSynergy[dogB]?.[oTF];
+  if (s4) messages.push(s4);
+
+  const picked = messages.slice(0, 3);
+  return picked.map((m) => m.replace(/\{name\}/g, dogName)).join(" ");
+}
+
 // 멍BTI 타입별 어울리는 견주 MBTI
 export const ownerMatches: Record<string, OwnerMatch> = {
   SHXB: {
