@@ -54,7 +54,7 @@ export default function HistoryPage() {
           <p className="text-sm text-gray-400 mb-6">테스트를 완료하면 여기에 기록이 저장돼요</p>
           <button
             onClick={() => router.push("/profile")}
-            className="px-6 py-3 bg-[#6C63FF] text-white rounded-2xl font-bold text-sm hover:bg-[#5B54E6] active:scale-[0.98] transition-all"
+            className="px-6 py-3 bg-[#E879A4] text-white rounded-2xl font-bold text-sm hover:bg-[#D4658F] active:scale-[0.98] transition-all"
           >
             테스트 시작하기
           </button>
@@ -78,7 +78,7 @@ export default function HistoryPage() {
                       <img
                         src={entry.photoUrl}
                         alt={entry.dogName}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-[#6C63FF]/20"
+                        className="w-12 h-12 rounded-full object-cover border-2 border-[#E879A4]/20"
                       />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-2xl">
@@ -88,7 +88,7 @@ export default function HistoryPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-sm">{entry.dogName}</span>
-                        <span className="text-xs font-black text-[#6C63FF] tracking-wider">
+                        <span className="text-xs font-black text-[#E879A4] tracking-wider">
                           {result.code}
                         </span>
                       </div>
@@ -117,7 +117,7 @@ export default function HistoryPage() {
           <div className="flex gap-3 mt-auto">
             <button
               onClick={() => router.push("/profile")}
-              className="flex-1 py-3 bg-[#6C63FF] text-white rounded-2xl text-sm font-bold hover:bg-[#5B54E6] active:scale-[0.98] transition-all"
+              className="flex-1 py-3 bg-[#E879A4] text-white rounded-2xl text-sm font-bold hover:bg-[#D4658F] active:scale-[0.98] transition-all"
             >
               새 테스트
             </button>

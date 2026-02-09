@@ -30,8 +30,8 @@ export default function QuizPlayPage() {
 
       <div className="mt-4 h-10 flex items-center justify-center">
         {isStageTransition && (
-          <div className="bg-[#6C63FF]/10 rounded-xl px-4 py-2 animate-fade-in">
-            <p className="text-sm font-medium text-[#6C63FF]">
+          <div className="bg-[#E879A4]/10 rounded-xl px-4 py-2 animate-fade-in">
+            <p className="text-sm font-medium text-[#E879A4]">
               잘하고 있어요! 조금만 더 💪
             </p>
           </div>

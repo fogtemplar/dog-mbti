@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #6C63FF;
-  --color-primary-light: #8B85FF;
-  --color-accent: #FF6B6B;
-  --color-bg: #FFF9F0;
+  --color-primary: #E879A4;
+  --color-primary-dark: #D4658F;
+  --color-primary-light: #F5A3C4;
+  --color-secondary: #A78BFA;
+  --color-accent: #FFB7D5;
+  --color-bg: #FFF5F9;
   --color-card: #FFFFFF;
-  --color-text: #2D2D2D;
-  --color-text-light: #6B7280;
+  --color-text: #3D2C3E;
+  --color-text-light: #8B7A8E;
 }
 
 body {
@@ -32,6 +34,23 @@ body {
   100% { opacity: 0.3; transform: scale(1); }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-6px) rotate(3deg); }
+  66% { transform: translateY(3px) rotate(-2deg); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+}
+
 .animate-fade-in {
   animation: fade-in 0.4s ease-out;
 }
@@ -42,4 +61,56 @@ body {
 
 .animate-paw {
   animation: paw-print 1.5s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s ease-out both;
+}
+
+.animate-count-up {
+  animation: count-up 0.4s ease-out both;
+}
+
+/* 귀여운 버튼 호버 효과 */
+.btn-cute {
+  position: relative;
+  overflow: hidden;
+}
+.btn-cute::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+  pointer-events: none;
 }

@@ -29,7 +29,7 @@ export default function AnalyzingPage() {
       </div>
 
       <h2 className="text-xl font-bold mb-3">
-        <span className="text-[#6C63FF]">{dogName}</span>의 성향을
+        <span className="text-[#E879A4]">{dogName}</span>의 성향을
         <br />
         분석하고 있어요...
       </h2>
@@ -40,7 +40,7 @@ export default function AnalyzingPage() {
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="w-3 h-3 bg-[#6C63FF] rounded-full animate-bounce"
+            className="w-3 h-3 bg-[#E879A4] rounded-full animate-bounce"
             style={{ animationDelay: `${i * 0.15}s` }}
           />
         ))}

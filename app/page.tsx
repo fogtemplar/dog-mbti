@@ -12,44 +12,61 @@ export default function LandingPage() {
   }, [reset]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center">
-      <div className="animate-bounce-slow text-7xl mb-6">🐾</div>
-      <h1 className="text-3xl font-black mb-3">
-        멍<span className="text-[#6C63FF]">BTI</span>
+    <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center relative overflow-hidden">
+      {/* 배경 장식 */}
+      <div className="absolute top-8 left-6 text-3xl animate-float opacity-20" style={{ animationDelay: "0s" }}>🐾</div>
+      <div className="absolute top-20 right-8 text-2xl animate-float opacity-15" style={{ animationDelay: "0.5s" }}>💖</div>
+      <div className="absolute top-40 left-10 text-xl animate-sparkle opacity-20" style={{ animationDelay: "1s" }}>✨</div>
+      <div className="absolute bottom-32 right-6 text-3xl animate-float opacity-15" style={{ animationDelay: "1.5s" }}>🐾</div>
+      <div className="absolute bottom-48 left-8 text-2xl animate-sparkle opacity-20" style={{ animationDelay: "0.8s" }}>🌸</div>
+      <div className="absolute bottom-20 right-12 text-xl animate-float opacity-15" style={{ animationDelay: "2s" }}>💕</div>
+
+      {/* 로고 영역 */}
+      <div className="relative mb-4">
+        <div className="animate-bounce-slow text-7xl">🐶</div>
+        <div className="absolute -top-1 -right-3 text-2xl animate-sparkle">✨</div>
+        <div className="absolute -bottom-1 -left-3 text-xl animate-sparkle" style={{ animationDelay: "0.7s" }}>💖</div>
+      </div>
+
+      <h1 className="text-4xl font-black mb-2">
+        멍<span className="bg-gradient-to-r from-[#E879A4] to-[#A78BFA] bg-clip-text text-transparent">BTI</span>
       </h1>
-      <p className="text-lg font-semibold text-gray-700 mb-2">
+      <p className="text-lg font-semibold text-gray-700 mb-1">
         우리 강아지 성향 테스트
       </p>
-      <p className="text-sm text-gray-500 mb-8 leading-relaxed">
+      <p className="text-sm text-[#8B7A8E] mb-8 leading-relaxed">
         20개의 관찰 질문으로 알아보는
         <br />
-        우리 아이만의 성향 타입
+        우리 아이만의 성향 타입 💕
       </p>
 
       <Link
         href="/profile"
-        className="w-full py-4 bg-[#6C63FF] text-white rounded-2xl text-lg font-bold hover:bg-[#5B54E6] active:scale-[0.98] transition-all"
+        className="w-full py-4 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full text-lg font-bold hover:shadow-lg hover:shadow-pink-200/50 active:scale-[0.98] transition-all btn-cute"
+        style={{ boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
       >
-        우리 강아지 성향 알아보기
+        우리 강아지 성향 알아보기 🐾
       </Link>
 
-      <div className="mt-6 flex items-center gap-2 text-xs text-gray-400">
-        <span>⏱ 약 3분 소요</span>
-        <span>·</span>
+      <div className="mt-5 flex items-center gap-3 text-xs text-[#B8A0BC]">
+        <span className="flex items-center gap-1">⏱ 약 3분</span>
+        <span className="w-1 h-1 rounded-full bg-[#D4C0D8]" />
         <span>무료</span>
+        <span className="w-1 h-1 rounded-full bg-[#D4C0D8]" />
+        <span>재미로 즐기기</span>
       </div>
 
       <Link
         href="/history"
-        className="mt-4 text-sm text-[#6C63FF]/70 hover:text-[#6C63FF] font-medium transition-colors"
+        className="mt-5 text-sm text-[#C084FC]/70 hover:text-[#C084FC] font-medium transition-colors"
       >
         📋 이전 테스트 기록 보기
       </Link>
 
-      <p className="mt-12 text-xs text-gray-400 leading-relaxed px-4">
+      <p className="mt-10 text-[11px] text-[#C4B0C8] leading-relaxed px-4">
         본 테스트는 보호자의 관찰을 기반으로 한 재미 해석이며,
         <br />
-        의학적·훈련적 진단 목적이 아닙니다.
+        의학적·훈련적 진단 목적이 아닙니다. 🐾
       </p>
     </div>
   );

@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className="min-h-dvh bg-[#FFF9F0]">
+      <body className="min-h-dvh bg-[#FFF5F9]">
         <main className="max-w-md mx-auto min-h-dvh">{children}</main>
       </body>
     </html>

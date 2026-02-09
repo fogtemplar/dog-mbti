@@ -35,11 +35,11 @@ export default function QuestionCard({
           onClick={() => handleSelect("A")}
           className={`w-full p-5 rounded-2xl text-left text-base font-medium transition-all duration-200 border-2 ${
             selected === "A"
-              ? "border-[#6C63FF] bg-[#6C63FF]/10 scale-[0.98]"
-              : "border-gray-200 bg-white hover:border-[#6C63FF]/50 active:scale-[0.98]"
+              ? "border-[#E879A4] bg-[#E879A4]/10 scale-[0.98]"
+              : "border-gray-200 bg-white hover:border-[#E879A4]/50 active:scale-[0.98]"
           }`}
         >
-          <span className="inline-block w-7 h-7 rounded-full bg-[#6C63FF]/10 text-[#6C63FF] text-center text-sm leading-7 mr-3 font-bold">
+          <span className="inline-block w-7 h-7 rounded-full bg-[#E879A4]/10 text-[#E879A4] text-center text-sm leading-7 mr-3 font-bold">
             A
           </span>
           {choiceA}
@@ -48,11 +48,11 @@ export default function QuestionCard({
           onClick={() => handleSelect("B")}
           className={`w-full p-5 rounded-2xl text-left text-base font-medium transition-all duration-200 border-2 ${
             selected === "B"
-              ? "border-[#6C63FF] bg-[#6C63FF]/10 scale-[0.98]"
-              : "border-gray-200 bg-white hover:border-[#6C63FF]/50 active:scale-[0.98]"
+              ? "border-[#C084FC] bg-[#C084FC]/10 scale-[0.98]"
+              : "border-gray-200 bg-white hover:border-[#C084FC]/50 active:scale-[0.98]"
           }`}
         >
-          <span className="inline-block w-7 h-7 rounded-full bg-[#6C63FF]/10 text-[#6C63FF] text-center text-sm leading-7 mr-3 font-bold">
+          <span className="inline-block w-7 h-7 rounded-full bg-[#C084FC]/10 text-[#C084FC] text-center text-sm leading-7 mr-3 font-bold">
             B
           </span>
           {choiceB}

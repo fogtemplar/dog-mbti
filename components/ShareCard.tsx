@@ -17,6 +17,7 @@ interface ShareCardProps {
     right: { label: string; pct: number };
   }[];
   breedName?: string;
+  ownerName?: string;
   ownerMbti?: string;
 }
 
@@ -45,6 +46,7 @@ export default function ShareCard({
   photoUrl,
   percentages,
   breedName,
+  ownerName,
   ownerMbti,
 }: ShareCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -121,7 +123,7 @@ export default function ShareCard({
       <div
         ref={cardRef}
         className="rounded-3xl overflow-hidden"
-        style={{ background: bg, boxShadow: "0 8px 32px rgba(108,99,255,0.15)" }}
+        style={{ background: bg, boxShadow: "0 8px 32px rgba(232,121,164,0.15)" }}
       >
         {/* 히어로 이미지 / 이모지 영역 */}
         {photoUrl ? (
@@ -150,7 +152,7 @@ export default function ShareCard({
             <div className="absolute top-3 right-5 text-4xl opacity-[0.12]">🐾</div>
             <div className="text-7xl mb-3">{emoji}</div>
             <p className="text-[11px] text-gray-500 font-medium">{dogName}의 성향 타입</p>
-            <p className="text-[28px] font-black tracking-[0.15em] text-[#6C63FF] leading-tight">
+            <p className="text-[28px] font-black tracking-[0.15em] text-[#E879A4] leading-tight">
               {code}
             </p>
             <p className="text-[15px] font-bold text-gray-800">{nickname}</p>
@@ -178,11 +180,11 @@ export default function ShareCard({
                       className="h-full rounded-full"
                       style={{
                         width: `${dominant.pct}%`,
-                        background: "linear-gradient(90deg, #6C63FF, #A78BFA)",
+                        background: "linear-gradient(90deg, #E879A4, #C084FC)",
                       }}
                     />
                   </div>
-                  <span className="text-[10px] font-black text-[#6C63FF] w-9">
+                  <span className="text-[10px] font-black text-[#E879A4] w-9">
                     {dominant.pct}%
                   </span>
                 </div>
@@ -190,19 +192,39 @@ export default function ShareCard({
             })}
           </div>
 
-          {/* 태그 */}
-          <div className="flex gap-1.5 flex-wrap pb-4">
-            {breedName && (
-              <span className="px-2.5 py-1 bg-white/60 rounded-full text-[10px] font-semibold text-gray-600">
-                🐕 {breedName}
-              </span>
-            )}
-            {ownerMbti && (
-              <span className="px-2.5 py-1 bg-white/60 rounded-full text-[10px] font-semibold text-gray-600">
-                💜 찰떡 견주 {ownerMbti}
-              </span>
-            )}
-          </div>
+          {/* 견주 + 태그 */}
+          {(ownerName || ownerMbti || breedName) && (
+            <div className="bg-white/40 rounded-xl px-3 py-2.5 mb-4">
+              {(ownerName || ownerMbti) && (
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-[10px]">👤</span>
+                  <span className="text-[11px] font-bold text-gray-700">
+                    {ownerName || "견주님"}
+                    {ownerMbti && (
+                      <span className="ml-1 text-purple-500 font-black">({ownerMbti})</span>
+                    )}
+                  </span>
+                  <span className="text-[10px] text-gray-400">×</span>
+                  <span className="text-[11px] font-bold text-[#E879A4]">
+                    {dogName}
+                    <span className="ml-1 font-black">({code})</span>
+                  </span>
+                </div>
+              )}
+              <div className="flex gap-1.5 flex-wrap">
+                {breedName && (
+                  <span className="px-2 py-0.5 bg-white/60 rounded-full text-[10px] font-semibold text-gray-600">
+                    🐕 {breedName}
+                  </span>
+                )}
+                {ownerMbti && (
+                  <span className="px-2 py-0.5 bg-white/60 rounded-full text-[10px] font-semibold text-purple-500">
+                    💜 궁합 케미
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 하단 */}
@@ -219,15 +241,15 @@ export default function ShareCard({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex-1 py-3.5 bg-[#6C63FF] text-white rounded-2xl text-sm font-bold hover:bg-[#5B54E6] active:scale-[0.98] transition-all disabled:opacity-50"
-          style={{ boxShadow: "0 4px 14px rgba(108,99,255,0.3)" }}
+          className="flex-1 py-3.5 bg-[#E879A4] text-white rounded-2xl text-sm font-bold hover:bg-[#D4658F] active:scale-[0.98] transition-all disabled:opacity-50"
+          style={{ boxShadow: "0 4px 14px rgba(232,121,164,0.3)" }}
         >
           {saving ? "저장 중..." : "📥 카드 저장"}
         </button>
         <button
           onClick={handleShare}
           disabled={saving}
-          className="flex-1 py-3.5 bg-white border-2 border-[#6C63FF] text-[#6C63FF] rounded-2xl text-sm font-bold hover:bg-[#6C63FF]/5 active:scale-[0.98] transition-all disabled:opacity-50"
+          className="flex-1 py-3.5 bg-white border-2 border-[#E879A4] text-[#E879A4] rounded-2xl text-sm font-bold hover:bg-[#E879A4]/5 active:scale-[0.98] transition-all disabled:opacity-50"
         >
           {saving ? "준비 중..." : "📤 공유하기"}
         </button>

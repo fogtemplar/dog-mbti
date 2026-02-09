@@ -75,11 +75,11 @@ export default function ProfilePage() {
             <img
               src={preview}
               alt="강아지 사진"
-              className="w-28 h-28 object-cover rounded-full border-4 border-[#6C63FF]/20"
+              className="w-28 h-28 object-cover rounded-full border-4 border-[#E879A4]/20"
             />
             <button
               onClick={() => fileRef.current?.click()}
-              className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#6C63FF] text-white rounded-full text-sm flex items-center justify-center shadow-lg"
+              className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#E879A4] text-white rounded-full text-sm flex items-center justify-center shadow-lg"
             >
               📷
             </button>
@@ -96,7 +96,7 @@ export default function ProfilePage() {
         ) : (
           <button
             onClick={() => fileRef.current?.click()}
-            className="w-28 h-28 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#6C63FF] hover:text-[#6C63FF] transition-colors mb-4"
+            className="w-28 h-28 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#E879A4] hover:text-pink-500 transition-colors mb-4"
           >
             <span className="text-2xl mb-1">📷</span>
             <span className="text-[10px]">사진 (선택)</span>
@@ -110,7 +110,7 @@ export default function ProfilePage() {
           onChange={(e) => setName(e.target.value)}
           placeholder="예: 뽀삐, 초코, 콩이"
           maxLength={10}
-          className="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-2xl text-lg text-center font-medium focus:border-[#6C63FF] focus:outline-none transition-colors placeholder:text-gray-300"
+          className="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-2xl text-lg text-center font-medium focus:border-[#E879A4] focus:outline-none transition-colors placeholder:text-gray-300"
           autoFocus
         />
         <p className="text-xs text-gray-400 mt-1">최대 10자</p>
@@ -123,7 +123,7 @@ export default function ProfilePage() {
           onClick={() => setShowBreedPicker(!showBreedPicker)}
           className={`w-full px-5 py-4 bg-white border-2 rounded-2xl text-left transition-colors ${
             breed
-              ? "border-[#6C63FF] text-gray-800"
+              ? "border-[#E879A4] text-gray-800"
               : "border-gray-200 text-gray-400"
           }`}
         >
@@ -149,9 +149,9 @@ export default function ProfilePage() {
                       setBreed(b.id);
                       setShowBreedPicker(false);
                     }}
-                    className={`w-full px-4 py-3 text-left text-sm hover:bg-[#6C63FF]/5 transition-colors border-b border-gray-50 ${
+                    className={`w-full px-4 py-3 text-left text-sm hover:bg-[#E879A4]/5 transition-colors border-b border-gray-50 ${
                       breed === b.id
-                        ? "bg-[#6C63FF]/10 text-[#6C63FF] font-bold"
+                        ? "bg-[#E879A4]/10 text-[#E879A4] font-bold"
                         : ""
                     }`}
                   >
@@ -174,7 +174,7 @@ export default function ProfilePage() {
           onChange={(e) => setOwnerNameInput(e.target.value)}
           placeholder="예: 홍길동"
           maxLength={10}
-          className="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-2xl text-base font-medium focus:border-[#6C63FF] focus:outline-none transition-colors placeholder:text-gray-300"
+          className="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-2xl text-base font-medium focus:border-[#E879A4] focus:outline-none transition-colors placeholder:text-gray-300"
         />
       </div>
 
@@ -197,7 +197,7 @@ export default function ProfilePage() {
                     }}
                     className={`w-full py-2.5 rounded-xl text-center transition-all ${
                       mbti[axis.index] === opt.letter
-                        ? "bg-[#6C63FF] text-white font-bold shadow-md"
+                        ? "bg-[#E879A4] text-white font-bold shadow-md"
                         : "bg-transparent text-gray-500 hover:bg-white"
                     }`}
                   >
@@ -211,7 +211,7 @@ export default function ProfilePage() {
         </div>
         {mbtiComplete && (
           <div className="mt-2 flex items-center justify-between">
-            <p className="text-sm text-[#6C63FF] font-bold">
+            <p className="text-sm text-[#E879A4] font-bold">
               {mbtiCode} 유형이시군요!
             </p>
             <button
@@ -229,13 +229,14 @@ export default function ProfilePage() {
         <button
           onClick={handleStart}
           disabled={!canStart}
-          className={`w-full py-4 rounded-2xl text-lg font-bold transition-all ${
+          className={`w-full py-4 rounded-full text-lg font-bold transition-all ${
             canStart
-              ? "bg-[#6C63FF] text-white hover:bg-[#5B54E6] active:scale-[0.98]"
+              ? "bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white hover:shadow-lg hover:shadow-pink-200/50 active:scale-[0.98]"
               : "bg-gray-200 text-gray-400 cursor-not-allowed"
           }`}
+          style={canStart ? { boxShadow: "0 4px 20px rgba(232,121,164,0.3)" } : undefined}
         >
-          시작하기
+          시작하기 💕
         </button>
       </div>
     </div>
