@@ -91,14 +91,13 @@ export default function ResultPage({
         </h1>
 
         <div className="w-full max-w-xs space-y-3 mb-8">
-          {result.traits.slice(0, 2).map((trait, i) => (
+          {result.hints.map((hint, i) => (
             <div
               key={i}
               className="bg-white/80 backdrop-blur rounded-2xl px-4 py-3 text-sm text-gray-700 leading-relaxed animate-slide-up"
               style={{ animationDelay: `${0.6 + i * 0.2}s` }}
             >
-              <span className="text-[#E879A4] mr-2">●</span>
-              {fillName(trait, displayName)}
+              {fillName(hint, displayName)}
             </div>
           ))}
         </div>

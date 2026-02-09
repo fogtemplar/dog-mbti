@@ -2,6 +2,7 @@ export interface DogMBTIResult {
   code: string;
   nickname: string;
   summary: string;
+  hints: string[];
   traits: string[];
   cautions: string[];
   reasoning: string;
@@ -16,6 +17,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🌟",
     bgColor: "#FFF3E0",
     summary: "세상 모든 게 궁금하고, 모든 친구가 반가운 에너지 넘치는 모험가!",
+    hints: [
+      "누구를 만나든 꼬리부터 흔들면서 달려가는 스타일이에요 🐕",
+      "산책할 때 새로운 냄새가 나면 절대 그냥 못 지나치더라고요 👃",
+    ],
     traits: [
       "누구든 만나면 꼬리부터 흔드는 사교왕",
       "산책 중 새로운 냄새를 놓치는 법이 없는 탐험가",
@@ -35,6 +40,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🎉",
     bgColor: "#FFF8E1",
     summary: "어디서든 분위기 메이커! 호기심 가득하지만 보호자 말은 잘 듣는 착한 아이.",
+    hints: [
+      "새로운 친구를 보면 제일 먼저 달려가서 인사하는 타입이에요 🤗",
+      "낯선 곳에 가도 쫄지 않고 신나게 돌아다니더라고요 🏃",
+    ],
     traits: [
       "새로운 친구를 만나면 가장 먼저 인사하는 사교성",
       "낯선 환경에서도 신나게 탐험하는 모험심",
@@ -53,6 +62,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "👑",
     bgColor: "#E8EAF6",
     summary: "익숙한 영역에선 누구보다 활발하고 당당한 리더십의 소유자!",
+    hints: [
+      "아는 친구들이랑 있으면 놀이의 중심은 항상 본인이에요 😎",
+      "늘 다니는 산책 코스에서는 누구보다 자신감이 넘치더라고요 💪",
+    ],
     traits: [
       "아는 친구들과 있으면 놀이의 중심",
       "정해진 산책 코스에서 가장 활발",
@@ -71,6 +84,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "💛",
     bgColor: "#FFFDE7",
     summary: "사람도 강아지도 좋아하는 활발한 아이, 하지만 늘 보호자 곁이 최고!",
+    hints: [
+      "보호자랑 같이 하는 거면 뭐든 좋아하는 스타일이에요 💕",
+      "친구들이랑 신나게 놀다가도 이름 부르면 바로 달려오더라고요 🥰",
+    ],
     traits: [
       "보호자와 함께하는 활동에서 가장 행복한 아이",
       "친구들과 신나게 뛰놀지만 보호자 호출엔 바로 반응",
@@ -89,6 +106,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🦋",
     bgColor: "#E0F7FA",
     summary: "친구도 좋고 새로운 것도 좋지만, 내 페이스는 지키는 여유파!",
+    hints: [
+      "다른 강아지를 만나도 과하게 흥분하지 않고 여유롭게 인사해요 ☕",
+      "새로운 곳에 가면 급하지 않게 차근차근 둘러보더라고요 🦋",
+    ],
     traits: [
       "다른 강아지와 잘 어울리지만 과하게 흥분하지 않는 편",
       "새로운 환경을 차분하게 탐색하는 관찰형 탐험가",
@@ -107,6 +128,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🔍",
     bgColor: "#E8F5E9",
     summary: "조용히 세상을 관찰하고, 부드럽게 다가가는 신사/숙녀견.",
+    hints: [
+      "주변을 조용히 살펴보면서 뭐가 있는지 관찰하는 걸 좋아해요 🔍",
+      "다른 강아지한테도 늘 부드럽게 다가가는 매너 있는 아이예요 🤝",
+    ],
     traits: [
       "차분하게 주변을 탐색하는 지적 호기심",
       "다른 강아지에게 부드럽게 다가가는 매너견",
@@ -125,6 +150,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🛋️",
     bgColor: "#FFF3E0",
     summary: "사람은 좋지만 굳이 뛰어다니진 않아요. 내 자리에서 여유롭게!",
+    hints: [
+      "보호자 무릎 위가 세상에서 제일 좋은 자리라고 생각하는 것 같아요 🛋️",
+      "반갑긴 한데 굳이 일어나서 뛰어가진 않는 스타일이에요 😌",
+    ],
     traits: [
       "보호자 무릎 위가 세상에서 가장 좋은 자리",
       "친구가 오면 반기지만 일어나긴 싫어하는 편",
@@ -143,6 +172,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "☁️",
     bgColor: "#F3E5F5",
     summary: "어디서든 평화롭고, 누구에게나 부드러운 천사 같은 아이.",
+    hints: [
+      "보호자 옆에서 가만히 같이 있는 것만으로도 세상 행복한 표정을 지어요 ☁️",
+      "다른 강아지한테 으르렁하는 거 한 번도 본 적이 없을 정도로 순해요 😇",
+    ],
     traits: [
       "보호자 옆에서 조용히 함께하는 것만으로 행복",
       "다른 강아지에게도 절대 공격적이지 않은 온순함",
@@ -161,6 +194,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🚀",
     bgColor: "#E3F2FD",
     summary: "혼자서도 잘 놀고, 세상 모든 것을 직접 경험해야 직성이 풀리는 자유로운 영혼!",
+    hints: [
+      "혼자서도 알아서 척척 잘 놀더라고요, 진짜 독립적인 성격이에요 🚀",
+      "새로운 거 앞에서 무서워하는 법이 없어요, 일단 돌진! 💨",
+    ],
     traits: [
       "혼자만의 탐험을 즐기는 독립적인 성격",
       "에너지가 넘쳐서 항상 무언가를 하고 있어야 함",
@@ -180,6 +217,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "⚡",
     bgColor: "#FFF8E1",
     summary: "혼자서도 신나게! 에너지 넘치지만 보호자 말은 잘 듣는 독립적인 아이.",
+    hints: [
+      "장난감 하나만 있으면 혼자서도 한참을 신나게 놀아요 ⚡",
+      "독립적인데도 보호자 말은 잘 듣는 착한 아이더라고요 🥹",
+    ],
     traits: [
       "혼자 놀기의 달인 — 장난감 하나면 충분",
       "활동량이 많지만 보호자와의 유대가 깊은 편",
@@ -198,6 +239,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🔋",
     bgColor: "#E8F5E9",
     summary: "정해진 루틴 안에서 폭발적인 에너지를 발산하는 마이웨이 강아지!",
+    hints: [
+      "산책 시간만 되면 에너지가 200%로 차오르는 게 눈에 보여요 🔋",
+      "자기만의 규칙이 확실해서 루틴을 딱딱 지키더라고요 📋",
+    ],
     traits: [
       "산책 시간만 되면 에너지가 200% 충전",
       "자기만의 규칙과 영역이 확실한 편",
@@ -216,6 +261,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🏃",
     bgColor: "#E0F2F1",
     summary: "낯선 건 좀 어렵지만, 보호자와 함께라면 어디든! 활기찬 동반자.",
+    hints: [
+      "보호자랑 둘이서 뭔가 하는 게 세상에서 제일 좋은 것 같아요 🏃",
+      "같이 뛰면 지칠 줄을 몰라요, 진짜 러닝메이트 그 자체! 💨",
+    ],
     traits: [
       "보호자와 1:1 활동에서 가장 행복한 아이",
       "정해진 산책 루트를 힘차게 달리는 러닝메이트",
@@ -234,6 +283,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🗺️",
     bgColor: "#FCE4EC",
     summary: "겉은 차분하지만 속은 호기심 가득! 자기만의 속도로 세상을 탐험하는 아이.",
+    hints: [
+      "겉으로는 조용한데 속으로는 호기심이 가득한 스타일이에요 🗺️",
+      "자기 페이스대로 조용히 탐험하는 걸 좋아하더라고요 🐾",
+    ],
     traits: [
       "조용히 냄새 맡으며 주변을 탐색하는 관찰형",
       "혼자만의 시간에 새로운 것을 발견하는 걸 좋아함",
@@ -252,6 +305,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🌿",
     bgColor: "#E8F5E9",
     summary: "여유로운 산책 속에서 세상을 관찰하는 철학적인 감성의 소유자.",
+    hints: [
+      "산책하면서 풀잎 하나하나 킁킁 냄새 맡는 게 일상이에요 🌿",
+      "보호자랑 나란히 걷는 조용한 산책을 제일 좋아하더라고요 🚶",
+    ],
     traits: [
       "산책 중 풀잎 하나도 놓치지 않는 세심한 관찰력",
       "보호자와 나란히 걷는 조용한 동행을 좋아함",
@@ -270,6 +327,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "😎",
     bgColor: "#EDE7F6",
     summary: "내 자리, 내 규칙, 내 페이스. 확고한 자기 세계를 가진 독립적인 아이.",
+    hints: [
+      "자기만의 자리가 확실해서 거기 앉으면 절대 안 비켜요 😎",
+      "보호자도 내 페이스에 맞춰줬으면 하는 도도한 매력이 있어요 👑",
+    ],
     traits: [
       "자기만의 자리와 루틴이 확고한 영역파",
       "보호자도 내 페이스에 맞춰줬으면 하는 도도함",
@@ -289,6 +350,10 @@ export const resultData: Record<string, DogMBTIResult> = {
     emoji: "🧘",
     bgColor: "#F1F8E9",
     summary: "자기만의 세계가 확고하고, 익숙한 것에서 편안함을 느끼는 사려 깊은 아이.",
+    hints: [
+      "혼자만의 시간을 정말 소중하게 생각하는 독립적인 아이예요 🧘",
+      "늘 하던 대로 하는 게 제일 편하고 좋은 것 같더라고요 🍃",
+    ],
     traits: [
       "혼자만의 시간을 소중히 여기는 독립파",
       "정해진 루틴 속에서 가장 평화로운 모습을 보여요",
