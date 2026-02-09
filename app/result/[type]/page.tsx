@@ -82,7 +82,7 @@ export default function ResultPage({
         ))}
       </div>
 
-      {/* 성향 특징 */}
+      {/* 성향 특징 + 참고 포인트 통합 */}
       <div className="bg-white rounded-2xl p-5 mb-6">
         <h3 className="text-sm font-bold text-gray-500 mb-3">
           {displayName}의 성향 특징
@@ -95,58 +95,57 @@ export default function ResultPage({
             </li>
           ))}
         </ul>
-      </div>
 
-      {/* 견종 평균 성격 비교 */}
-      {breed && breed.id !== "other" && (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-5 mb-6">
-          <h3 className="text-sm font-bold text-indigo-700 mb-3">
-            🐕 {breed.name}의 평균 성격과 비교
-          </h3>
-          <p className="text-sm text-gray-600 leading-relaxed mb-3">
-            {breed.personality}
-          </p>
-          {breed.typicalType && breedTypicalResult && (
-            <div className="bg-white/70 rounded-xl p-3 mt-2">
-              {isSameAsBreed ? (
-                <p className="text-sm text-indigo-600 font-medium">
-                  ✨ {displayName}는 {breed.name}의 전형적인 성격과 일치해요! {breed.name}다운 매력이 가득한 아이네요.
-                </p>
-              ) : (
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium text-indigo-600">
-                    {breed.name}의 평균 타입은 {breed.typicalType} ({breedTypicalResult.nickname})
-                  </span>
-                  인데, {displayName}는 <span className="font-medium text-[#6C63FF]">{type} ({result.nickname})</span>으로 나왔어요.
-                  같은 {breed.name}라도 각자의 개성이 있답니다!
-                </p>
-              )}
-            </div>
-          )}
+        {/* 참고 포인트 */}
+        <div className="mt-4 bg-amber-50 border border-amber-100 rounded-xl p-3.5">
+          <p className="text-[11px] font-bold text-amber-700 mb-2">💡 알아두면 좋은 점</p>
+          <ul className="space-y-2">
+            {result.cautions.map((c, i) => (
+              <li key={i} className="flex items-start gap-2 text-[13px] text-amber-800 leading-relaxed">
+                <span className="mt-0.5 text-amber-500">▸</span>
+                {fillName(c, displayName)}
+              </li>
+            ))}
+          </ul>
         </div>
-      )}
-
-      {/* 주의 포인트 */}
-      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
-        <h3 className="text-sm font-bold text-amber-700 mb-3">참고 포인트</h3>
-        <ul className="space-y-2">
-          {result.cautions.map((c, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-amber-800 leading-relaxed">
-              <span>⚠️</span>
-              {fillName(c, displayName)}
-            </li>
-          ))}
-        </ul>
       </div>
 
-      {/* 왜 이 타입? */}
-      <div className="bg-white rounded-2xl p-5 mb-6">
-        <h3 className="text-sm font-bold text-gray-500 mb-3">
-          왜 이 타입이 나왔을까?
+      {/* 왜 이 타입? + 견종 비교 통합 */}
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-5 mb-6">
+        <h3 className="text-sm font-bold text-indigo-700 mb-3">
+          🔍 왜 이 타입이 나왔을까?
         </h3>
         <p className="text-sm text-gray-600 leading-relaxed">
           {fillName(result.reasoning, displayName)}
         </p>
+
+        {breed && breed.id !== "other" && (
+          <div className="mt-4 pt-4 border-t border-blue-200/50">
+            <p className="text-[11px] font-bold text-indigo-600 mb-2">
+              🐕 {breed.name} 평균 성격과 비교
+            </p>
+            <p className="text-sm text-gray-600 leading-relaxed mb-2">
+              {breed.personality}
+            </p>
+            {breed.typicalType && breedTypicalResult && (
+              <div className="bg-white/70 rounded-xl p-3 mt-2">
+                {isSameAsBreed ? (
+                  <p className="text-sm text-indigo-600 font-medium">
+                    ✨ {displayName}는 {breed.name}의 전형적인 성격과 일치해요! {breed.name}다운 매력이 가득한 아이네요.
+                  </p>
+                ) : (
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium text-indigo-600">
+                      {breed.name}의 평균 타입은 {breed.typicalType} ({breedTypicalResult.nickname})
+                    </span>
+                    인데, {displayName}는 <span className="font-medium text-[#6C63FF]">{type} ({result.nickname})</span>으로 나왔어요.
+                    같은 {breed.name}라도 각자의 개성이 있답니다!
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 어울리는 견주 MBTI */}

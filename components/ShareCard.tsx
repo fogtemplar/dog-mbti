@@ -123,40 +123,42 @@ export default function ShareCard({
         className="rounded-3xl overflow-hidden"
         style={{ background: bg, boxShadow: "0 8px 32px rgba(108,99,255,0.15)" }}
       >
-        {/* 상단 장식 패턴 */}
-        <div className="relative px-6 pt-6 pb-0">
-          <div className="absolute top-3 right-5 text-4xl opacity-[0.12]">🐾</div>
-          <div className="absolute top-10 right-14 text-2xl opacity-[0.08]">🐾</div>
-
-          {/* 프로필 영역 */}
-          <div className="flex items-center gap-4 mb-4">
-            {photoUrl ? (
-              <div className="relative">
-                <div className="w-[76px] h-[76px] rounded-2xl overflow-hidden border-[3px] border-white/80" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
-                  <img
-                    src={photoUrl}
-                    alt={dogName}
-                    className="w-full h-full object-cover"
-                  />
+        {/* 히어로 이미지 / 이모지 영역 */}
+        {photoUrl ? (
+          <div className="relative w-full" style={{ aspectRatio: "1 / 1" }}>
+            <img
+              src={photoUrl}
+              alt={dogName}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 50%)" }} />
+            <div className="absolute bottom-3 left-4 right-4">
+              <p className="text-[11px] text-white/80 font-medium">{dogName}의 성향 타입</p>
+              <div className="flex items-end justify-between">
+                <div>
+                  <p className="text-[28px] font-black tracking-[0.15em] text-white leading-tight drop-shadow-md">
+                    {code}
+                  </p>
+                  <p className="text-[15px] font-bold text-white/90 truncate drop-shadow-sm">{nickname}</p>
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center text-sm" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.1)" }}>
-                  {emoji}
-                </div>
+                <span className="text-3xl drop-shadow-md">{emoji}</span>
               </div>
-            ) : (
-              <div className="w-[76px] h-[76px] rounded-2xl bg-white/50 flex items-center justify-center text-4xl border-2 border-white/60" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}>
-                {emoji}
-              </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] text-gray-500 font-medium">{dogName}의 성향 타입</p>
-              <p className="text-[26px] font-black tracking-[0.15em] text-[#6C63FF] leading-tight">
-                {code}
-              </p>
-              <p className="text-[15px] font-bold text-gray-800 truncate">{nickname}</p>
             </div>
           </div>
+        ) : (
+          <div className="relative px-6 pt-8 pb-4 text-center">
+            <div className="absolute top-3 right-5 text-4xl opacity-[0.12]">🐾</div>
+            <div className="text-7xl mb-3">{emoji}</div>
+            <p className="text-[11px] text-gray-500 font-medium">{dogName}의 성향 타입</p>
+            <p className="text-[28px] font-black tracking-[0.15em] text-[#6C63FF] leading-tight">
+              {code}
+            </p>
+            <p className="text-[15px] font-bold text-gray-800">{nickname}</p>
+          </div>
+        )}
 
+        {/* 카드 콘텐츠 */}
+        <div className="px-5 pt-4 pb-0">
           {/* 한줄 요약 */}
           <div className="bg-white/50 rounded-xl px-3 py-2.5 mb-4">
             <p className="text-[11px] text-gray-700 leading-relaxed">{summary}</p>
