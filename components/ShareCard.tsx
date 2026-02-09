@@ -19,6 +19,7 @@ interface ShareCardProps {
   breedName?: string;
   ownerName?: string;
   ownerMbti?: string;
+  shareUrl?: string;
 }
 
 const gradients: Record<string, string> = {
@@ -48,6 +49,7 @@ export default function ShareCard({
   breedName,
   ownerName,
   ownerMbti,
+  shareUrl,
 }: ShareCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
@@ -85,6 +87,7 @@ export default function ShareCard({
       if (!blob) return;
       const file = new File([blob], `${dogName}_멍BTI.png`, { type: "image/png" });
 
+      const linkUrl = shareUrl || window.location.href;
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
           title: `${dogName}는 ${nickname} 타입!`,
@@ -95,10 +98,10 @@ export default function ShareCard({
         await navigator.share({
           title: `${dogName}는 ${nickname} 타입!`,
           text: `${dogName}의 강아지 MBTI 결과를 확인해 보세요!`,
-          url: window.location.href,
+          url: linkUrl,
         });
       } else {
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(linkUrl);
         alert("링크가 복사되었어요!");
       }
     } finally {
@@ -108,7 +111,7 @@ export default function ShareCard({
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(shareUrl || window.location.href);
       alert("링크가 복사되었어요!");
     } catch {
       alert("링크 복사에 실패했어요. 주소창에서 직접 복사해 주세요.");

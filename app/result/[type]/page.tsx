@@ -1,13 +1,14 @@
 "use client";
 
-import { use, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { use, useEffect, useRef, useState, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 import { resultData } from "@/data/results";
 import { breeds } from "@/data/breeds";
 import { ownerMatches, generateSynergyMessage } from "@/data/ownerMbti";
 import { computeScores, getAxisPercentages, fillName } from "@/lib/calculate";
 import ShareCard from "@/components/ShareCard";
+import SocialShare from "@/components/SocialShare";
 
 export default function ResultPage({
   params,
@@ -16,7 +17,16 @@ export default function ResultPage({
 }) {
   const { type } = use(params);
   const router = useRouter();
-  const { dogName, ownerName, breedId, ownerMbti, photoUrl, answers, reset, saveToHistory } = useQuizStore();
+  const searchParams = useSearchParams();
+  const { dogName: storeDogName, ownerName: storeOwnerName, breedId: storeBreedId, ownerMbti: storeOwnerMbti, photoUrl: storePhotoUrl, answers, reset, saveToHistory } = useQuizStore();
+
+  // 공유 링크에서 왔을 때: query params → store 데이터 fallback
+  const isSharedView = !!searchParams.get("dog");
+  const dogName = searchParams.get("dog") || storeDogName;
+  const ownerName = searchParams.get("owner") || storeOwnerName;
+  const breedId = searchParams.get("breed") || storeBreedId;
+  const ownerMbti = searchParams.get("ombt") || storeOwnerMbti;
+  const photoUrl = storePhotoUrl; // 사진은 공유 불가 (blob URL)
 
   const result = resultData[type];
   const scores = computeScores(answers);
@@ -24,7 +34,20 @@ export default function ResultPage({
   const breed = breeds.find((b) => b.id === breedId);
   const ownerMatch = ownerMatches[type];
 
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(isSharedView ? 4 : 0); // 공유 링크면 바로 최종 결과
+
+  // 개인화 공유 URL 생성
+  const shareUrl = useMemo(() => {
+    if (typeof window === "undefined") return "";
+    const base = `${window.location.origin}/result/${type}`;
+    const params = new URLSearchParams();
+    if (dogName) params.set("dog", dogName);
+    if (ownerName) params.set("owner", ownerName);
+    if (breedId) params.set("breed", breedId);
+    if (ownerMbti) params.set("ombt", ownerMbti);
+    const qs = params.toString();
+    return qs ? `${base}?${qs}` : base;
+  }, [type, dogName, ownerName, breedId, ownerMbti]);
 
   if (!result) {
     return (
@@ -295,6 +318,7 @@ export default function ResultPage({
           breedName={breed?.name}
           ownerName={ownerName || undefined}
           ownerMbti={ownerMbti || ownerMatch?.mbti}
+          shareUrl={shareUrl}
         />
       </div>
 
@@ -420,6 +444,15 @@ export default function ResultPage({
         <button className="px-6 py-3 bg-white text-[#E879A4] rounded-xl font-bold text-sm hover:bg-gray-50 transition-colors">
           준비 중이에요 (Coming Soon)
         </button>
+      </div>
+
+      {/* SNS 공유 */}
+      <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.55s" }}>
+        <SocialShare
+          url={shareUrl}
+          title={`${displayName}는 ${result.nickname} 타입! 🐾`}
+          description={`${displayName}의 멍BTI 결과: ${result.code} (${result.nickname}) - 우리 강아지 성향 테스트`}
+        />
       </div>
 
       {/* 네비게이션 */}
