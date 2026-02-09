@@ -182,10 +182,13 @@ export default function ProfilePage() {
       <div className="mb-8">
         <h2 className="text-base font-bold mb-1">견주님의 MBTI는?</h2>
         <p className="text-xs text-gray-400 mb-3">선택하면 결과에서 궁합을 분석해 드려요 (선택)</p>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="space-y-2">
           {mbtiAxes.map((axis) => (
-            <div key={axis.index} className="flex flex-col gap-1.5">
-              {axis.options.map((opt) => (
+            <div
+              key={axis.index}
+              className="flex items-center bg-white border-2 border-gray-100 rounded-2xl overflow-hidden"
+            >
+              {axis.options.map((opt, i) => (
                 <button
                   key={opt.letter}
                   onClick={() => {
@@ -193,11 +196,11 @@ export default function ProfilePage() {
                     next[axis.index] = opt.letter;
                     setMbti(next);
                   }}
-                  className={`py-2.5 rounded-xl text-center transition-all ${
+                  className={`flex-1 py-3 text-center transition-all relative ${
                     mbti[axis.index] === opt.letter
-                      ? "bg-[#6C63FF] text-white font-bold shadow-md"
-                      : "bg-white border-2 border-gray-200 text-gray-500 hover:border-[#6C63FF]/30"
-                  }`}
+                      ? "bg-[#6C63FF] text-white font-bold"
+                      : "text-gray-500 hover:bg-gray-50"
+                  } ${i === 0 ? "rounded-l-xl" : "rounded-r-xl"}`}
                 >
                   <span className="text-base font-black">{opt.letter}</span>
                   <span className="text-[10px] block -mt-0.5">{opt.label}</span>
