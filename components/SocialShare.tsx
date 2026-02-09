@@ -1,11 +1,13 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 interface SocialShareProps {
   url: string;
   title: string;
   description: string;
+  dogName: string;
+  captureCard: () => Promise<Blob | null>;
 }
 
 function enc(s: string) {
@@ -71,7 +73,12 @@ interface PlatformDef {
   icon: React.ReactNode;
   bg: string;
   textColor: string;
-  action: (url: string, title: string, desc: string) => void;
+  /** true = 이미지 첨부 가능 (Web Share API 사용) */
+  useImageShare?: boolean;
+  /** 이미지 첨부 불가 시 URL 기반 공유 */
+  getShareUrl?: (url: string, title: string) => string;
+  /** 특수 처리 (카카오/인스타) */
+  specialAction?: (url: string, title: string, desc: string, file: File | null) => Promise<void>;
 }
 
 function buildPlatforms(): PlatformDef[] {
@@ -81,7 +88,16 @@ function buildPlatforms(): PlatformDef[] {
       icon: <KakaoIcon />,
       bg: "#FEE500",
       textColor: "#3C1E1E",
-      action: async (url, title, desc) => {
+      useImageShare: true,
+      specialAction: async (url, title, desc, file) => {
+        // 이미지 파일이 있고 Web Share API 지원하면 이미지 첨부
+        if (file && navigator.canShare?.({ files: [file] })) {
+          try {
+            await navigator.share({ title, text: desc + "\n" + url, files: [file] });
+            return;
+          } catch { /* 취소 */ }
+        }
+        // fallback: Web Share API (이미지 없이)
         if (navigator.share) {
           try {
             await navigator.share({ title, text: desc, url });
@@ -101,10 +117,29 @@ function buildPlatforms(): PlatformDef[] {
       icon: <InstaIcon />,
       bg: "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
       textColor: "#fff",
-      action: async (url) => {
+      useImageShare: true,
+      specialAction: async (url, title, desc, file) => {
+        // 이미지 파일이 있고 Web Share API 지원하면 이미지 첨부
+        if (file && navigator.canShare?.({ files: [file] })) {
+          try {
+            await navigator.share({ title, text: desc + "\n" + url, files: [file] });
+            return;
+          } catch { /* 취소 */ }
+        }
+        // fallback: 이미지 다운로드 + 안내
+        if (file) {
+          const blobUrl = URL.createObjectURL(file);
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = "멍BTI_카드.png";
+          a.click();
+          URL.revokeObjectURL(blobUrl);
+          alert("카드 이미지가 저장되었어요!\n인스타그램 스토리에 업로드해 보세요 📸");
+          return;
+        }
         try {
           await navigator.clipboard.writeText(url);
-          alert("링크가 복사되었어요!\n인스타그램 스토리에 링크를 붙여넣거나\n위에서 카드를 저장해 공유해 보세요 📸");
+          alert("링크가 복사되었어요!\n인스타그램에 공유해 보세요 📸");
         } catch {
           prompt("아래 링크를 복사해주세요:", url);
         }
@@ -115,33 +150,32 @@ function buildPlatforms(): PlatformDef[] {
       icon: <XIcon />,
       bg: "#000000",
       textColor: "#fff",
-      action: (url, title) => {
-        window.open(
-          `https://twitter.com/intent/tweet?text=${enc(title)}&url=${enc(url)}`,
-          "_blank",
-          "noopener,noreferrer,width=600,height=500"
-        );
-      },
+      getShareUrl: (url, title) =>
+        `https://twitter.com/intent/tweet?text=${enc(title)}&url=${enc(url)}`,
     },
     {
       name: "페이스북",
       icon: <FacebookIcon />,
       bg: "#1877F2",
       textColor: "#fff",
-      action: (url) => {
-        window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`,
-          "_blank",
-          "noopener,noreferrer,width=600,height=500"
-        );
-      },
+      getShareUrl: (url) =>
+        `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`,
     },
     {
       name: "텔레그램",
       icon: <TelegramIcon />,
       bg: "#26A5E4",
       textColor: "#fff",
-      action: (url, title) => {
+      useImageShare: true,
+      specialAction: async (url, title, desc, file) => {
+        // 이미지 파일이 있고 Web Share API 지원하면 이미지 첨부
+        if (file && navigator.canShare?.({ files: [file] })) {
+          try {
+            await navigator.share({ title, text: desc + "\n" + url, files: [file] });
+            return;
+          } catch { /* 취소 */ }
+        }
+        // fallback: URL 공유
         window.open(
           `https://t.me/share/url?url=${enc(url)}&text=${enc(title)}`,
           "_blank",
@@ -154,25 +188,50 @@ function buildPlatforms(): PlatformDef[] {
       icon: <LineIcon />,
       bg: "#06C755",
       textColor: "#fff",
-      action: (url, title) => {
-        window.open(
-          `https://line.me/R/share?text=${enc(title + "\n" + url)}`,
-          "_blank",
-          "noopener,noreferrer,width=600,height=500"
-        );
-      },
+      getShareUrl: (url, title) =>
+        `https://line.me/R/share?text=${enc(title + "\n" + url)}`,
     },
   ];
 }
 
-export default function SocialShare({ url, title, description }: SocialShareProps) {
+export default function SocialShare({ url, title, description, dogName, captureCard }: SocialShareProps) {
   const platforms = buildPlatforms();
+  const [sharing, setSharing] = useState(false);
 
   const handleClick = useCallback(
-    (p: PlatformDef) => {
-      p.action(url, title, description);
+    async (p: PlatformDef) => {
+      setSharing(true);
+      try {
+        // 이미지 캡처 (이미지 공유 지원 플랫폼만)
+        let file: File | null = null;
+        if (p.useImageShare || p.specialAction) {
+          const blob = await captureCard();
+          if (blob) {
+            file = new File([blob], `${dogName}_멍BTI.png`, { type: "image/png" });
+          }
+        }
+
+        if (p.specialAction) {
+          await p.specialAction(url, title, description, file);
+        } else if (p.getShareUrl) {
+          // URL 기반 공유 + 이미지 있으면 Web Share API 시도
+          if (file && navigator.canShare?.({ files: [file] })) {
+            try {
+              await navigator.share({ title, text: description + "\n" + url, files: [file] });
+              return;
+            } catch { /* 취소 → URL 공유로 fallback */ }
+          }
+          window.open(
+            p.getShareUrl(url, title),
+            "_blank",
+            "noopener,noreferrer,width=600,height=500"
+          );
+        }
+      } finally {
+        setSharing(false);
+      }
     },
-    [url, title, description]
+    [url, title, description, dogName, captureCard]
   );
 
   return (
@@ -183,12 +242,13 @@ export default function SocialShare({ url, title, description }: SocialShareProp
           <button
             key={p.name}
             onClick={() => handleClick(p)}
-            className="flex flex-col items-center gap-1.5 py-3 rounded-2xl hover:scale-[1.03] active:scale-[0.97] transition-transform"
+            disabled={sharing}
+            className="flex flex-col items-center gap-1.5 py-3 rounded-2xl hover:scale-[1.03] active:scale-[0.97] transition-transform disabled:opacity-50"
             style={{ background: p.bg }}
           >
             {p.icon}
             <span className="text-[10px] font-bold" style={{ color: p.textColor }}>
-              {p.name}
+              {sharing ? "준비중..." : p.name}
             </span>
           </button>
         ))}

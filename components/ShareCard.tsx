@@ -237,6 +237,8 @@ export default function ShareCard({
             url={shareUrl || window.location.href}
             title={`${dogName}는 ${nickname} 타입! 🐾`}
             description={`${dogName}의 멍BTI 결과: ${code} (${nickname}) - 우리 강아지 성향 테스트`}
+            dogName={dogName}
+            captureCard={captureCard}
           />
           <button
             onClick={handleCopyLink}
