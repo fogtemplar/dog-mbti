@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import type { Answer } from "@/lib/calculate";
 import { computeScores, calculateType, getAxisPercentages } from "@/lib/calculate";
-import type { AxisPercentage } from "@/lib/share";
 import { allQuestions } from "@/data/questions";
+import { encodeSharePayload, percentagesToPctArray } from "@/lib/sharePayload";
 
 export interface HistoryEntry {
   id: string;
@@ -13,7 +13,10 @@ export interface HistoryEntry {
   ownerMbti: string;
   resultCode: string;
   photoUrl: string | null;
-  percentages: AxisPercentage[];
+  /** 축별 좌측 퍼센트 [SL%, HC%, XG%, BA%] */
+  pcts?: number[];
+  /** 인코딩된 공유 데이터 (d 파라미터 값) */
+  shareData?: string;
 }
 
 interface QuizState {
@@ -44,13 +47,7 @@ function loadHistory(): HistoryEntry[] {
     const raw = localStorage.getItem("mungbti-history");
     const parsed = raw ? JSON.parse(raw) : [];
     if (!Array.isArray(parsed)) return [];
-    return parsed.map((entry) => {
-      const safePercentages = Array.isArray(entry?.percentages) ? entry.percentages : [];
-      return {
-        ...entry,
-        percentages: safePercentages,
-      };
-    });
+    return parsed;
   } catch {
     return [];
   }
@@ -118,7 +115,16 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   saveToHistory: () => {
     const { dogName, ownerName, breedId, ownerMbti, resultCode, photoUrl, answers } = get();
     if (!resultCode) return;
-    const percentages = getAxisPercentages(computeScores(answers));
+    const scores = computeScores(answers);
+    const pcts = percentagesToPctArray(getAxisPercentages(scores));
+    const shareData = encodeSharePayload({
+      type: resultCode,
+      dogName: dogName || "강아지",
+      ownerName: ownerName || undefined,
+      breedId: breedId || undefined,
+      ownerMbti: ownerMbti || undefined,
+      pcts,
+    });
     const entry: HistoryEntry = {
       id: Date.now().toString(),
       date: new Date().toISOString(),
@@ -128,7 +134,8 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       ownerMbti,
       resultCode,
       photoUrl,
-      percentages,
+      pcts,
+      shareData,
     };
     const history = loadHistory();
     saveHistory([entry, ...history]);

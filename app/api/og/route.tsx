@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { decodeSharePayload } from "@/lib/share";
+import { decodeSharePayload } from "@/lib/sharePayload";
 import { resultData } from "@/data/results";
 
 export const runtime = "nodejs";
@@ -7,10 +7,10 @@ export const runtime = "nodejs";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const raw = searchParams.get("d");
-  const payload = decodeSharePayload(raw);
-  const result = payload ? resultData[payload.t] : null;
+  const payload = raw ? decodeSharePayload(raw) : null;
+  const result = payload ? resultData[payload.type] : null;
 
-  const dogName = payload?.d || "강아지";
+  const dogName = payload?.dogName || "강아지";
   const code = result?.code || "----";
   const nickname = result?.nickname || "멍BTI 결과";
   const emoji = result?.emoji || "🐾";

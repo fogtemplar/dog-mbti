@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 import { computeScores, getAxisPercentages } from "@/lib/calculate";
-import { encodeSharePayload } from "@/lib/share";
+import { encodeSharePayload, percentagesToPctArray } from "@/lib/sharePayload";
 
 export default function AnalyzingPage() {
   const router = useRouter();
@@ -13,20 +13,20 @@ export default function AnalyzingPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       const code = calculateResult();
-      const percentages = getAxisPercentages(computeScores(answers));
-      const payload = encodeSharePayload({
-        v: 1,
-        t: code,
-        d: dogName || undefined,
-        o: ownerName || undefined,
-        b: breedId || undefined,
-        m: ownerMbti || undefined,
-        p: percentages,
+      const scores = computeScores(answers);
+      const pcts = percentagesToPctArray(getAxisPercentages(scores));
+      const d = encodeSharePayload({
+        type: code,
+        dogName: dogName || "강아지",
+        ownerName: ownerName || undefined,
+        breedId: breedId || undefined,
+        ownerMbti: ownerMbti || undefined,
+        pcts,
       });
-      router.replace(`/result?d=${payload}`);
+      router.replace(`/result?d=${d}`);
     }, 2500);
     return () => clearTimeout(timer);
-  }, [calculateResult, router]);
+  }, [calculateResult, router, dogName, ownerName, breedId, ownerMbti, answers]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center">

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { getHistory, clearHistory, type HistoryEntry } from "@/store/quizStore";
 import { resultData } from "@/data/results";
 import { breeds } from "@/data/breeds";
-import { encodeSharePayload } from "@/lib/share";
+import { encodeSharePayload } from "@/lib/sharePayload";
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -72,16 +72,16 @@ export default function HistoryPage() {
                 <button
                   key={entry.id}
                   onClick={() => {
-                    const payload = encodeSharePayload({
-                      v: 1,
-                      t: entry.resultCode,
-                      d: entry.dogName || undefined,
-                      o: entry.ownerName || undefined,
-                      b: entry.breedId || undefined,
-                      m: entry.ownerMbti || undefined,
-                      p: entry.percentages || [],
+                    // shareData가 저장되어 있으면 사용, 없으면 즉석 인코딩
+                    const d = entry.shareData || encodeSharePayload({
+                      type: entry.resultCode,
+                      dogName: entry.dogName,
+                      ownerName: entry.ownerName || undefined,
+                      breedId: entry.breedId || undefined,
+                      ownerMbti: entry.ownerMbti || undefined,
+                      pcts: entry.pcts || [50, 50, 50, 50],
                     });
-                    router.push(`/result?d=${payload}`);
+                    router.push(`/result?d=${d}`);
                   }}
                   className="w-full bg-white rounded-2xl p-4 text-left hover:shadow-md transition-shadow border border-gray-100"
                 >
