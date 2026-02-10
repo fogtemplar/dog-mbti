@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 import { breedGroups } from "@/data/breeds";
+
+const PHOTO_STORAGE_KEY = "mungbti-photo";
 
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -11,6 +13,29 @@ function fileToBase64(file: File): Promise<string> {
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = reject;
     reader.readAsDataURL(file);
+  });
+}
+
+function resizeImageToDataUrl(dataUrl: string, maxSize: number, quality: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+      const width = Math.max(1, Math.round(img.width * scale));
+      const height = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("Canvas not supported"));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = reject;
+    img.src = dataUrl;
   });
 }
 
@@ -38,12 +63,30 @@ export default function ProfilePage() {
     .flatMap((g) => g.breeds)
     .find((b) => b.id === breed);
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(PHOTO_STORAGE_KEY);
+      if (saved) {
+        setPreview(saved);
+        setPhotoUrl(saved);
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, [setPhotoUrl]);
+
   const handlePhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const base64 = await fileToBase64(file);
-      setPreview(base64);
-      setPhotoUrl(base64);
+      const resized = await resizeImageToDataUrl(base64, 512, 0.7);
+      setPreview(resized);
+      setPhotoUrl(resized);
+      try {
+        localStorage.setItem(PHOTO_STORAGE_KEY, resized);
+      } catch {
+        // ignore storage quota errors
+      }
     }
   };
 
@@ -87,6 +130,11 @@ export default function ProfilePage() {
               onClick={() => {
                 setPreview(null);
                 setPhotoUrl(null);
+                try {
+                  localStorage.removeItem(PHOTO_STORAGE_KEY);
+                } catch {
+                  // ignore
+                }
               }}
               className="absolute -top-1 -right-1 w-6 h-6 bg-gray-400 text-white rounded-full text-xs flex items-center justify-center"
             >
