@@ -44,7 +44,18 @@ function ResultContent() {
   const ownerName = shared?.ownerName || store.ownerName;
   const breedId = shared?.breedId || store.breedId;
   const ownerMbti = shared?.ownerMbti || store.ownerMbti;
-  const photoUrl = isSharedView ? null : store.photoUrl;
+  // 사진: store → localStorage fallback (새로고침 시 store 초기화 대비)
+  const [photoUrl, setLocalPhoto] = useState<string | null>(
+    isSharedView ? null : store.photoUrl
+  );
+  useEffect(() => {
+    if (!isSharedView && !photoUrl) {
+      try {
+        const saved = localStorage.getItem("mungbti-photo");
+        if (saved) setLocalPhoto(saved);
+      } catch { /* ignore */ }
+    }
+  }, [isSharedView, photoUrl]);
 
   const result = resultData[type];
 
