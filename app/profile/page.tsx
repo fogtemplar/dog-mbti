@@ -249,12 +249,16 @@ export default function ProfilePage() {
                         next[axis.index] = opt.letter;
                         setMbti(next);
                       }}
-                      className={`w-full py-2.5 rounded-xl text-center transition-all ${
+                      className={`w-full py-2.5 rounded-xl text-center transition-all border-2 ${
                         isSelected
-                          ? "text-white font-bold shadow-md"
-                          : "bg-transparent text-gray-500 hover:bg-white"
+                          ? "text-white font-bold shadow-md border-transparent"
+                          : "bg-white/60 hover:bg-white"
                       }`}
-                      style={isSelected ? { backgroundColor: axis.color } : undefined}
+                      style={
+                        isSelected
+                          ? { backgroundColor: axis.color }
+                          : { borderColor: `${axis.color}40`, color: axis.color }
+                      }
                     >
                       <span className="text-base font-black">{opt.letter}</span>
                       <span className="text-[10px] block -mt-0.5">{opt.label}</span>
