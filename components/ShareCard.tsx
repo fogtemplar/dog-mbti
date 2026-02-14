@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect, forwardRef } from "react";
-import html2canvas from "html2canvas-pro";
+import { toBlob } from "html-to-image";
 import QRCode from "qrcode";
 import SocialShare from "@/components/SocialShare";
 
@@ -75,125 +75,19 @@ export default function ShareCard({
   const captureCard = useCallback(async (): Promise<Blob | null> => {
     if (!activeRef.current) return null;
 
-    // Pre-load photo and get natural dimensions for cover simulation
-    let imgNatural: { w: number; h: number } | null = null;
-    if (photoUrl) {
-      await new Promise<void>((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-          imgNatural = { w: img.naturalWidth, h: img.naturalHeight };
-          resolve();
-        };
-        img.onerror = () => resolve();
-        img.src = photoUrl;
-        if (img.complete && img.naturalWidth > 0) {
-          imgNatural = { w: img.naturalWidth, h: img.naturalHeight };
-          resolve();
-        }
-      });
-    }
-
     if (document.fonts?.ready) {
       try { await document.fonts.ready; } catch { /* ignore */ }
     }
     await new Promise<void>((r) => requestAnimationFrame(() => r()));
-    await new Promise<void>((r) => requestAnimationFrame(() => r()));
+
     const scale = Math.min(2, Math.max(1, Math.round(window.devicePixelRatio || 2)));
-    const rect = activeRef.current.getBoundingClientRect();
-    const computed = window.getComputedStyle(activeRef.current);
-    const fixedWidth = Math.round(rect.width);
-    const fixedHeight = Math.round(rect.height);
-    const canvas = await html2canvas(activeRef.current, {
-      scale,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: null,
-      onclone: (doc) => {
-        const root = doc.querySelector("[data-capture-root]") as HTMLElement | null;
-        if (root) {
-          root.style.fontFamily = "system-ui, -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif";
-          root.style.width = `${fixedWidth}px`;
-          root.style.height = `${fixedHeight}px`;
-          root.style.boxSizing = "border-box";
-          root.style.overflow = "hidden";
-          root.style.borderRadius = computed.borderRadius;
-          root.style.transform = "none";
-        }
-        doc.body.style.margin = "0";
-        doc.querySelectorAll("*").forEach((el) => {
-          const node = el as HTMLElement;
-          node.style.animation = "none";
-          node.style.transition = "none";
-          node.style.boxSizing = "border-box";
-        });
 
-        // Fix: boost semi-transparent white backgrounds (rgba matching via computed style)
-        if (root) {
-          root.querySelectorAll("*").forEach((el) => {
-            const node = el as HTMLElement;
-            const cs = doc.defaultView?.getComputedStyle(node);
-            const bgc = cs?.backgroundColor || "";
-            const m = bgc.match(/rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*([\d.]+)\s*\)/);
-            if (m) {
-              const boosted = Math.min(1, parseFloat(m[1]) + 0.18);
-              node.style.backgroundColor = `rgba(255, 255, 255, ${boosted.toFixed(2)})`;
-            }
-          });
-        }
-
-        // Fix photo: replace CSS backgroundImage with <img> using explicit cover dimensions
-        // html2canvas often fails to render background-size:cover correctly → gray blocks
-        if (imgNatural && photoUrl) {
-          const containers = doc.querySelectorAll("[data-photo-container]");
-          containers.forEach((el) => {
-            const container = el as HTMLElement;
-            const cw = container.offsetWidth;
-            const ch = container.offsetHeight;
-            if (cw === 0 || ch === 0) return;
-
-            // Remove backgroundImage (source of gray blocks)
-            container.style.backgroundImage = "none";
-
-            // Calculate cover dimensions
-            const containerRatio = cw / ch;
-            const imgRatio = imgNatural!.w / imgNatural!.h;
-            let drawW: number, drawH: number;
-            if (imgRatio > containerRatio) {
-              drawH = ch;
-              drawW = Math.ceil(ch * imgRatio);
-            } else {
-              drawW = cw;
-              drawH = Math.ceil(cw / imgRatio);
-            }
-
-            // Insert <img> with explicit pixel dimensions (html2canvas handles this reliably)
-            const img = doc.createElement("img");
-            img.src = photoUrl;
-            img.style.position = "absolute";
-            img.style.top = "50%";
-            img.style.left = "50%";
-            img.style.transform = "translate(-50%, -50%)";
-            img.style.width = `${drawW}px`;
-            img.style.height = `${drawH}px`;
-            img.style.display = "block";
-            container.insertBefore(img, container.firstChild);
-          });
-        }
-      },
+    const blob = await toBlob(activeRef.current, {
+      pixelRatio: scale,
+      cacheBust: true,
     });
-    // Post-process: boost saturation & contrast to match web rendering
-    // html2canvas renders colors slightly washed out compared to browser
-    const corrected = document.createElement("canvas");
-    corrected.width = canvas.width;
-    corrected.height = canvas.height;
-    const ctx = corrected.getContext("2d");
-    if (ctx) {
-      ctx.filter = "saturate(1.15) contrast(1.06)";
-      ctx.drawImage(canvas, 0, 0);
-    }
-    const finalCanvas = ctx ? corrected : canvas;
-    return new Promise((resolve) => finalCanvas.toBlob(resolve, "image/png"));
-  }, [activeRef, photoUrl]);
+    return blob;
+  }, [activeRef]);
 
   const handleSave = async () => {
     setSaving(true);
