@@ -340,14 +340,22 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
                   {nickname}
                 </div>
               </div>
-              {breedName && (
-                <span style={{
-                  fontSize: "10px", fontWeight: 700, padding: "2px 8px", borderRadius: "999px",
-                  color: "rgba(255,255,255,0.7)", background: "rgba(255,255,255,0.15)",
+              <div style={{ textAlign: "right" as const }}>
+                <div style={{
+                  fontSize: "13px", fontWeight: 900, color: "#fff",
+                  textShadow: "0 1px 4px rgba(0,0,0,0.4)",
                 }}>
-                  {breedName}
-                </span>
-              )}
+                  🐾 {dogName}{breedName ? ` (${breedName})` : ""}
+                </div>
+                {ownerName && (
+                  <div style={{
+                    fontSize: "12px", fontWeight: 700, color: "rgba(255,255,255,0.85)",
+                    marginTop: "3px", textShadow: "0 1px 4px rgba(0,0,0,0.3)",
+                  }}>
+                    👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -374,15 +382,16 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           <div style={{ fontSize: "16px", fontWeight: 700, color: "#1f2937", marginTop: "4px" }}>
             {nickname}
           </div>
-          {breedName && (
-            <span style={{
-              display: "inline-block", marginTop: "8px",
-              fontSize: "10px", fontWeight: 700, padding: "2px 10px", borderRadius: "999px",
-              color: colors.accent, background: "rgba(255,255,255,0.6)",
-            }}>
-              {breedName}
-            </span>
-          )}
+          <div style={{ marginTop: "10px" }}>
+            <div style={{ fontSize: "13px", fontWeight: 900, color: colors.accent }}>
+              🐾 {dogName}{breedName ? ` (${breedName})` : ""}
+            </div>
+            {ownerName && (
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "#6b7280", marginTop: "3px" }}>
+                👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -410,25 +419,6 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           </p>
         </div>
 
-        {/* 강아지 & 견주 이름 */}
-        <div style={{
-          borderRadius: "12px", padding: "12px 16px", marginBottom: "14px",
-          background: "rgba(255,255,255,0.65)", border: "1px solid rgba(255,255,255,0.7)",
-          display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" as const,
-        }}>
-          <span style={{ fontSize: "15px", fontWeight: 900, color: colors.accent }}>
-            🐾 {dogName}
-          </span>
-          {ownerName && (
-            <>
-              <span style={{ fontSize: "13px", color: "#d1d5db", fontWeight: 700 }}>×</span>
-              <span style={{ fontSize: "15px", fontWeight: 900, color: "#374151" }}>
-                👤 {ownerName}
-                {ownerMbti && <span style={{ marginLeft: "4px", color: colors.accent }}>({ownerMbti})</span>}
-              </span>
-            </>
-          )}
-        </div>
       </div>
 
       {/* 하단 브랜딩 */}
@@ -482,7 +472,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
       <div style={{ display: "flex" }}>
         {/* 좌측: 사진 */}
         <div data-photo-container style={{
-          width: "28%", position: "relative", flexShrink: 0, minHeight: "180px",
+          width: "35%", position: "relative", flexShrink: 0, minHeight: "200px",
           overflow: "hidden",
           ...(photoUrl ? {
             backgroundImage: `url(${photoUrl})`,
@@ -500,12 +490,16 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               {/* 이름 오버레이 */}
               <div style={{
                 position: "absolute", bottom: "8px", left: "8px", right: "8px",
-                padding: "5px 8px", borderRadius: "8px",
-                background: "rgba(0,0,0,0.45)",
+                padding: "6px 10px", borderRadius: "8px",
+                background: "rgba(0,0,0,0.5)",
               }}>
-                <div style={{ fontSize: "12px", fontWeight: 700, color: "#fff" }}>{dogName}</div>
-                {breedName && (
-                  <div style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", marginTop: "1px" }}>{breedName}</div>
+                <div style={{ fontSize: "13px", fontWeight: 900, color: "#fff" }}>
+                  🐾 {dogName}{breedName ? ` (${breedName})` : ""}
+                </div>
+                {ownerName && (
+                  <div style={{ fontSize: "11px", fontWeight: 700, color: "rgba(255,255,255,0.85)", marginTop: "3px" }}>
+                    👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
+                  </div>
                 )}
               </div>
             </>
@@ -516,9 +510,16 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               background: `${colors.accent}10`,
             }}>
               <span style={{ fontSize: "48px", marginBottom: "4px" }}>{emoji}</span>
-              <span style={{ fontSize: "13px", fontWeight: 700, color: "#4b5563" }}>{dogName}</span>
+              <span style={{ fontSize: "13px", fontWeight: 900, color: "#4b5563" }}>
+                🐾 {dogName}
+              </span>
               {breedName && (
                 <span style={{ fontSize: "10px", color: "#9ca3af", marginTop: "2px" }}>{breedName}</span>
+              )}
+              {ownerName && (
+                <span style={{ fontSize: "11px", fontWeight: 700, color: "#6b7280", marginTop: "4px" }}>
+                  👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
+                </span>
               )}
             </div>
           )}
@@ -588,25 +589,6 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               <p style={{ fontSize: "10px", color: "#4b5563", lineHeight: 1.5, margin: 0 }}>
                 {summary}
               </p>
-            </div>
-            {/* 강아지 & 견주 이름 */}
-            <div style={{
-              borderRadius: "10px", padding: "8px 12px", marginBottom: "8px",
-              background: "rgba(255,255,255,0.65)", border: "1px solid rgba(255,255,255,0.7)",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", flexWrap: "wrap" as const,
-            }}>
-              <span style={{ fontSize: "13px", fontWeight: 900, color: colors.accent }}>
-                🐾 {dogName}
-              </span>
-              {ownerName && (
-                <>
-                  <span style={{ fontSize: "11px", color: "#d1d5db", fontWeight: 700 }}>×</span>
-                  <span style={{ fontSize: "13px", fontWeight: 900, color: "#374151" }}>
-                    👤 {ownerName}
-                    {ownerMbti && <span style={{ marginLeft: "3px", color: colors.accent }}>({ownerMbti})</span>}
-                  </span>
-                </>
-              )}
             </div>
             {/* 하단 브랜딩 */}
             <div style={{
