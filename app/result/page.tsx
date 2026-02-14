@@ -34,8 +34,9 @@ function ResultContent() {
 
   // ?d= 파라미터에서 공유 데이터 디코드
   const dParam = searchParams.get("d");
+  const selfParam = searchParams.get("self"); // 본인 테스트에서 온 경우
   const shared = useMemo(() => (dParam ? decodeSharePayload(dParam) : null), [dParam]);
-  const isSharedView = !!shared;
+  const isSharedView = !!shared && !selfParam;
 
   // 데이터 소스: 공유 링크 → store fallback
   const type = shared?.type || store.resultCode || "";

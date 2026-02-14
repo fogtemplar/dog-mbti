@@ -23,7 +23,7 @@ export default function AnalyzingPage() {
         ownerMbti: ownerMbti || undefined,
         pcts,
       });
-      router.replace(`/result?d=${d}`);
+      router.replace(`/result?d=${d}&self=1`);
     }, 2500);
     return () => clearTimeout(timer);
   }, [calculateResult, router, dogName, ownerName, breedId, ownerMbti, answers]);
