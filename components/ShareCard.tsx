@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, forwardRef } from "react";
 import html2canvas from "html2canvas-pro";
 import SocialShare from "@/components/SocialShare";
 
@@ -231,10 +231,8 @@ export default function ShareCard({
 }
 
 /* ═══════════════════════════════════════════
-   세로형 카드 (트레이딩 카드 스타일)
+   카드 내부 Props
    ═══════════════════════════════════════════ */
-import { forwardRef } from "react";
-
 interface CardInnerProps {
   dogName: string;
   nickname: string;
@@ -249,6 +247,10 @@ interface CardInnerProps {
   colors: { bg: string; accent: string };
 }
 
+/* ═══════════════════════════════════════════
+   세로형 카드 (트레이딩 카드 스타일)
+   - html2canvas 호환: mask, backdropFilter 사용 안 함
+   ═══════════════════════════════════════════ */
 const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function VerticalCard(
   { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
   ref,
@@ -260,25 +262,11 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
       className="rounded-3xl overflow-hidden relative"
       style={{
         background: colors.bg,
-        boxShadow: "0 12px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
+        boxShadow: "0 12px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 0 0 2px rgba(255,255,255,0.5)",
         textRendering: "geometricPrecision",
         WebkitFontSmoothing: "antialiased",
       }}
     >
-      {/* 홀로그램 테두리 효과 */}
-      <div
-        className="absolute inset-0 rounded-3xl pointer-events-none"
-        style={{
-          border: "2px solid rgba(255,255,255,0.4)",
-          background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(232,121,164,0.15) 25%, rgba(192,132,252,0.15) 50%, rgba(255,255,255,0.3) 75%, rgba(232,121,164,0.15) 100%)",
-          mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-          maskComposite: "exclude",
-          WebkitMaskComposite: "xor",
-          padding: "2px",
-          zIndex: 10,
-        }}
-      />
-
       {/* 장식 패턴 */}
       <div className="absolute top-0 right-0 w-32 h-32 opacity-[0.06] pointer-events-none" style={{
         background: `radial-gradient(circle at 70% 30%, ${colors.accent} 0%, transparent 70%)`,
@@ -292,35 +280,39 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           <div className="absolute inset-0" style={{
             background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 35%, transparent 60%)",
           }} />
-          {/* 상단 배지 */}
-          <div className="absolute top-3 left-3 flex items-center gap-1.5">
-            <div className="px-2.5 py-1 rounded-full text-[10px] font-black text-white/90 tracking-wider"
-              style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)" }}>
+          {/* 상단 배지 - 불투명 배경 (html2canvas 호환) */}
+          <div className="absolute top-3 left-3">
+            <div className="px-2.5 py-1 rounded-full text-[10px] font-black text-white tracking-wider"
+              style={{ background: "rgba(0,0,0,0.3)" }}>
               멍BTI
             </div>
           </div>
           <div className="absolute top-3 right-3">
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
-              style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)" }}>
+              style={{ background: "rgba(0,0,0,0.3)" }}>
               {emoji}
             </div>
           </div>
           {/* 하단 타이포 */}
           <div className="absolute bottom-0 left-0 right-0 px-5 pb-4">
-            <p className="text-[10px] text-white/70 font-bold tracking-widest uppercase mb-0.5">
+            <p className="text-[10px] font-bold tracking-widest uppercase mb-0.5"
+              style={{ color: "rgba(255,255,255,0.7)" }}>
               Dog Personality Type
             </p>
             <div className="flex items-end justify-between">
               <div>
-                <p className="text-[32px] font-black tracking-[0.2em] text-white leading-none drop-shadow-lg">
+                <p className="text-[32px] font-black tracking-[0.2em] text-white leading-none"
+                  style={{ textShadow: "0 2px 8px rgba(0,0,0,0.4)" }}>
                   {code}
                 </p>
-                <p className="text-base font-bold text-white/90 leading-snug mt-0.5 drop-shadow-md">
+                <p className="text-base font-bold leading-snug mt-0.5"
+                  style={{ color: "rgba(255,255,255,0.9)", textShadow: "0 1px 4px rgba(0,0,0,0.3)" }}>
                   {nickname}
                 </p>
               </div>
               {breedName && (
-                <span className="text-[10px] font-bold text-white/60 bg-white/10 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                  style={{ color: "rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.1)" }}>
                   {breedName}
                 </span>
               )}
@@ -333,7 +325,7 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
             style={{ color: colors.accent, background: "rgba(255,255,255,0.6)" }}>
             멍BTI
           </div>
-          <div className="text-7xl mb-3 drop-shadow-sm">{emoji}</div>
+          <div className="text-7xl mb-3">{emoji}</div>
           <p className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: colors.accent, opacity: 0.7 }}>
             Dog Personality Type
           </p>
@@ -361,7 +353,8 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
             </div>
             <span className="text-sm font-black text-gray-800">{dogName}</span>
           </div>
-          <div className="bg-white/60 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/70">
+          <div className="rounded-xl px-4 py-3 border"
+            style={{ background: "rgba(255,255,255,0.6)", borderColor: "rgba(255,255,255,0.7)" }}>
             <p className="text-[11px] text-gray-600 leading-relaxed"
               style={{
                 display: "-webkit-box",
@@ -383,7 +376,8 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
                 <span className="text-[10px] font-bold text-gray-500 w-10 text-right shrink-0">
                   {dominant.label}
                 </span>
-                <div className="flex-1 h-2.5 bg-white/40 rounded-full overflow-hidden">
+                <div className="flex-1 h-2.5 rounded-full overflow-hidden"
+                  style={{ background: "rgba(255,255,255,0.4)" }}>
                   <div className="h-full rounded-full"
                     style={{
                       width: `${dominant.pct}%`,
@@ -400,7 +394,8 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
         {/* 견주 정보 */}
         {(ownerName || ownerMbti) && (
-          <div className="bg-white/50 rounded-xl px-3.5 py-2.5 mb-4 border border-white/60 flex items-center gap-2">
+          <div className="rounded-xl px-3.5 py-2.5 mb-4 border flex items-center gap-2"
+            style={{ background: "rgba(255,255,255,0.5)", borderColor: "rgba(255,255,255,0.6)" }}>
             <span className="text-[10px]">👤</span>
             <span className="text-[11px] font-bold text-gray-700">
               {ownerName || "견주님"}
@@ -416,7 +411,8 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
       {/* 하단 브랜딩 */}
       <div className="px-5 pb-4">
-        <div className="h-9 rounded-full bg-white/50 border border-white/60 px-4 flex items-center justify-between">
+        <div className="h-9 rounded-full px-4 flex items-center justify-between border"
+          style={{ background: "rgba(255,255,255,0.5)", borderColor: "rgba(255,255,255,0.6)" }}>
           <span className="text-[11px] font-black tracking-wider" style={{ color: colors.accent }}>
             멍BTI
           </span>
@@ -429,6 +425,7 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
 /* ═══════════════════════════════════════════
    가로형 카드 (ID 카드 / 인증서 스타일)
+   - html2canvas 호환: mask, backdropFilter 사용 안 함
    ═══════════════════════════════════════════ */
 const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function HorizontalCard(
   { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
@@ -441,24 +438,12 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
       className="rounded-2xl overflow-hidden relative"
       style={{
         background: colors.bg,
-        boxShadow: "0 12px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
+        boxShadow: "0 12px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 0 0 2px rgba(255,255,255,0.5)",
         textRendering: "geometricPrecision",
         WebkitFontSmoothing: "antialiased",
         aspectRatio: "16 / 9",
       }}
     >
-      {/* 홀로 테두리 */}
-      <div className="absolute inset-0 rounded-2xl pointer-events-none"
-        style={{
-          border: "2px solid rgba(255,255,255,0.4)",
-          background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(232,121,164,0.15) 25%, rgba(192,132,252,0.15) 50%, rgba(255,255,255,0.3) 75%, rgba(232,121,164,0.15) 100%)",
-          mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-          maskComposite: "exclude",
-          WebkitMaskComposite: "xor",
-          padding: "2px",
-          zIndex: 10,
-        }} />
-
       {/* 장식 */}
       <div className="absolute top-0 right-0 w-40 h-40 opacity-[0.05] pointer-events-none"
         style={{ background: `radial-gradient(circle at 80% 20%, ${colors.accent} 0%, transparent 70%)` }} />
@@ -474,10 +459,10 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               <div className="absolute inset-0" style={{
                 background: "linear-gradient(to right, transparent 60%, rgba(0,0,0,0.08) 100%)",
               }} />
-              {/* 이름 오버레이 */}
+              {/* 이름 오버레이 - 불투명 배경 (html2canvas 호환) */}
               <div className="absolute bottom-2 left-2 right-2">
-                <div className="px-2 py-1 rounded-lg" style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" }}>
-                  <p className="text-[10px] font-bold text-white/90 truncate">{dogName}</p>
+                <div className="px-2 py-1 rounded-lg" style={{ background: "rgba(0,0,0,0.4)" }}>
+                  <p className="text-[10px] font-bold text-white truncate">{dogName}</p>
                 </div>
               </div>
             </>
@@ -523,7 +508,8 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               return (
                 <div key={p.axis} className="flex items-center gap-1.5">
                   <span className="text-[8px] font-bold text-gray-500 w-7 text-right shrink-0">{dominant.label}</span>
-                  <div className="flex-1 h-1.5 bg-white/40 rounded-full overflow-hidden">
+                  <div className="flex-1 h-1.5 rounded-full overflow-hidden"
+                    style={{ background: "rgba(255,255,255,0.4)" }}>
                     <div className="h-full rounded-full"
                       style={{
                         width: `${dominant.pct}%`,
