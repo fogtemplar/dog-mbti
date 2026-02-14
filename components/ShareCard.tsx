@@ -495,7 +495,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
       ref={ref}
       data-capture-root
       style={{
-        borderRadius: "16px",
+        borderRadius: "20px",
         overflow: "hidden",
         position: "relative",
         background: colors.bg,
@@ -505,7 +505,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
       {/* 장식 */}
       <div style={{
         position: "absolute", top: 0, right: 0, width: "140px", height: "140px",
-        opacity: 0.05, pointerEvents: "none" as const,
+        opacity: 0.06, pointerEvents: "none" as const,
         background: `radial-gradient(circle at 80% 20%, ${colors.accent} 0%, transparent 70%)`,
       }} />
 
@@ -612,46 +612,49 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
           {/* 하단: 요약 + 견주 + 브랜딩 */}
           <div>
             <div style={{
-              fontSize: "10px", color: "#6b7280", lineHeight: 1.5, marginBottom: "8px",
+              borderRadius: "10px", padding: "8px 12px", marginBottom: "8px",
+              background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
             }}>
-              {summary}
+              <p style={{ fontSize: "10px", color: "#4b5563", lineHeight: 1.5, margin: 0 }}>
+                {summary}
+              </p>
             </div>
             {(ownerName || ownerMbti) && (
               <div style={{
-                display: "flex", alignItems: "center", gap: "4px",
-                fontSize: "9px", marginBottom: "8px", flexWrap: "wrap" as const,
+                borderRadius: "10px", padding: "7px 12px", marginBottom: "8px",
+                background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
+                display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" as const,
               }}>
-                <span>👤</span>
-                <span style={{ fontWeight: 700, color: "#4b5563" }}>
+                <span style={{ fontSize: "9px" }}>👤</span>
+                <span style={{ fontSize: "10px", fontWeight: 700, color: "#374151" }}>
                   {ownerName || "견주님"}
                   {ownerMbti && <span style={{ marginLeft: "2px", fontWeight: 900, color: colors.accent }}>({ownerMbti})</span>}
                 </span>
-                <span style={{ color: "#d1d5db" }}>×</span>
-                <span style={{ fontWeight: 700, color: colors.accent }}>
+                <span style={{ fontSize: "9px", color: "#d1d5db" }}>×</span>
+                <span style={{ fontSize: "10px", fontWeight: 700, color: colors.accent }}>
                   {dogName} ({code})
                 </span>
               </div>
             )}
             {/* 하단 브랜딩 */}
             <div style={{
-              paddingTop: "6px", borderTop: "1px solid rgba(255,255,255,0.5)",
               display: "flex", alignItems: "center", justifyContent: "space-between",
             }}>
-              <span style={{ fontSize: "9px", fontWeight: 900, letterSpacing: "0.05em", color: colors.accent }}>
-                멍BTI
+              <span style={{
+                fontSize: "11px", fontWeight: 900, letterSpacing: "0.06em",
+                color: "#374151",
+              }}>
+                Daeng.me
               </span>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ fontSize: "8px", color: "#9ca3af", fontWeight: 500 }}>daeng.me</span>
-                {qrUrl && (
-                  <div style={{
-                    width: "28px", height: "28px", borderRadius: "4px", overflow: "hidden",
-                    flexShrink: 0,
-                    backgroundImage: `url(${qrUrl})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }} />
-                )}
-              </div>
+              {qrUrl && (
+                <div style={{
+                  width: "28px", height: "28px", borderRadius: "4px", overflow: "hidden",
+                  flexShrink: 0,
+                  backgroundImage: `url(${qrUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }} />
+              )}
             </div>
           </div>
         </div>
