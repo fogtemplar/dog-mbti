@@ -456,26 +456,16 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
       </div>
 
       {/* 하단 브랜딩 */}
-      <div style={{ padding: "0 20px 16px", display: "flex", alignItems: "center", gap: "8px" }}>
-        <div style={{
-          flex: 1, height: "40px", borderRadius: "999px", padding: "0 16px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
+      <div style={{
+        padding: "0 20px 14px",
+        display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+      }}>
+        <span style={{
+          fontSize: "11px", fontWeight: 900, letterSpacing: "0.08em",
+          color: colors.accent, opacity: 0.7,
         }}>
-          <span style={{ fontSize: "11px", fontWeight: 900, letterSpacing: "0.05em", color: colors.accent }}>
-            멍BTI
-          </span>
-          <span style={{ fontSize: "9px", color: "#9ca3af", fontWeight: 500 }}>강아지 성향 테스트 🐾</span>
-        </div>
-        {qrUrl && (
-          <div style={{
-            width: "40px", height: "40px", borderRadius: "8px", overflow: "hidden",
-            flexShrink: 0, border: "1px solid rgba(255,255,255,0.6)",
-            backgroundImage: `url(${qrUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }} />
-        )}
+          Daeng.me
+        </span>
       </div>
     </div>
   );
