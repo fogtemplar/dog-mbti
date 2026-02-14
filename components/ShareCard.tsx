@@ -112,8 +112,6 @@ export default function ShareCard({
         const root = doc.querySelector("[data-capture-root]") as HTMLElement | null;
         if (root) {
           root.style.fontFamily = "system-ui, -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif";
-          root.style.textRendering = "geometricPrecision";
-          (root.style as unknown as Record<string, string>)["-webkit-font-smoothing"] = "antialiased";
           root.style.width = `${fixedWidth}px`;
           root.style.height = `${fixedHeight}px`;
           root.style.boxSizing = "border-box";
@@ -128,6 +126,22 @@ export default function ShareCard({
           node.style.transition = "none";
           node.style.boxSizing = "border-box";
         });
+
+        // Fix: html2canvas renders rgba backgrounds more transparently than browser
+        // Boost white semi-transparent backgrounds to match web appearance
+        if (root) {
+          root.querySelectorAll("*").forEach((el) => {
+            const node = el as HTMLElement;
+            const bg = node.style.background;
+            if (bg) {
+              const m = bg.match(/^rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*([\d.]+)\s*\)$/);
+              if (m) {
+                const boosted = Math.min(1, parseFloat(m[1]) + 0.15);
+                node.style.background = `rgba(255, 255, 255, ${boosted.toFixed(2)})`;
+              }
+            }
+          });
+        }
 
         // Fix photo: replace CSS backgroundImage with <img> using explicit cover dimensions
         // html2canvas often fails to render background-size:cover correctly → gray blocks
