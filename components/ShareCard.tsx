@@ -127,18 +127,16 @@ export default function ShareCard({
           node.style.boxSizing = "border-box";
         });
 
-        // Fix: html2canvas renders rgba backgrounds more transparently than browser
-        // Boost white semi-transparent backgrounds to match web appearance
+        // Fix: boost semi-transparent white backgrounds (rgba matching via computed style)
         if (root) {
           root.querySelectorAll("*").forEach((el) => {
             const node = el as HTMLElement;
-            const bg = node.style.background;
-            if (bg) {
-              const m = bg.match(/^rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*([\d.]+)\s*\)$/);
-              if (m) {
-                const boosted = Math.min(1, parseFloat(m[1]) + 0.15);
-                node.style.background = `rgba(255, 255, 255, ${boosted.toFixed(2)})`;
-              }
+            const cs = doc.defaultView?.getComputedStyle(node);
+            const bgc = cs?.backgroundColor || "";
+            const m = bgc.match(/rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*([\d.]+)\s*\)/);
+            if (m) {
+              const boosted = Math.min(1, parseFloat(m[1]) + 0.18);
+              node.style.backgroundColor = `rgba(255, 255, 255, ${boosted.toFixed(2)})`;
             }
           });
         }
@@ -183,7 +181,18 @@ export default function ShareCard({
         }
       },
     });
-    return new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    // Post-process: boost saturation & contrast to match web rendering
+    // html2canvas renders colors slightly washed out compared to browser
+    const corrected = document.createElement("canvas");
+    corrected.width = canvas.width;
+    corrected.height = canvas.height;
+    const ctx = corrected.getContext("2d");
+    if (ctx) {
+      ctx.filter = "saturate(1.15) contrast(1.06)";
+      ctx.drawImage(canvas, 0, 0);
+    }
+    const finalCanvas = ctx ? corrected : canvas;
+    return new Promise((resolve) => finalCanvas.toBlob(resolve, "image/png"));
   }, [activeRef, photoUrl]);
 
   const handleSave = async () => {
