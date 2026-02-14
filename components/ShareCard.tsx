@@ -458,14 +458,23 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
       {/* 하단 브랜딩 */}
       <div style={{
         padding: "0 20px 14px",
-        display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <span style={{
-          fontSize: "11px", fontWeight: 900, letterSpacing: "0.08em",
-          color: colors.accent, opacity: 0.7,
+          fontSize: "12px", fontWeight: 900, letterSpacing: "0.06em",
+          color: "#374151",
         }}>
           Daeng.me
         </span>
+        {qrUrl && (
+          <div style={{
+            width: "36px", height: "36px", borderRadius: "6px", overflow: "hidden",
+            flexShrink: 0,
+            backgroundImage: `url(${qrUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }} />
+        )}
       </div>
     </div>
   );
