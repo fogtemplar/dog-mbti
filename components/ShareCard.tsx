@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect, forwardRef } from "react";
+import { useRef, useState, useCallback, forwardRef } from "react";
 import { toBlob } from "html-to-image";
-import QRCode from "qrcode";
 import SocialShare from "@/components/SocialShare";
 
 interface ShareCardProps {
@@ -59,17 +58,6 @@ export default function ShareCard({
   const [mode, setMode] = useState<"vertical" | "horizontal">("vertical");
   const [saving, setSaving] = useState(false);
   const [showSharePanel, setShowSharePanel] = useState(false);
-  const [qrUrl, setQrUrl] = useState("");
-
-  useEffect(() => {
-    QRCode.toDataURL("https://daeng.me", {
-      width: 120,
-      margin: 1,
-      errorCorrectionLevel: "M",
-      color: { dark: "#000000", light: "#ffffff" },
-    }).then(setQrUrl).catch(() => {});
-  }, []);
-
   const activeRef = mode === "vertical" ? verticalRef : horizontalRef;
 
   const captureCard = useCallback(async (): Promise<Blob | null> => {
@@ -157,7 +145,7 @@ export default function ShareCard({
           ownerName={ownerName}
           ownerMbti={ownerMbti}
           colors={colors}
-          qrUrl={qrUrl}
+
         />
       </div>
 
@@ -176,7 +164,7 @@ export default function ShareCard({
           ownerName={ownerName}
           ownerMbti={ownerMbti}
           colors={colors}
-          qrUrl={qrUrl}
+
         />
       </div>
 
@@ -234,7 +222,6 @@ interface CardInnerProps {
   ownerName?: string;
   ownerMbti?: string;
   colors: { bg: string; accent: string };
-  qrUrl?: string;
 }
 
 /* ── 스탯 바 (공통) ── */
@@ -276,7 +263,7 @@ function StatBar({ label, pct, accent, barHeight = 10, fontSize = 10, labelWidth
    - line-clamp/truncate 사용 안 함
    ═══════════════════════════════════════════ */
 const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function VerticalCard(
-  { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors, qrUrl },
+  { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
   ref,
 ) {
   return (
@@ -445,24 +432,15 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
       {/* 하단 브랜딩 */}
       <div style={{
-        padding: "10px 20px 14px",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "10px 20px 16px",
+        textAlign: "center" as const,
       }}>
         <span style={{
-          fontSize: "11px", fontWeight: 800, letterSpacing: "0.05em",
-          color: "#9ca3af",
+          fontSize: "15px", fontWeight: 900, letterSpacing: "0.08em",
+          color: colors.accent, opacity: 0.25,
         }}>
           Daeng.me
         </span>
-        {qrUrl && (
-          <div style={{
-            width: "32px", height: "32px", borderRadius: "6px", overflow: "hidden",
-            flexShrink: 0, opacity: 0.7,
-            backgroundImage: `url(${qrUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }} />
-        )}
       </div>
     </div>
   );
@@ -475,7 +453,7 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
    - 콘텐츠 기반 높이 (사진은 flex stretch)
    ═══════════════════════════════════════════ */
 const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function HorizontalCard(
-  { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors, qrUrl },
+  { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
   ref,
 ) {
   return (
@@ -626,23 +604,14 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
             )}
             {/* 하단 브랜딩 */}
             <div style={{
-              display: "flex", alignItems: "center", justifyContent: "space-between",
+              textAlign: "center" as const,
             }}>
               <span style={{
-                fontSize: "10px", fontWeight: 800, letterSpacing: "0.05em",
-                color: "#9ca3af",
+                fontSize: "12px", fontWeight: 900, letterSpacing: "0.08em",
+                color: colors.accent, opacity: 0.25,
               }}>
                 Daeng.me
               </span>
-              {qrUrl && (
-                <div style={{
-                  width: "24px", height: "24px", borderRadius: "4px", overflow: "hidden",
-                  flexShrink: 0, opacity: 0.7,
-                  backgroundImage: `url(${qrUrl})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }} />
-              )}
             </div>
           </div>
         </div>
