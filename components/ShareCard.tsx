@@ -400,31 +400,13 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
       )}
 
       {/* 카드 바디 */}
-      <div style={{ padding: "16px 20px 4px" }}>
-        {/* 이름 + 한줄 요약 */}
-        <div style={{ marginBottom: "14px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-            <div style={{
-              width: "28px", height: "28px", borderRadius: "50%",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: "14px", background: `${colors.accent}20`,
-            }}>
-              {emoji}
-            </div>
-            <span style={{ fontSize: "14px", fontWeight: 900, color: "#1f2937" }}>{dogName}</span>
-          </div>
-          <div style={{
-            borderRadius: "12px", padding: "12px 16px",
-            background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
-          }}>
-            <p style={{ fontSize: "11px", color: "#4b5563", lineHeight: 1.6, margin: 0 }}>
-              {summary}
-            </p>
-          </div>
-        </div>
-
-        {/* 구분선 */}
-        <div style={{ height: "1px", background: `${colors.accent}20`, margin: "0 0 14px" }} />
+      <div style={{ padding: "16px 20px 0" }}>
+        {/* 한줄 요약 */}
+        <p style={{
+          fontSize: "11px", color: "#4b5563", lineHeight: 1.6, margin: "0 0 14px",
+        }}>
+          {summary}
+        </p>
 
         {/* 축별 스탯 바 */}
         <div style={{ marginBottom: "14px" }}>
@@ -440,30 +422,22 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
         {/* 견주 정보 */}
         {(ownerName || ownerMbti) && (
-          <>
-            {/* 구분선 */}
-            <div style={{ height: "1px", background: `${colors.accent}20`, margin: "0 0 14px" }} />
-            <div style={{
-              borderRadius: "12px", padding: "10px 14px", marginBottom: "16px",
-              background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
-              display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" as const,
-            }}>
-              <span style={{ fontSize: "10px" }}>👤</span>
-              <span style={{ fontSize: "11px", fontWeight: 700, color: "#374151" }}>
-                {ownerName || "견주님"}
-                {ownerMbti && <span style={{ marginLeft: "4px", fontWeight: 900, color: colors.accent }}>({ownerMbti})</span>}
-              </span>
-              <span style={{ fontSize: "10px", color: "#d1d5db" }}>×</span>
-              <span style={{ fontSize: "11px", fontWeight: 700, color: colors.accent }}>
-                {dogName} <span style={{ fontWeight: 900 }}>({code})</span>
-              </span>
-            </div>
-          </>
+          <div style={{
+            display: "flex", alignItems: "center", gap: "6px",
+            marginBottom: "14px", flexWrap: "wrap" as const,
+          }}>
+            <span style={{ fontSize: "10px" }}>👤</span>
+            <span style={{ fontSize: "11px", fontWeight: 700, color: "#374151" }}>
+              {ownerName || "견주님"}
+              {ownerMbti && <span style={{ marginLeft: "4px", fontWeight: 900, color: colors.accent }}>({ownerMbti})</span>}
+            </span>
+            <span style={{ fontSize: "10px", color: "#d1d5db" }}>×</span>
+            <span style={{ fontSize: "11px", fontWeight: 700, color: colors.accent }}>
+              {dogName} <span style={{ fontWeight: 900 }}>({code})</span>
+            </span>
+          </div>
         )}
       </div>
-
-      {/* 구분선 */}
-      <div style={{ height: "1px", background: `${colors.accent}15`, margin: "0 20px" }} />
 
       {/* 하단 브랜딩 */}
       <div style={{
@@ -471,15 +445,15 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <span style={{
-          fontSize: "12px", fontWeight: 900, letterSpacing: "0.06em",
-          color: "#374151",
+          fontSize: "11px", fontWeight: 800, letterSpacing: "0.05em",
+          color: "#9ca3af",
         }}>
           Daeng.me
         </span>
         {qrUrl && (
           <div style={{
-            width: "36px", height: "36px", borderRadius: "6px", overflow: "hidden",
-            flexShrink: 0,
+            width: "32px", height: "32px", borderRadius: "6px", overflow: "hidden",
+            flexShrink: 0, opacity: 0.7,
             backgroundImage: `url(${qrUrl})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -599,11 +573,8 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
             </div>
           </div>
 
-          {/* 구분선 */}
-          <div style={{ height: "1px", background: `${colors.accent}20`, margin: "8px 0" }} />
-
           {/* 중단: 스탯 바 */}
-          <div style={{ margin: "8px 0" }}>
+          <div style={{ margin: "10px 0" }}>
             {percentages.map((p, i) => {
               const dominant = p.left.pct >= p.right.pct ? p.left : p.right;
               return (
@@ -622,24 +593,15 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
             })}
           </div>
 
-          {/* 구분선 */}
-          <div style={{ height: "1px", background: `${colors.accent}20`, margin: "8px 0" }} />
-
           {/* 하단: 요약 + 견주 + 브랜딩 */}
           <div>
-            <div style={{
-              borderRadius: "10px", padding: "8px 12px", marginBottom: "8px",
-              background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
-            }}>
-              <p style={{ fontSize: "10px", color: "#4b5563", lineHeight: 1.5, margin: 0 }}>
-                {summary}
-              </p>
-            </div>
+            <p style={{ fontSize: "10px", color: "#4b5563", lineHeight: 1.5, margin: "0 0 8px" }}>
+              {summary}
+            </p>
             {(ownerName || ownerMbti) && (
               <div style={{
-                borderRadius: "10px", padding: "7px 12px", marginBottom: "8px",
-                background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
-                display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" as const,
+                display: "flex", alignItems: "center", gap: "4px",
+                marginBottom: "8px", flexWrap: "wrap" as const,
               }}>
                 <span style={{ fontSize: "9px" }}>👤</span>
                 <span style={{ fontSize: "10px", fontWeight: 700, color: "#374151" }}>
@@ -652,22 +614,20 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
                 </span>
               </div>
             )}
-            {/* 구분선 */}
-            <div style={{ height: "1px", background: `${colors.accent}15`, margin: "4px 0 8px" }} />
             {/* 하단 브랜딩 */}
             <div style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
             }}>
               <span style={{
-                fontSize: "11px", fontWeight: 900, letterSpacing: "0.06em",
-                color: "#374151",
+                fontSize: "10px", fontWeight: 800, letterSpacing: "0.05em",
+                color: "#9ca3af",
               }}>
                 Daeng.me
               </span>
               {qrUrl && (
                 <div style={{
-                  width: "28px", height: "28px", borderRadius: "4px", overflow: "hidden",
-                  flexShrink: 0,
+                  width: "24px", height: "24px", borderRadius: "4px", overflow: "hidden",
+                  flexShrink: 0, opacity: 0.7,
                   backgroundImage: `url(${qrUrl})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
