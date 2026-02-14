@@ -464,6 +464,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
       data-capture-root
       style={{
         width: "600px",
+        flexShrink: 0,
         borderRadius: "20px",
         overflow: "hidden",
         position: "relative",
