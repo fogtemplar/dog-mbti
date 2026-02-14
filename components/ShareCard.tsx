@@ -310,12 +310,13 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
       {/* 히어로 섹션 */}
       {photoUrl ? (
-        <div style={{ position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden" }}>
-          <img
-            src={photoUrl}
-            alt={dogName}
-            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
-          />
+        <div style={{
+          position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden",
+          backgroundImage: `url(${photoUrl})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundColor: "#d0d0d0",
+        }}>
           {/* 그라디언트 오버레이 */}
           <div style={{
             position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
@@ -513,14 +514,17 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
 
       <div style={{ display: "flex" }}>
         {/* 좌측: 사진 */}
-        <div style={{ width: "38%", position: "relative", flexShrink: 0, minHeight: "240px" }}>
+        <div style={{
+          width: "38%", position: "relative", flexShrink: 0, minHeight: "240px",
+          ...(photoUrl ? {
+            backgroundImage: `url(${photoUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundColor: "#d0d0d0",
+          } : {}),
+        }}>
           {photoUrl ? (
             <>
-              <img
-                src={photoUrl}
-                alt={dogName}
-                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
-              />
               {/* 하단 그라디언트 */}
               <div style={{
                 position: "absolute", left: 0, right: 0, bottom: 0, height: "60px",
