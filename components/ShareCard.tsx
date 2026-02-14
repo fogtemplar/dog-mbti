@@ -319,10 +319,10 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           {/* 하단 타이포 */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 20px 16px" }}>
             <div style={{
-              fontSize: "10px", fontWeight: 700, color: "rgba(255,255,255,0.7)",
-              letterSpacing: "0.1em", textTransform: "uppercase" as const, marginBottom: "4px",
+              fontSize: "12px", fontWeight: 700, color: "#fff",
+              marginBottom: "4px", textShadow: "0 1px 4px rgba(0,0,0,0.4)",
             }}>
-              Dog Personality Type
+              우리 {dogName}의 성격은?
             </div>
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
               <div>
@@ -371,10 +371,10 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           </div>
           <div style={{ fontSize: "72px", marginBottom: "12px" }}>{emoji}</div>
           <div style={{
-            fontSize: "10px", fontWeight: 700, color: colors.accent,
-            opacity: 0.7, letterSpacing: "0.1em", textTransform: "uppercase" as const, marginBottom: "4px",
+            fontSize: "12px", fontWeight: 700, color: colors.accent,
+            marginBottom: "4px",
           }}>
-            Dog Personality Type
+            우리 {dogName}의 성격은?
           </div>
           <div style={{ fontSize: "32px", fontWeight: 900, letterSpacing: "0.2em", lineHeight: 1, color: colors.accent }}>
             {code}
@@ -535,10 +535,10 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "2px" }}>
               <div>
                 <div style={{
-                  fontSize: "9px", fontWeight: 700, color: colors.accent,
-                  opacity: 0.7, letterSpacing: "0.1em", textTransform: "uppercase" as const, marginBottom: "2px",
+                  fontSize: "10px", fontWeight: 700, color: colors.accent,
+                  marginBottom: "2px",
                 }}>
-                  Dog Personality
+                  우리 {dogName}의 성격은?
                 </div>
                 <div style={{
                   fontSize: "22px", fontWeight: 900, letterSpacing: "0.15em",
