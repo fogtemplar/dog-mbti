@@ -150,7 +150,7 @@ export default function ShareCard({
       </div>
 
       {/* ── 가로형 카드 ── */}
-      <div style={{ display: mode === "horizontal" ? "block" : "none" }}>
+      <div style={{ display: mode === "horizontal" ? "flex" : "none", justifyContent: "center" }}>
         <HorizontalCard
           ref={horizontalRef}
           dogName={dogName}
@@ -410,24 +410,25 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           </p>
         </div>
 
-        {/* 견주 정보 */}
-        {(ownerName || ownerMbti) && (
-          <div style={{
-            borderRadius: "12px", padding: "10px 14px", marginBottom: "14px",
-            background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
-            display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" as const,
-          }}>
-            <span style={{ fontSize: "10px" }}>👤</span>
-            <span style={{ fontSize: "11px", fontWeight: 700, color: "#374151" }}>
-              {ownerName || "견주님"}
-              {ownerMbti && <span style={{ marginLeft: "4px", fontWeight: 900, color: colors.accent }}>({ownerMbti})</span>}
-            </span>
-            <span style={{ fontSize: "10px", color: "#d1d5db" }}>×</span>
-            <span style={{ fontSize: "11px", fontWeight: 700, color: colors.accent }}>
-              {dogName} <span style={{ fontWeight: 900 }}>({code})</span>
-            </span>
-          </div>
-        )}
+        {/* 강아지 & 견주 이름 */}
+        <div style={{
+          borderRadius: "12px", padding: "12px 16px", marginBottom: "14px",
+          background: "rgba(255,255,255,0.65)", border: "1px solid rgba(255,255,255,0.7)",
+          display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" as const,
+        }}>
+          <span style={{ fontSize: "15px", fontWeight: 900, color: colors.accent }}>
+            🐾 {dogName}
+          </span>
+          {ownerName && (
+            <>
+              <span style={{ fontSize: "13px", color: "#d1d5db", fontWeight: 700 }}>×</span>
+              <span style={{ fontSize: "15px", fontWeight: 900, color: "#374151" }}>
+                👤 {ownerName}
+                {ownerMbti && <span style={{ marginLeft: "4px", color: colors.accent }}>({ownerMbti})</span>}
+              </span>
+            </>
+          )}
+        </div>
       </div>
 
       {/* 하단 브랜딩 */}
@@ -587,23 +588,25 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
                 {summary}
               </p>
             </div>
-            {(ownerName || ownerMbti) && (
-              <div style={{
-                borderRadius: "10px", padding: "7px 12px", marginBottom: "8px",
-                background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
-                display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" as const,
-              }}>
-                <span style={{ fontSize: "9px" }}>👤</span>
-                <span style={{ fontSize: "10px", fontWeight: 700, color: "#374151" }}>
-                  {ownerName || "견주님"}
-                  {ownerMbti && <span style={{ marginLeft: "2px", fontWeight: 900, color: colors.accent }}>({ownerMbti})</span>}
-                </span>
-                <span style={{ fontSize: "9px", color: "#d1d5db" }}>×</span>
-                <span style={{ fontSize: "10px", fontWeight: 700, color: colors.accent }}>
-                  {dogName} ({code})
-                </span>
-              </div>
-            )}
+            {/* 강아지 & 견주 이름 */}
+            <div style={{
+              borderRadius: "10px", padding: "8px 12px", marginBottom: "8px",
+              background: "rgba(255,255,255,0.65)", border: "1px solid rgba(255,255,255,0.7)",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", flexWrap: "wrap" as const,
+            }}>
+              <span style={{ fontSize: "13px", fontWeight: 900, color: colors.accent }}>
+                🐾 {dogName}
+              </span>
+              {ownerName && (
+                <>
+                  <span style={{ fontSize: "11px", color: "#d1d5db", fontWeight: 700 }}>×</span>
+                  <span style={{ fontSize: "13px", fontWeight: 900, color: "#374151" }}>
+                    👤 {ownerName}
+                    {ownerMbti && <span style={{ marginLeft: "3px", color: colors.accent }}>({ownerMbti})</span>}
+                  </span>
+                </>
+              )}
+            </div>
             {/* 하단 브랜딩 */}
             <div style={{
               textAlign: "center" as const,
