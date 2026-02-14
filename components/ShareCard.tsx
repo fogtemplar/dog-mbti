@@ -247,9 +247,43 @@ interface CardInnerProps {
   colors: { bg: string; accent: string };
 }
 
+/* ── 스탯 바 (공통) ── */
+function StatBar({ label, pct, accent, barHeight = 10, fontSize = 10, labelWidth = 40, pctWidth = 36 }: {
+  label: string; pct: number; accent: string;
+  barHeight?: number; fontSize?: number; labelWidth?: number; pctWidth?: number;
+}) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+      <span style={{
+        fontSize: `${fontSize}px`, fontWeight: 700, color: "#6b7280",
+        width: `${labelWidth}px`, textAlign: "right" as const, flexShrink: 0,
+      }}>
+        {label}
+      </span>
+      <div style={{
+        flex: 1, height: `${barHeight}px`, borderRadius: "999px",
+        overflow: "hidden", background: "rgba(255,255,255,0.4)",
+      }}>
+        <div style={{
+          height: "100%", borderRadius: "999px",
+          width: `${pct}%`,
+          background: `linear-gradient(90deg, ${accent}, #C084FC)`,
+        }} />
+      </div>
+      <span style={{
+        fontSize: `${fontSize}px`, fontWeight: 900,
+        width: `${pctWidth}px`, flexShrink: 0, color: accent,
+      }}>
+        {pct}%
+      </span>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════
    세로형 카드 (트레이딩 카드 스타일)
-   - html2canvas 호환: mask, backdropFilter 사용 안 함
+   - html2canvas 호환: aspect-ratio 대신 paddingBottom 사용
+   - line-clamp/truncate 사용 안 함
    ═══════════════════════════════════════════ */
 const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function VerticalCard(
   { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
@@ -259,60 +293,81 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
     <div
       ref={ref}
       data-capture-root
-      className="rounded-3xl overflow-hidden relative"
       style={{
+        borderRadius: "20px",
+        overflow: "hidden",
+        position: "relative",
         background: colors.bg,
         boxShadow: "0 12px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 0 0 2px rgba(255,255,255,0.5)",
-        textRendering: "geometricPrecision",
-        WebkitFontSmoothing: "antialiased",
       }}
     >
-      {/* 장식 패턴 */}
-      <div className="absolute top-0 right-0 w-32 h-32 opacity-[0.06] pointer-events-none" style={{
+      {/* 장식 */}
+      <div style={{
+        position: "absolute", top: 0, right: 0, width: "120px", height: "120px",
+        opacity: 0.06, pointerEvents: "none" as const,
         background: `radial-gradient(circle at 70% 30%, ${colors.accent} 0%, transparent 70%)`,
       }} />
 
       {/* 히어로 섹션 */}
       {photoUrl ? (
-        <div className="relative w-full" style={{ aspectRatio: "1 / 1" }}>
-          <img src={photoUrl} alt={dogName} className="w-full h-full object-cover" />
+        <div style={{ position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden" }}>
+          <img
+            src={photoUrl}
+            alt={dogName}
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
+          />
           {/* 그라디언트 오버레이 */}
-          <div className="absolute inset-0" style={{
-            background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 35%, transparent 60%)",
+          <div style={{
+            position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+            background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.15) 35%, transparent 60%)",
           }} />
-          {/* 상단 배지 - 불투명 배경 (html2canvas 호환) */}
-          <div className="absolute top-3 left-3">
-            <div className="px-2.5 py-1 rounded-full text-[10px] font-black text-white tracking-wider"
-              style={{ background: "rgba(0,0,0,0.3)" }}>
-              멍BTI
-            </div>
+          {/* 상단 좌 배지 */}
+          <div style={{
+            position: "absolute", top: "12px", left: "12px",
+            padding: "4px 10px", borderRadius: "999px",
+            fontSize: "10px", fontWeight: 900, color: "#fff",
+            letterSpacing: "0.05em", background: "rgba(0,0,0,0.35)",
+          }}>
+            멍BTI
           </div>
-          <div className="absolute top-3 right-3">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
-              style={{ background: "rgba(0,0,0,0.3)" }}>
-              {emoji}
-            </div>
+          {/* 상단 우 이모지 */}
+          <div style={{
+            position: "absolute", top: "12px", right: "12px",
+            width: "32px", height: "32px", borderRadius: "50%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "18px", background: "rgba(0,0,0,0.35)",
+          }}>
+            {emoji}
           </div>
           {/* 하단 타이포 */}
-          <div className="absolute bottom-0 left-0 right-0 px-5 pb-4">
-            <p className="text-[10px] font-bold tracking-widest uppercase mb-0.5"
-              style={{ color: "rgba(255,255,255,0.7)" }}>
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 20px 16px" }}>
+            <div style={{
+              fontSize: "10px", fontWeight: 700, color: "rgba(255,255,255,0.7)",
+              letterSpacing: "0.1em", textTransform: "uppercase" as const, marginBottom: "4px",
+            }}>
               Dog Personality Type
-            </p>
-            <div className="flex items-end justify-between">
+            </div>
+            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
               <div>
-                <p className="text-[32px] font-black tracking-[0.2em] text-white leading-none"
-                  style={{ textShadow: "0 2px 8px rgba(0,0,0,0.4)" }}>
+                <div style={{
+                  fontSize: "32px", fontWeight: 900, letterSpacing: "0.2em",
+                  color: "#fff", lineHeight: 1,
+                  textShadow: "0 2px 8px rgba(0,0,0,0.4)",
+                }}>
                   {code}
-                </p>
-                <p className="text-base font-bold leading-snug mt-0.5"
-                  style={{ color: "rgba(255,255,255,0.9)", textShadow: "0 1px 4px rgba(0,0,0,0.3)" }}>
+                </div>
+                <div style={{
+                  fontSize: "16px", fontWeight: 700, color: "rgba(255,255,255,0.9)",
+                  marginTop: "4px", textShadow: "0 1px 4px rgba(0,0,0,0.3)",
+                }}>
                   {nickname}
-                </p>
+                </div>
               </div>
               {breedName && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                  style={{ color: "rgba(255,255,255,0.6)", background: "rgba(255,255,255,0.1)" }}>
+                <span style={{
+                  fontSize: "10px", fontWeight: 700, padding: "2px 8px", borderRadius: "999px",
+                  color: "rgba(255,255,255,0.7)", background: "rgba(255,255,255,0.15)",
+                }}>
                   {breedName}
                 </span>
               )}
@@ -320,73 +375,71 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           </div>
         </div>
       ) : (
-        <div className="relative px-5 pt-8 pb-5 text-center">
-          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider"
-            style={{ color: colors.accent, background: "rgba(255,255,255,0.6)" }}>
+        <div style={{ padding: "32px 20px 20px", textAlign: "center" as const, position: "relative" }}>
+          <div style={{
+            position: "absolute", top: "12px", left: "12px",
+            padding: "4px 10px", borderRadius: "999px",
+            fontSize: "10px", fontWeight: 900, color: colors.accent,
+            background: "rgba(255,255,255,0.6)", letterSpacing: "0.05em",
+          }}>
             멍BTI
           </div>
-          <div className="text-7xl mb-3">{emoji}</div>
-          <p className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: colors.accent, opacity: 0.7 }}>
+          <div style={{ fontSize: "72px", marginBottom: "12px" }}>{emoji}</div>
+          <div style={{
+            fontSize: "10px", fontWeight: 700, color: colors.accent,
+            opacity: 0.7, letterSpacing: "0.1em", textTransform: "uppercase" as const, marginBottom: "4px",
+          }}>
             Dog Personality Type
-          </p>
-          <p className="text-[32px] font-black tracking-[0.2em] leading-none" style={{ color: colors.accent }}>
+          </div>
+          <div style={{ fontSize: "32px", fontWeight: 900, letterSpacing: "0.2em", lineHeight: 1, color: colors.accent }}>
             {code}
-          </p>
-          <p className="text-base font-bold text-gray-800 leading-snug mt-1">{nickname}</p>
+          </div>
+          <div style={{ fontSize: "16px", fontWeight: 700, color: "#1f2937", marginTop: "4px" }}>
+            {nickname}
+          </div>
           {breedName && (
-            <span className="inline-block mt-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full"
-              style={{ color: colors.accent, background: "rgba(255,255,255,0.6)" }}>
-              🐕 {breedName}
+            <span style={{
+              display: "inline-block", marginTop: "8px",
+              fontSize: "10px", fontWeight: 700, padding: "2px 10px", borderRadius: "999px",
+              color: colors.accent, background: "rgba(255,255,255,0.6)",
+            }}>
+              {breedName}
             </span>
           )}
         </div>
       )}
 
       {/* 카드 바디 */}
-      <div className="px-5 pt-4 pb-1">
+      <div style={{ padding: "16px 20px 4px" }}>
         {/* 이름 + 한줄 요약 */}
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-sm"
-              style={{ background: `${colors.accent}20` }}>
+        <div style={{ marginBottom: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+            <div style={{
+              width: "28px", height: "28px", borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: "14px", background: `${colors.accent}20`,
+            }}>
               {emoji}
             </div>
-            <span className="text-sm font-black text-gray-800">{dogName}</span>
+            <span style={{ fontSize: "14px", fontWeight: 900, color: "#1f2937" }}>{dogName}</span>
           </div>
-          <div className="rounded-xl px-4 py-3 border"
-            style={{ background: "rgba(255,255,255,0.6)", borderColor: "rgba(255,255,255,0.7)" }}>
-            <p className="text-[11px] text-gray-600 leading-relaxed"
-              style={{
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}>
+          <div style={{
+            borderRadius: "12px", padding: "12px 16px",
+            background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
+          }}>
+            <p style={{ fontSize: "11px", color: "#4b5563", lineHeight: 1.6, margin: 0 }}>
               {summary}
             </p>
           </div>
         </div>
 
         {/* 축별 스탯 바 */}
-        <div className="space-y-2 mb-4">
-          {percentages.map((p) => {
+        <div style={{ marginBottom: "16px" }}>
+          {percentages.map((p, i) => {
             const dominant = p.left.pct >= p.right.pct ? p.left : p.right;
             return (
-              <div key={p.axis} className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-gray-500 w-10 text-right shrink-0">
-                  {dominant.label}
-                </span>
-                <div className="flex-1 h-2.5 rounded-full overflow-hidden"
-                  style={{ background: "rgba(255,255,255,0.4)" }}>
-                  <div className="h-full rounded-full"
-                    style={{
-                      width: `${dominant.pct}%`,
-                      background: `linear-gradient(90deg, ${colors.accent}, #C084FC)`,
-                    }} />
-                </div>
-                <span className="text-[10px] font-black w-9 shrink-0" style={{ color: colors.accent }}>
-                  {dominant.pct}%
-                </span>
+              <div key={p.axis} style={{ marginBottom: i < percentages.length - 1 ? "8px" : "0" }}>
+                <StatBar label={dominant.label} pct={dominant.pct} accent={colors.accent} />
               </div>
             );
           })}
@@ -394,29 +447,35 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
         {/* 견주 정보 */}
         {(ownerName || ownerMbti) && (
-          <div className="rounded-xl px-3.5 py-2.5 mb-4 border flex items-center gap-2"
-            style={{ background: "rgba(255,255,255,0.5)", borderColor: "rgba(255,255,255,0.6)" }}>
-            <span className="text-[10px]">👤</span>
-            <span className="text-[11px] font-bold text-gray-700">
+          <div style={{
+            borderRadius: "12px", padding: "10px 14px", marginBottom: "16px",
+            background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
+            display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" as const,
+          }}>
+            <span style={{ fontSize: "10px" }}>👤</span>
+            <span style={{ fontSize: "11px", fontWeight: 700, color: "#374151" }}>
               {ownerName || "견주님"}
-              {ownerMbti && <span className="ml-1 font-black" style={{ color: colors.accent }}>({ownerMbti})</span>}
+              {ownerMbti && <span style={{ marginLeft: "4px", fontWeight: 900, color: colors.accent }}>({ownerMbti})</span>}
             </span>
-            <span className="text-[10px] text-gray-300">×</span>
-            <span className="text-[11px] font-bold" style={{ color: colors.accent }}>
-              {dogName} <span className="font-black">({code})</span>
+            <span style={{ fontSize: "10px", color: "#d1d5db" }}>×</span>
+            <span style={{ fontSize: "11px", fontWeight: 700, color: colors.accent }}>
+              {dogName} <span style={{ fontWeight: 900 }}>({code})</span>
             </span>
           </div>
         )}
       </div>
 
       {/* 하단 브랜딩 */}
-      <div className="px-5 pb-4">
-        <div className="h-9 rounded-full px-4 flex items-center justify-between border"
-          style={{ background: "rgba(255,255,255,0.5)", borderColor: "rgba(255,255,255,0.6)" }}>
-          <span className="text-[11px] font-black tracking-wider" style={{ color: colors.accent }}>
+      <div style={{ padding: "0 20px 16px" }}>
+        <div style={{
+          height: "36px", borderRadius: "999px", padding: "0 16px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
+        }}>
+          <span style={{ fontSize: "11px", fontWeight: 900, letterSpacing: "0.05em", color: colors.accent }}>
             멍BTI
           </span>
-          <span className="text-[9px] text-gray-400 font-medium">강아지 성향 테스트 🐾</span>
+          <span style={{ fontSize: "9px", color: "#9ca3af", fontWeight: 500 }}>강아지 성향 테스트 🐾</span>
         </div>
       </div>
     </div>
@@ -424,8 +483,10 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 });
 
 /* ═══════════════════════════════════════════
-   가로형 카드 (ID 카드 / 인증서 스타일)
-   - html2canvas 호환: mask, backdropFilter 사용 안 함
+   가로형 카드 (ID 카드 스타일)
+   - html2canvas 호환: aspect-ratio 사용 안 함
+   - 텍스트 잘림 없음 (truncate/line-clamp 없음)
+   - 콘텐츠 기반 높이 (사진은 flex stretch)
    ═══════════════════════════════════════════ */
 const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function HorizontalCard(
   { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
@@ -435,105 +496,151 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
     <div
       ref={ref}
       data-capture-root
-      className="rounded-2xl overflow-hidden relative"
       style={{
+        borderRadius: "16px",
+        overflow: "hidden",
+        position: "relative",
         background: colors.bg,
         boxShadow: "0 12px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 0 0 2px rgba(255,255,255,0.5)",
-        textRendering: "geometricPrecision",
-        WebkitFontSmoothing: "antialiased",
-        aspectRatio: "3 / 2",
       }}
     >
       {/* 장식 */}
-      <div className="absolute top-0 right-0 w-40 h-40 opacity-[0.05] pointer-events-none"
-        style={{ background: `radial-gradient(circle at 80% 20%, ${colors.accent} 0%, transparent 70%)` }} />
-      <div className="absolute bottom-0 left-0 w-32 h-32 opacity-[0.04] pointer-events-none"
-        style={{ background: `radial-gradient(circle at 20% 80%, ${colors.accent} 0%, transparent 70%)` }} />
+      <div style={{
+        position: "absolute", top: 0, right: 0, width: "140px", height: "140px",
+        opacity: 0.05, pointerEvents: "none" as const,
+        background: `radial-gradient(circle at 80% 20%, ${colors.accent} 0%, transparent 70%)`,
+      }} />
 
-      <div className="flex h-full">
-        {/* 좌측: 사진 or 이모지 */}
-        <div className="w-[38%] relative shrink-0">
+      <div style={{ display: "flex" }}>
+        {/* 좌측: 사진 */}
+        <div style={{ width: "38%", position: "relative", flexShrink: 0, minHeight: "240px" }}>
           {photoUrl ? (
             <>
-              <img src={photoUrl} alt={dogName} className="w-full h-full object-cover" />
-              <div className="absolute inset-0" style={{
-                background: "linear-gradient(to right, transparent 60%, rgba(0,0,0,0.08) 100%)",
+              <img
+                src={photoUrl}
+                alt={dogName}
+                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
+              />
+              {/* 하단 그라디언트 */}
+              <div style={{
+                position: "absolute", left: 0, right: 0, bottom: 0, height: "60px",
+                background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 100%)",
               }} />
-              {/* 이름 오버레이 - 불투명 배경 (html2canvas 호환) */}
-              <div className="absolute bottom-2 left-2 right-2">
-                <div className="px-2 py-1 rounded-lg" style={{ background: "rgba(0,0,0,0.4)" }}>
-                  <p className="text-[10px] font-bold text-white truncate">{dogName}</p>
-                </div>
+              {/* 이름 오버레이 */}
+              <div style={{
+                position: "absolute", bottom: "8px", left: "8px", right: "8px",
+                padding: "5px 8px", borderRadius: "8px",
+                background: "rgba(0,0,0,0.45)",
+              }}>
+                <div style={{ fontSize: "12px", fontWeight: 700, color: "#fff" }}>{dogName}</div>
+                {breedName && (
+                  <div style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", marginTop: "1px" }}>{breedName}</div>
+                )}
               </div>
             </>
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center" style={{ background: `${colors.accent}10` }}>
-              <span className="text-5xl mb-1">{emoji}</span>
-              <span className="text-xs font-bold text-gray-600">{dogName}</span>
+            <div style={{
+              position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
+              display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center",
+              background: `${colors.accent}10`,
+            }}>
+              <span style={{ fontSize: "48px", marginBottom: "4px" }}>{emoji}</span>
+              <span style={{ fontSize: "13px", fontWeight: 700, color: "#4b5563" }}>{dogName}</span>
+              {breedName && (
+                <span style={{ fontSize: "10px", color: "#9ca3af", marginTop: "2px" }}>{breedName}</span>
+              )}
             </div>
           )}
         </div>
 
         {/* 우측: 정보 */}
-        <div className="flex-1 flex flex-col justify-between py-3 px-4 min-w-0">
-          {/* 상단 */}
+        <div style={{
+          flex: 1, display: "flex", flexDirection: "column" as const, justifyContent: "space-between",
+          padding: "14px 16px", minWidth: 0,
+        }}>
+          {/* 상단: 코드 + 닉네임 */}
           <div>
-            <div className="flex items-start justify-between mb-1">
-              <div className="min-w-0">
-                <p className="text-[8px] font-bold tracking-widest uppercase mb-0.5" style={{ color: colors.accent, opacity: 0.7 }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "2px" }}>
+              <div>
+                <div style={{
+                  fontSize: "9px", fontWeight: 700, color: colors.accent,
+                  opacity: 0.7, letterSpacing: "0.1em", textTransform: "uppercase" as const, marginBottom: "2px",
+                }}>
                   Dog Personality
-                </p>
-                <p className="text-xl font-black tracking-[0.15em] leading-none" style={{ color: colors.accent }}>
+                </div>
+                <div style={{
+                  fontSize: "22px", fontWeight: 900, letterSpacing: "0.15em",
+                  lineHeight: 1, color: colors.accent,
+                }}>
                   {code}
-                </p>
+                </div>
               </div>
-              <div className="px-2 py-0.5 rounded-full text-[8px] font-black tracking-wider shrink-0 ml-1"
-                style={{ color: colors.accent, background: "rgba(255,255,255,0.5)" }}>
+              <div style={{
+                padding: "3px 8px", borderRadius: "999px",
+                fontSize: "9px", fontWeight: 900, letterSpacing: "0.05em",
+                color: colors.accent, background: "rgba(255,255,255,0.5)", flexShrink: 0,
+              }}>
                 멍BTI
               </div>
             </div>
-            <p className="text-xs font-bold text-gray-800 truncate">{emoji} {nickname}</p>
-            {breedName && (
-              <span className="inline-block mt-1 text-[8px] font-bold px-1.5 py-0.5 rounded-full"
-                style={{ color: colors.accent, background: `${colors.accent}15` }}>
-                {breedName}
-              </span>
-            )}
+            <div style={{ fontSize: "12px", fontWeight: 700, color: "#1f2937" }}>
+              {emoji} {nickname}
+            </div>
           </div>
 
-          {/* 축별 미니 바 */}
-          <div className="space-y-1 my-1.5">
-            {percentages.map((p) => {
+          {/* 중단: 스탯 바 */}
+          <div style={{ margin: "10px 0" }}>
+            {percentages.map((p, i) => {
               const dominant = p.left.pct >= p.right.pct ? p.left : p.right;
               return (
-                <div key={p.axis} className="flex items-center gap-1.5">
-                  <span className="text-[8px] font-bold text-gray-500 w-7 text-right shrink-0">{dominant.label}</span>
-                  <div className="flex-1 h-1.5 rounded-full overflow-hidden"
-                    style={{ background: "rgba(255,255,255,0.4)" }}>
-                    <div className="h-full rounded-full"
-                      style={{
-                        width: `${dominant.pct}%`,
-                        background: `linear-gradient(90deg, ${colors.accent}, #C084FC)`,
-                      }} />
-                  </div>
-                  <span className="text-[8px] font-black w-7 shrink-0" style={{ color: colors.accent }}>{dominant.pct}%</span>
+                <div key={p.axis} style={{ marginBottom: i < percentages.length - 1 ? "5px" : "0" }}>
+                  <StatBar
+                    label={dominant.label}
+                    pct={dominant.pct}
+                    accent={colors.accent}
+                    barHeight={7}
+                    fontSize={10}
+                    labelWidth={40}
+                    pctWidth={32}
+                  />
                 </div>
               );
             })}
           </div>
 
-          {/* 하단: 요약 + 견주 */}
+          {/* 하단: 요약 + 견주 + 브랜딩 */}
           <div>
-            <p className="text-[9px] text-gray-500 leading-snug mb-1 line-clamp-2">{summary}</p>
+            <div style={{
+              fontSize: "10px", color: "#6b7280", lineHeight: 1.5, marginBottom: "8px",
+            }}>
+              {summary}
+            </div>
             {(ownerName || ownerMbti) && (
-              <div className="flex items-center gap-1 text-[8px]">
+              <div style={{
+                display: "flex", alignItems: "center", gap: "4px",
+                fontSize: "9px", marginBottom: "8px", flexWrap: "wrap" as const,
+              }}>
                 <span>👤</span>
-                <span className="font-bold text-gray-600">
+                <span style={{ fontWeight: 700, color: "#4b5563" }}>
                   {ownerName || "견주님"}
-                  {ownerMbti && <span className="ml-0.5 font-black" style={{ color: colors.accent }}>({ownerMbti})</span>}
+                  {ownerMbti && <span style={{ marginLeft: "2px", fontWeight: 900, color: colors.accent }}>({ownerMbti})</span>}
+                </span>
+                <span style={{ color: "#d1d5db" }}>×</span>
+                <span style={{ fontWeight: 700, color: colors.accent }}>
+                  {dogName} ({code})
                 </span>
               </div>
             )}
+            {/* 하단 브랜딩 */}
+            <div style={{
+              paddingTop: "6px", borderTop: "1px solid rgba(255,255,255,0.5)",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+            }}>
+              <span style={{ fontSize: "9px", fontWeight: 900, letterSpacing: "0.05em", color: colors.accent }}>
+                멍BTI
+              </span>
+              <span style={{ fontSize: "8px", color: "#9ca3af", fontWeight: 500 }}>강아지 성향 테스트 🐾</span>
+            </div>
           </div>
         </div>
       </div>
