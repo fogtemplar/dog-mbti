@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, useCallback, forwardRef } from "react";
+import { useRef, useState, useCallback, useEffect, forwardRef } from "react";
 import html2canvas from "html2canvas-pro";
+import QRCode from "qrcode";
 import SocialShare from "@/components/SocialShare";
 
 interface ShareCardProps {
@@ -58,6 +59,16 @@ export default function ShareCard({
   const [mode, setMode] = useState<"vertical" | "horizontal">("vertical");
   const [saving, setSaving] = useState(false);
   const [showSharePanel, setShowSharePanel] = useState(false);
+  const [qrUrl, setQrUrl] = useState("");
+
+  useEffect(() => {
+    QRCode.toDataURL("https://daeng.me", {
+      width: 120,
+      margin: 1,
+      errorCorrectionLevel: "M",
+      color: { dark: "#000000", light: "#ffffff" },
+    }).then(setQrUrl).catch(() => {});
+  }, []);
 
   const activeRef = mode === "vertical" ? verticalRef : horizontalRef;
 
@@ -170,6 +181,7 @@ export default function ShareCard({
           ownerName={ownerName}
           ownerMbti={ownerMbti}
           colors={colors}
+          qrUrl={qrUrl}
         />
       </div>
 
@@ -188,6 +200,7 @@ export default function ShareCard({
           ownerName={ownerName}
           ownerMbti={ownerMbti}
           colors={colors}
+          qrUrl={qrUrl}
         />
       </div>
 
@@ -245,6 +258,7 @@ interface CardInnerProps {
   ownerName?: string;
   ownerMbti?: string;
   colors: { bg: string; accent: string };
+  qrUrl?: string;
 }
 
 /* ── 스탯 바 (공통) ── */
@@ -286,7 +300,7 @@ function StatBar({ label, pct, accent, barHeight = 10, fontSize = 10, labelWidth
    - line-clamp/truncate 사용 안 함
    ═══════════════════════════════════════════ */
 const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function VerticalCard(
-  { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
+  { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors, qrUrl },
   ref,
 ) {
   return (
@@ -467,9 +481,9 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
       </div>
 
       {/* 하단 브랜딩 */}
-      <div style={{ padding: "0 20px 16px" }}>
+      <div style={{ padding: "0 20px 16px", display: "flex", alignItems: "center", gap: "8px" }}>
         <div style={{
-          height: "36px", borderRadius: "999px", padding: "0 16px",
+          flex: 1, height: "40px", borderRadius: "999px", padding: "0 16px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
           background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
         }}>
@@ -478,6 +492,15 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           </span>
           <span style={{ fontSize: "9px", color: "#9ca3af", fontWeight: 500 }}>강아지 성향 테스트 🐾</span>
         </div>
+        {qrUrl && (
+          <div style={{
+            width: "40px", height: "40px", borderRadius: "8px", overflow: "hidden",
+            flexShrink: 0, border: "1px solid rgba(255,255,255,0.6)",
+            backgroundImage: `url(${qrUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }} />
+        )}
       </div>
     </div>
   );
@@ -490,7 +513,7 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
    - 콘텐츠 기반 높이 (사진은 flex stretch)
    ═══════════════════════════════════════════ */
 const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function HorizontalCard(
-  { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
+  { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors, qrUrl },
   ref,
 ) {
   return (
@@ -643,7 +666,18 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               <span style={{ fontSize: "9px", fontWeight: 900, letterSpacing: "0.05em", color: colors.accent }}>
                 멍BTI
               </span>
-              <span style={{ fontSize: "8px", color: "#9ca3af", fontWeight: 500 }}>강아지 성향 테스트 🐾</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <span style={{ fontSize: "8px", color: "#9ca3af", fontWeight: 500 }}>daeng.me</span>
+                {qrUrl && (
+                  <div style={{
+                    width: "28px", height: "28px", borderRadius: "4px", overflow: "hidden",
+                    flexShrink: 0,
+                    backgroundImage: `url(${qrUrl})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }} />
+                )}
+              </div>
             </div>
           </div>
         </div>
