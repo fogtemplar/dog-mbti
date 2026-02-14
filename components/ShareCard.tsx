@@ -150,7 +150,7 @@ export default function ShareCard({
       </div>
 
       {/* ── 가로형 카드 ── */}
-      <div style={{ display: mode === "horizontal" ? "block" : "none", overflowX: "auto" as const, WebkitOverflowScrolling: "touch" as const }}>
+      <div style={{ display: mode === "horizontal" ? "block" : "none" }}>
         <HorizontalCard
           ref={horizontalRef}
           dogName={dogName}
