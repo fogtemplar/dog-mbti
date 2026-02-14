@@ -402,11 +402,14 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
       {/* 카드 바디 */}
       <div style={{ padding: "16px 20px 0" }}>
         {/* 한줄 요약 */}
-        <p style={{
-          fontSize: "11px", color: "#4b5563", lineHeight: 1.6, margin: "0 0 14px",
+        <div style={{
+          borderRadius: "12px", padding: "12px 16px", marginBottom: "14px",
+          background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
         }}>
-          {summary}
-        </p>
+          <p style={{ fontSize: "11px", color: "#4b5563", lineHeight: 1.6, margin: 0 }}>
+            {summary}
+          </p>
+        </div>
 
         {/* 축별 스탯 바 */}
         <div style={{ marginBottom: "14px" }}>
@@ -423,8 +426,9 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
         {/* 견주 정보 */}
         {(ownerName || ownerMbti) && (
           <div style={{
-            display: "flex", alignItems: "center", gap: "6px",
-            marginBottom: "14px", flexWrap: "wrap" as const,
+            borderRadius: "12px", padding: "10px 14px", marginBottom: "14px",
+            background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
+            display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" as const,
           }}>
             <span style={{ fontSize: "10px" }}>👤</span>
             <span style={{ fontSize: "11px", fontWeight: 700, color: "#374151" }}>
@@ -595,13 +599,19 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
 
           {/* 하단: 요약 + 견주 + 브랜딩 */}
           <div>
-            <p style={{ fontSize: "10px", color: "#4b5563", lineHeight: 1.5, margin: "0 0 8px" }}>
-              {summary}
-            </p>
+            <div style={{
+              borderRadius: "10px", padding: "8px 12px", marginBottom: "8px",
+              background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
+            }}>
+              <p style={{ fontSize: "10px", color: "#4b5563", lineHeight: 1.5, margin: 0 }}>
+                {summary}
+              </p>
+            </div>
             {(ownerName || ownerMbti) && (
               <div style={{
-                display: "flex", alignItems: "center", gap: "4px",
-                marginBottom: "8px", flexWrap: "wrap" as const,
+                borderRadius: "10px", padding: "7px 12px", marginBottom: "8px",
+                background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
+                display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" as const,
               }}>
                 <span style={{ fontSize: "9px" }}>👤</span>
                 <span style={{ fontSize: "10px", fontWeight: 700, color: "#374151" }}>
