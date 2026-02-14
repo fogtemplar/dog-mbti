@@ -496,7 +496,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
       <div style={{ display: "flex" }}>
         {/* 좌측: 사진 */}
         <div data-photo-container style={{
-          width: "38%", position: "relative", flexShrink: 0, minHeight: "240px",
+          width: "32%", position: "relative", flexShrink: 0, minHeight: "200px",
           overflow: "hidden",
           ...(photoUrl ? {
             backgroundImage: `url(${photoUrl})`,
