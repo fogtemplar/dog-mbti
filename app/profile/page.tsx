@@ -51,10 +51,10 @@ export default function ProfilePage() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const mbtiAxes = [
-    { index: 0, axis: "에너지", options: [{ letter: "E", label: "외향" }, { letter: "I", label: "내향" }] },
-    { index: 1, axis: "인식", options: [{ letter: "S", label: "감각" }, { letter: "N", label: "직관" }] },
-    { index: 2, axis: "판단", options: [{ letter: "T", label: "사고" }, { letter: "F", label: "감정" }] },
-    { index: 3, axis: "생활", options: [{ letter: "J", label: "계획" }, { letter: "P", label: "탐색" }] },
+    { index: 0, axis: "에너지", color: "#E879A4", options: [{ letter: "E", label: "외향" }, { letter: "I", label: "내향" }] },
+    { index: 1, axis: "인식", color: "#F59E0B", options: [{ letter: "S", label: "감각" }, { letter: "N", label: "직관" }] },
+    { index: 2, axis: "판단", color: "#10B981", options: [{ letter: "T", label: "사고" }, { letter: "F", label: "감정" }] },
+    { index: 3, axis: "생활", color: "#8B5CF6", options: [{ letter: "J", label: "계획" }, { letter: "P", label: "탐색" }] },
   ];
   const mbtiComplete = mbti.every((m) => m !== "");
   const mbtiCode = mbtiComplete ? mbti.join("") : "";
@@ -151,6 +151,10 @@ export default function ProfilePage() {
           </button>
         )}
 
+        <p className="text-xs text-gray-400 mb-4 leading-relaxed text-center">
+          사진을 등록하면 우리 아이 사진이 들어간<br />세상에 하나뿐인 멍BTI 카드를 만들 수 있어요!
+        </p>
+
         <h1 className="text-xl font-black mb-4">우리 아이 이름은?</h1>
         <input
           type="text"
@@ -235,24 +239,28 @@ export default function ProfilePage() {
             <div key={axis.index} className="flex flex-col items-center">
               <span className="text-[10px] font-bold text-gray-400 mb-1.5">{axis.axis}</span>
               <div className="w-full bg-gray-100 rounded-2xl p-1 flex flex-col gap-1">
-                {axis.options.map((opt) => (
-                  <button
-                    key={opt.letter}
-                    onClick={() => {
-                      const next = [...mbti];
-                      next[axis.index] = opt.letter;
-                      setMbti(next);
-                    }}
-                    className={`w-full py-2.5 rounded-xl text-center transition-all ${
-                      mbti[axis.index] === opt.letter
-                        ? "bg-[#E879A4] text-white font-bold shadow-md"
-                        : "bg-transparent text-gray-500 hover:bg-white"
-                    }`}
-                  >
-                    <span className="text-base font-black">{opt.letter}</span>
-                    <span className="text-[10px] block -mt-0.5">{opt.label}</span>
-                  </button>
-                ))}
+                {axis.options.map((opt) => {
+                  const isSelected = mbti[axis.index] === opt.letter;
+                  return (
+                    <button
+                      key={opt.letter}
+                      onClick={() => {
+                        const next = [...mbti];
+                        next[axis.index] = opt.letter;
+                        setMbti(next);
+                      }}
+                      className={`w-full py-2.5 rounded-xl text-center transition-all ${
+                        isSelected
+                          ? "text-white font-bold shadow-md"
+                          : "bg-transparent text-gray-500 hover:bg-white"
+                      }`}
+                      style={isSelected ? { backgroundColor: axis.color } : undefined}
+                    >
+                      <span className="text-base font-black">{opt.letter}</span>
+                      <span className="text-[10px] block -mt-0.5">{opt.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ))}
