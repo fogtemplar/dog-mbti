@@ -437,7 +437,8 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
       }}>
         <span style={{
           fontSize: "15px", fontWeight: 900, letterSpacing: "0.08em",
-          color: colors.accent, opacity: 0.25,
+          color: "#fff",
+          textShadow: `1px 1px 0 ${colors.accent}40, -1px -1px 0 ${colors.accent}40, 1px -1px 0 ${colors.accent}40, -1px 1px 0 ${colors.accent}40, 0 1px 0 ${colors.accent}40, 0 -1px 0 ${colors.accent}40, 1px 0 0 ${colors.accent}40, -1px 0 0 ${colors.accent}40`,
         }}>
           Daeng.me
         </span>
@@ -608,7 +609,8 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
             }}>
               <span style={{
                 fontSize: "12px", fontWeight: 900, letterSpacing: "0.08em",
-                color: colors.accent, opacity: 0.25,
+                color: "#fff",
+                textShadow: `1px 1px 0 ${colors.accent}40, -1px -1px 0 ${colors.accent}40, 1px -1px 0 ${colors.accent}40, -1px 1px 0 ${colors.accent}40, 0 1px 0 ${colors.accent}40, 0 -1px 0 ${colors.accent}40, 1px 0 0 ${colors.accent}40, -1px 0 0 ${colors.accent}40`,
               }}>
                 Daeng.me
               </span>
