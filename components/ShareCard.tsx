@@ -388,16 +388,6 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
       {/* 카드 바디 */}
       <div style={{ padding: "16px 20px 0" }}>
-        {/* 한줄 요약 */}
-        <div style={{
-          borderRadius: "12px", padding: "12px 16px", marginBottom: "14px",
-          background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
-        }}>
-          <p style={{ fontSize: "11px", color: "#4b5563", lineHeight: 1.6, margin: 0 }}>
-            {summary}
-          </p>
-        </div>
-
         {/* 축별 스탯 바 */}
         <div style={{ marginBottom: "14px" }}>
           {percentages.map((p, i) => {
@@ -408,6 +398,16 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
               </div>
             );
           })}
+        </div>
+
+        {/* 한줄 요약 */}
+        <div style={{
+          borderRadius: "12px", padding: "12px 16px", marginBottom: "14px",
+          background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
+        }}>
+          <p style={{ fontSize: "11px", color: "#4b5563", lineHeight: 1.6, margin: 0 }}>
+            {summary}
+          </p>
         </div>
 
         {/* 견주 정보 */}
