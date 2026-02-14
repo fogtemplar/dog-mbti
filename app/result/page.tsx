@@ -59,7 +59,13 @@ function ResultContent() {
   const breed = breeds.find((b) => b.id === breedId);
   const ownerMatch = ownerMatches[type];
 
-  const [step, setStep] = useState(isSharedView ? 4 : 0);
+  const totalHintPages = result ? result.hints.length : 0;
+  // 힌트 0~3 → 축별분석(H) → 타입공개(H+1) → 궁합(H+2) → 최종카드(H+3)
+  const STEP_AXIS = totalHintPages;
+  const STEP_TYPE = totalHintPages + 1;
+  const STEP_SYNERGY = totalHintPages + 2;
+  const STEP_FINAL = totalHintPages + 3;
+  const [step, setStep] = useState(isSharedView ? STEP_FINAL : 0);
 
   // 공유 URL 생성
   const shareUrl = useMemo(() => {
@@ -115,19 +121,30 @@ function ResultContent() {
 
   const nextStep = () => {
     setStep((s) => {
-      if (s === 2 && !ownerMbti) return 4;
+      // 궁합 단계 건너뛰기 (ownerMbti 없으면)
+      if (s === STEP_TYPE && !ownerMbti) return STEP_FINAL;
       return s + 1;
     });
   };
 
-  // ─── Step 0: 성향 힌트 ───
-  if (step === 0) {
+  // ─── Step 0 ~ (totalHintPages-1): 성향 힌트 4페이지 ───
+  if (step < totalHintPages) {
+    const hintLines = result.hints[step];
+    const isFirst = step === 0;
+    const isLast = step === totalHintPages - 1;
+    const headings = [
+      `${displayName}의 숨은 성격은...`,
+      `${displayName}에게서 이런 면이 보여요`,
+      `그리고 또 하나!`,
+      `거의 다 왔어요!`,
+    ];
+
     return (
       <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center relative overflow-hidden">
         <div className="absolute top-10 left-8 text-2xl animate-float opacity-20">🌸</div>
         <div className="absolute top-16 right-10 text-xl animate-sparkle opacity-15">✨</div>
 
-        {photoUrl ? (
+        {isFirst && (photoUrl ? (
           <img
             src={photoUrl}
             alt={displayName}
@@ -135,26 +152,44 @@ function ResultContent() {
           />
         ) : (
           <div className="text-6xl mb-6 animate-scale-in">{result.emoji}</div>
+        ))}
+
+        {!isFirst && (
+          <div className="text-5xl mb-6 animate-scale-in">
+            {["🐾", "💡", "✨", "🎯"][step] || "🐾"}
+          </div>
         )}
 
         <p className="text-sm text-gray-500 mb-2 animate-slide-up" style={{ animationDelay: "0.2s" }}>
-          분석이 끝났어요!
+          {isFirst ? "분석이 끝났어요!" : `${step + 1} / ${totalHintPages}`}
         </p>
-        <h1 className="text-2xl font-black mb-4 animate-slide-up" style={{ animationDelay: "0.4s" }}>
+        <h1 className="text-xl font-black mb-4 animate-slide-up" style={{ animationDelay: "0.4s" }}>
           <span className="bg-gradient-to-r from-[#E879A4] to-[#C084FC] bg-clip-text text-transparent">
-            {displayName}
-          </span>의 숨은 성격은...
+            {headings[step] || headings[0]}
+          </span>
         </h1>
 
         <div className="w-full max-w-xs space-y-3 mb-8">
-          {result.hints.map((hint, i) => (
+          {hintLines.map((line, i) => (
             <div
               key={i}
               className="bg-white/80 backdrop-blur rounded-2xl px-4 py-3 text-sm text-gray-700 leading-relaxed animate-slide-up"
               style={{ animationDelay: `${0.6 + i * 0.2}s` }}
             >
-              {fillName(hint, displayName)}
+              {fillName(line, displayName)}
             </div>
+          ))}
+        </div>
+
+        {/* 페이지 인디케이터 */}
+        <div className="flex gap-2 mb-6 animate-slide-up" style={{ animationDelay: "1s" }}>
+          {Array.from({ length: totalHintPages }).map((_, i) => (
+            <div
+              key={i}
+              className={`w-2 h-2 rounded-full transition-all ${
+                i === step ? "bg-[#E879A4] w-6" : i < step ? "bg-[#E879A4]/40" : "bg-gray-200"
+              }`}
+            />
           ))}
         </div>
 
@@ -163,14 +198,14 @@ function ResultContent() {
           className="px-8 py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full font-bold text-base animate-slide-up active:scale-[0.98] transition-transform"
           style={{ animationDelay: "1.1s", boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
         >
-          더 알아보기 →
+          {isLast ? "성향 분석 보기 →" : "다음 →"}
         </button>
       </div>
     );
   }
 
-  // ─── Step 1: 축별 성향 분석 ───
-  if (step === 1) {
+  // ─── 축별 성향 분석 ───
+  if (step === STEP_AXIS) {
     const axisLabels = ["사교성", "감정표현", "탐험심", "행동패턴"];
     return (
       <div className="flex flex-col items-center justify-center min-h-dvh px-6 relative overflow-hidden">
@@ -222,8 +257,8 @@ function ResultContent() {
     );
   }
 
-  // ─── Step 2: 타입 공개 ───
-  if (step === 2) {
+  // ─── 타입 공개 ───
+  if (step === STEP_TYPE) {
     return (
       <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center relative overflow-hidden">
         <div className="absolute top-12 right-10 text-2xl animate-sparkle opacity-20">🌟</div>
@@ -285,8 +320,8 @@ function ResultContent() {
     );
   }
 
-  // ─── Step 3: 견주 궁합 ───
-  if (step === 3 && ownerMbti) {
+  // ─── 견주 궁합 ───
+  if (step === STEP_SYNERGY && ownerMbti) {
     return (
       <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center relative overflow-hidden">
         <div className="absolute top-14 left-6 text-2xl animate-float opacity-15">💜</div>
