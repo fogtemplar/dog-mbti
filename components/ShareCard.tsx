@@ -74,6 +74,25 @@ export default function ShareCard({
 
   const captureCard = useCallback(async (): Promise<Blob | null> => {
     if (!activeRef.current) return null;
+
+    // Pre-load photo and get natural dimensions for cover simulation
+    let imgNatural: { w: number; h: number } | null = null;
+    if (photoUrl) {
+      await new Promise<void>((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          imgNatural = { w: img.naturalWidth, h: img.naturalHeight };
+          resolve();
+        };
+        img.onerror = () => resolve();
+        img.src = photoUrl;
+        if (img.complete && img.naturalWidth > 0) {
+          imgNatural = { w: img.naturalWidth, h: img.naturalHeight };
+          resolve();
+        }
+      });
+    }
+
     if (document.fonts?.ready) {
       try { await document.fonts.ready; } catch { /* ignore */ }
     }
@@ -87,6 +106,7 @@ export default function ShareCard({
     const canvas = await html2canvas(activeRef.current, {
       scale,
       useCORS: true,
+      allowTaint: true,
       backgroundColor: null,
       onclone: (doc) => {
         const root = doc.querySelector("[data-capture-root]") as HTMLElement | null;
@@ -108,10 +128,49 @@ export default function ShareCard({
           node.style.transition = "none";
           node.style.boxSizing = "border-box";
         });
+
+        // Fix photo: replace CSS backgroundImage with <img> using explicit cover dimensions
+        // html2canvas often fails to render background-size:cover correctly → gray blocks
+        if (imgNatural && photoUrl) {
+          const containers = doc.querySelectorAll("[data-photo-container]");
+          containers.forEach((el) => {
+            const container = el as HTMLElement;
+            const cw = container.offsetWidth;
+            const ch = container.offsetHeight;
+            if (cw === 0 || ch === 0) return;
+
+            // Remove backgroundImage (source of gray blocks)
+            container.style.backgroundImage = "none";
+
+            // Calculate cover dimensions
+            const containerRatio = cw / ch;
+            const imgRatio = imgNatural!.w / imgNatural!.h;
+            let drawW: number, drawH: number;
+            if (imgRatio > containerRatio) {
+              drawH = ch;
+              drawW = Math.ceil(ch * imgRatio);
+            } else {
+              drawW = cw;
+              drawH = Math.ceil(cw / imgRatio);
+            }
+
+            // Insert <img> with explicit pixel dimensions (html2canvas handles this reliably)
+            const img = doc.createElement("img");
+            img.src = photoUrl;
+            img.style.position = "absolute";
+            img.style.top = "50%";
+            img.style.left = "50%";
+            img.style.transform = "translate(-50%, -50%)";
+            img.style.width = `${drawW}px`;
+            img.style.height = `${drawH}px`;
+            img.style.display = "block";
+            container.insertBefore(img, container.firstChild);
+          });
+        }
       },
     });
     return new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-  }, [activeRef]);
+  }, [activeRef, photoUrl]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -324,12 +383,11 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
       {/* 히어로 섹션 */}
       {photoUrl ? (
-        <div style={{
+        <div data-photo-container style={{
           position: "relative", width: "100%", paddingBottom: "100%", overflow: "hidden",
           backgroundImage: `url(${photoUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundColor: "#d0d0d0",
         }}>
           {/* 그라디언트 오버레이 */}
           <div style={{
@@ -537,13 +595,13 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
 
       <div style={{ display: "flex" }}>
         {/* 좌측: 사진 */}
-        <div style={{
+        <div data-photo-container style={{
           width: "38%", position: "relative", flexShrink: 0, minHeight: "240px",
+          overflow: "hidden",
           ...(photoUrl ? {
             backgroundImage: `url(${photoUrl})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            backgroundColor: "#d0d0d0",
           } : {}),
         }}>
           {photoUrl ? (
