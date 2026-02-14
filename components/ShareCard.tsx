@@ -402,7 +402,7 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
       {/* 카드 바디 */}
       <div style={{ padding: "16px 20px 4px" }}>
         {/* 이름 + 한줄 요약 */}
-        <div style={{ marginBottom: "16px" }}>
+        <div style={{ marginBottom: "14px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
             <div style={{
               width: "28px", height: "28px", borderRadius: "50%",
@@ -423,8 +423,11 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           </div>
         </div>
 
+        {/* 구분선 */}
+        <div style={{ height: "1px", background: `${colors.accent}20`, margin: "0 0 14px" }} />
+
         {/* 축별 스탯 바 */}
-        <div style={{ marginBottom: "16px" }}>
+        <div style={{ marginBottom: "14px" }}>
           {percentages.map((p, i) => {
             const dominant = p.left.pct >= p.right.pct ? p.left : p.right;
             return (
@@ -437,27 +440,34 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
 
         {/* 견주 정보 */}
         {(ownerName || ownerMbti) && (
-          <div style={{
-            borderRadius: "12px", padding: "10px 14px", marginBottom: "16px",
-            background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
-            display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" as const,
-          }}>
-            <span style={{ fontSize: "10px" }}>👤</span>
-            <span style={{ fontSize: "11px", fontWeight: 700, color: "#374151" }}>
-              {ownerName || "견주님"}
-              {ownerMbti && <span style={{ marginLeft: "4px", fontWeight: 900, color: colors.accent }}>({ownerMbti})</span>}
-            </span>
-            <span style={{ fontSize: "10px", color: "#d1d5db" }}>×</span>
-            <span style={{ fontSize: "11px", fontWeight: 700, color: colors.accent }}>
-              {dogName} <span style={{ fontWeight: 900 }}>({code})</span>
-            </span>
-          </div>
+          <>
+            {/* 구분선 */}
+            <div style={{ height: "1px", background: `${colors.accent}20`, margin: "0 0 14px" }} />
+            <div style={{
+              borderRadius: "12px", padding: "10px 14px", marginBottom: "16px",
+              background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.6)",
+              display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" as const,
+            }}>
+              <span style={{ fontSize: "10px" }}>👤</span>
+              <span style={{ fontSize: "11px", fontWeight: 700, color: "#374151" }}>
+                {ownerName || "견주님"}
+                {ownerMbti && <span style={{ marginLeft: "4px", fontWeight: 900, color: colors.accent }}>({ownerMbti})</span>}
+              </span>
+              <span style={{ fontSize: "10px", color: "#d1d5db" }}>×</span>
+              <span style={{ fontSize: "11px", fontWeight: 700, color: colors.accent }}>
+                {dogName} <span style={{ fontWeight: 900 }}>({code})</span>
+              </span>
+            </div>
+          </>
         )}
       </div>
 
+      {/* 구분선 */}
+      <div style={{ height: "1px", background: `${colors.accent}15`, margin: "0 20px" }} />
+
       {/* 하단 브랜딩 */}
       <div style={{
-        padding: "0 20px 14px",
+        padding: "10px 20px 14px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <span style={{
@@ -589,8 +599,11 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
             </div>
           </div>
 
+          {/* 구분선 */}
+          <div style={{ height: "1px", background: `${colors.accent}20`, margin: "8px 0" }} />
+
           {/* 중단: 스탯 바 */}
-          <div style={{ margin: "10px 0" }}>
+          <div style={{ margin: "8px 0" }}>
             {percentages.map((p, i) => {
               const dominant = p.left.pct >= p.right.pct ? p.left : p.right;
               return (
@@ -608,6 +621,9 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               );
             })}
           </div>
+
+          {/* 구분선 */}
+          <div style={{ height: "1px", background: `${colors.accent}20`, margin: "8px 0" }} />
 
           {/* 하단: 요약 + 견주 + 브랜딩 */}
           <div>
@@ -636,6 +652,8 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
                 </span>
               </div>
             )}
+            {/* 구분선 */}
+            <div style={{ height: "1px", background: `${colors.accent}15`, margin: "4px 0 8px" }} />
             {/* 하단 브랜딩 */}
             <div style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
