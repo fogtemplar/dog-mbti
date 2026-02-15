@@ -19,7 +19,7 @@ interface PersonalityReportProps {
 const AXIS_NAMES = ["사교성", "활력", "탐구심", "주도성"];
 
 /* ── 1. 키워드 뱃지 ── */
-function generateKeywords(pcts: AxisPercentage[]): string[] {
+export function generateKeywords(pcts: AxisPercentage[]): string[] {
   const tags: string[] = [];
   const [sl, hc, xg, ba] = pcts.map((p) => p.left.pct);
 
@@ -51,7 +51,7 @@ function generateKeywords(pcts: AxisPercentage[]): string[] {
 }
 
 /* ── 3. 성향 순위 ── */
-function getRanking(pcts: AxisPercentage[]) {
+export function getRanking(pcts: AxisPercentage[]) {
   return pcts
     .map((p, i) => ({
       name: AXIS_NAMES[i],
@@ -63,7 +63,7 @@ function getRanking(pcts: AxisPercentage[]) {
 }
 
 /* ── 4. 밸런스 지수 ── */
-function calculateBalance(pcts: AxisPercentage[]) {
+export function calculateBalance(pcts: AxisPercentage[]) {
   const deviations = pcts.map((p) => Math.abs(p.left.pct - 50));
   const avg = deviations.reduce((s, d) => s + d, 0) / 4;
   const score = Math.round(100 - avg * 2);
@@ -84,7 +84,7 @@ const SIMILAR_BREEDS: Record<string, string[]> = {
   LC: ["바셋하운드", "차우차우", "그레이하운드"],
 };
 
-function getSimilarBreeds(pcts: AxisPercentage[]): string[] {
+export function getSimilarBreeds(pcts: AxisPercentage[]): string[] {
   const sl = pcts[0].left.pct >= 50 ? "S" : "L";
   const hc = pcts[1].left.pct >= 50 ? "H" : "C";
   return SIMILAR_BREEDS[sl + hc] || ["골든리트리버", "푸들", "비글"];

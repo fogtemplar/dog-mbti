@@ -39,6 +39,16 @@ export default function AxisGauge({
   const levelText = getLevelText(leftLabel, rightLabel, leftPct);
   const levelColor = getLevelColor(leftPct);
 
+  // 마커 위치: 바는 스펙트럼(왼쪽=leftTrait, 오른쪽=rightTrait)
+  // leftPct가 높으면 마커가 왼쪽(leftLabel 쪽)에 위치해야 함
+  const markerPos = 100 - animatedPct;
+  const clampedPct = Math.max(12, Math.min(88, markerPos));
+
+  // 퍼센트 라벨 정렬: 끝쪽에서 밀려나지 않도록
+  const pctAlign = leftPct >= 85 ? "left" : leftPct <= 15 ? "right" : "center";
+  const pctTransform =
+    pctAlign === "left" ? "translateX(-20%)" : pctAlign === "right" ? "translateX(-80%)" : "translateX(-50%)";
+
   return (
     <div>
       {/* Header: axis name + level */}
@@ -74,7 +84,7 @@ export default function AxisGauge({
         <div
           className="absolute top-0 flex flex-col items-center"
           style={{
-            left: `${animatedPct}%`,
+            left: `${clampedPct}%`,
             transform: "translateX(-50%)",
             transition: "left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
@@ -83,7 +93,10 @@ export default function AxisGauge({
           <div className="w-0.5 h-3 bg-gray-700 rounded-full" />
           <div className="w-2 h-2 bg-gray-700 rounded-full -mt-0.5 border border-white" />
           {/* Percentage label */}
-          <span className="text-[10px] font-bold text-gray-700 mt-0.5">
+          <span
+            className="text-[10px] font-bold text-gray-700 mt-0.5 whitespace-nowrap"
+            style={{ transform: pctTransform }}
+          >
             {leftPct}%
           </span>
         </div>

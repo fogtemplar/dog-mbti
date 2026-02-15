@@ -15,6 +15,12 @@ import {
 } from "@/lib/sharePayload";
 import ShareCard from "@/components/ShareCard";
 import { isPremiumUnlocked } from "@/lib/premiumStore";
+import {
+  generateKeywords,
+  getRanking,
+  calculateBalance,
+  getSimilarBreeds,
+} from "@/components/premium/PersonalityReport";
 
 export default function ResultPage() {
   return (
@@ -440,24 +446,82 @@ function ResultContent() {
         />
       </div>
 
-      {!isSharedView && (
-        <div className="bg-gradient-to-r from-[#E879A4] to-[#C084FC] rounded-2xl p-6 text-white text-center mb-6 animate-slide-up" style={{ animationDelay: "0.15s" }}>
-          <p className="text-lg font-bold mb-2">
-            {isPremiumUnlocked(type) ? "📖 심층 리포트" : "🔒 심층 리포트"}
-          </p>
-          <p className="text-sm opacity-90 mb-4">
-            {displayName}에게 딱 맞는 놀이법, 산책 팁,
-            <br />
-            궁합 타입 분석이 준비되어 있어요!
-          </p>
-          <button
-            onClick={() => router.push(`/premium?d=${shareEncoded}`)}
-            className="px-6 py-3 bg-white text-[#E879A4] rounded-xl font-bold text-sm hover:bg-gray-50 active:scale-[0.98] transition-all"
-          >
-            {isPremiumUnlocked(type) ? "심층 리포트 보기" : "990원으로 잠금 해제하기"}
-          </button>
-        </div>
-      )}
+      {!isSharedView && (() => {
+        const unlocked = isPremiumUnlocked(type);
+        const keywords = generateKeywords(percentages);
+        const ranking = getRanking(percentages);
+        const balance = calculateBalance(percentages);
+        const breeds = getSimilarBreeds(percentages);
+        return (
+          <div className="bg-white rounded-2xl p-5 mb-6 animate-slide-up" style={{ animationDelay: "0.15s", overflow: "hidden" }}>
+            <p className="text-sm font-bold text-gray-500 mb-3 flex items-center gap-2">
+              <span>🔍</span> {displayName}의 심층 분석 미리보기
+            </p>
+
+            {/* 키워드: 2개 공개 + 2개 블러 */}
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {keywords.slice(0, 2).map((kw) => (
+                <span key={kw} className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#FFF0F5] text-[#E879A4]">
+                  {kw}
+                </span>
+              ))}
+              {keywords.slice(2).map((_, i) => (
+                <span key={i} className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-100 select-none" style={{ filter: "blur(4px)" }}>
+                  #키워드
+                </span>
+              ))}
+            </div>
+
+            {/* 밸런스 + 순위 + 유사견종 */}
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {/* 밸런스 지수 */}
+              <div className="bg-[#FFF5F9] rounded-xl p-3 text-center">
+                <p className="text-[10px] font-bold text-gray-500 mb-1">밸런스</p>
+                <p className="text-xl font-black text-[#E879A4]">{balance.score}</p>
+                <p className="text-[9px] text-gray-400">/ 100</p>
+              </div>
+
+              {/* 성향 순위: 1위만 공개 */}
+              <div className="bg-[#FFF5F9] rounded-xl p-3">
+                <p className="text-[10px] font-bold text-gray-500 mb-1">성향 순위</p>
+                <div className="flex items-center gap-1 text-[10px]">
+                  <span className="font-bold text-[#E879A4]">1.</span>
+                  <span className="text-gray-600">{ranking[0].name}</span>
+                  <span className="ml-auto font-bold text-gray-500">{ranking[0].pct}%</span>
+                </div>
+                {ranking.slice(1, 3).map((_, i) => (
+                  <div key={i} className="flex items-center gap-1 text-[10px] mt-0.5">
+                    <span className="text-gray-300 select-none" style={{ filter: "blur(3px)" }}>{i + 2}. 성향분석 00%</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* 유사 견종: 1개만 공개 */}
+              <div className="bg-[#FFF5F9] rounded-xl p-3">
+                <p className="text-[10px] font-bold text-gray-500 mb-1">유사 견종</p>
+                <p className="text-[10px] text-gray-600">{breeds[0]}</p>
+                {breeds.slice(1).map((_, i) => (
+                  <p key={i} className="text-[10px] text-gray-300 select-none mt-0.5" style={{ filter: "blur(3px)" }}>비밀견종</p>
+                ))}
+              </div>
+            </div>
+
+            {/* 추가 콘텐츠 안내 */}
+            <p className="text-[11px] text-gray-400 text-center mb-4 leading-relaxed">
+              이 외에도 맞춤 산책법, 스트레스 신호,<br />놀이법, 환경 체크리스트 등이 준비되어 있어요!
+            </p>
+
+            {/* CTA 버튼 */}
+            <button
+              onClick={() => router.push(`/premium?d=${shareEncoded}`)}
+              className="w-full py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-2xl font-bold text-sm hover:shadow-lg active:scale-[0.98] transition-all"
+              style={{ boxShadow: "0 4px 14px rgba(232,121,164,0.3)" }}
+            >
+              {unlocked ? "심층 리포트 보기" : "990원으로 전체 리포트 보기"}
+            </button>
+          </div>
+        );
+      })()}
 
       <div className="bg-white rounded-2xl p-5 mb-6 animate-slide-up" style={{ animationDelay: "0.2s" }}>
         <h3 className="text-sm font-bold text-gray-500 mb-3">

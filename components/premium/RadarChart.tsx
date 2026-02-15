@@ -13,7 +13,7 @@ interface RadarChartProps {
 
 const CX = 150;
 const CY = 150;
-const MAX_R = 110;
+const MAX_R = 90;
 const ANGLES = [-Math.PI / 2, 0, Math.PI / 2, Math.PI]; // top, right, bottom, left
 const GRID_LEVELS = [25, 50, 75, 100];
 const AXIS_NAMES = ["사교성", "활력", "탐구심", "주도성"];
