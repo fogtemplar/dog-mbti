@@ -150,7 +150,6 @@ function buildPlatforms(): PlatformDef[] {
       icon: <XIcon />,
       bg: "#000000",
       textColor: "#fff",
-      useImageShare: true,
       getShareUrl: (url, title) =>
         `https://twitter.com/intent/tweet?text=${enc(title)}&url=${enc(url)}`,
     },
@@ -159,7 +158,6 @@ function buildPlatforms(): PlatformDef[] {
       icon: <ThreadsIcon />,
       bg: "#000000",
       textColor: "#fff",
-      useImageShare: true,
       getShareUrl: (url, title) =>
         `https://www.threads.net/intent/post?text=${enc(title + "\n" + url)}`,
     },
@@ -168,7 +166,6 @@ function buildPlatforms(): PlatformDef[] {
       icon: <FacebookIcon />,
       bg: "#1877F2",
       textColor: "#fff",
-      useImageShare: true,
       getShareUrl: (url) =>
         `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`,
     },
@@ -177,7 +174,6 @@ function buildPlatforms(): PlatformDef[] {
       icon: <LineIcon />,
       bg: "#06C755",
       textColor: "#fff",
-      useImageShare: true,
       getShareUrl: (url, title) =>
         `https://line.me/R/share?text=${enc(title + "\n" + url)}`,
     },
@@ -204,13 +200,7 @@ export default function SocialShare({ url, title, description, dogName, captureC
         if (p.specialAction) {
           await p.specialAction(url, title, description, file);
         } else if (p.getShareUrl) {
-          // URL 기반 공유 + 이미지 있으면 Web Share API 시도
-          if (file && navigator.canShare?.({ files: [file] })) {
-            try {
-              await navigator.share({ title, text: description + "\n" + url, files: [file] });
-              return;
-            } catch { /* 취소 → URL 공유로 fallback */ }
-          }
+          // URL 기반 공유: 해당 플랫폼 페이지로 바로 이동
           window.open(
             p.getShareUrl(url, title),
             "_blank",
