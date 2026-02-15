@@ -98,23 +98,6 @@ export default function RadarChart({
           );
         })}
 
-        {/* Percentage labels on grid */}
-        {GRID_LEVELS.filter((l) => l !== 100).map((level) => {
-          const pt = getPoint(0, level);
-          return (
-            <text
-              key={level}
-              x={pt.x + 4}
-              y={pt.y + 2}
-              fontSize="11"
-              fontWeight="600"
-              fill="#a78bac"
-              textAnchor="start"
-            >
-              {level}
-            </text>
-          );
-        })}
 
         {/* Owner polygon (behind dog) */}
         {ownerPoints && (
