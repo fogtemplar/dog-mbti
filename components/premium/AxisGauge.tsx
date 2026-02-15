@@ -39,15 +39,14 @@ export default function AxisGauge({
   const levelText = getLevelText(leftLabel, rightLabel, leftPct);
   const levelColor = getLevelColor(leftPct);
 
-  // 마커 위치: 바는 스펙트럼(왼쪽=leftTrait, 오른쪽=rightTrait)
-  // leftPct가 높으면 마커가 왼쪽(leftLabel 쪽)에 위치해야 함
-  const markerPos = 100 - animatedPct;
+  // 마커 위치: 0%(왼쪽) → 100%(오른쪽) 자연스러운 방향
+  const markerPos = animatedPct;
   const clampedPct = Math.max(12, Math.min(88, markerPos));
 
   // 퍼센트 라벨 정렬: 끝쪽에서 밀려나지 않도록
-  const pctAlign = leftPct >= 85 ? "left" : leftPct <= 15 ? "right" : "center";
+  const pctAlign = leftPct >= 85 ? "right" : leftPct <= 15 ? "left" : "center";
   const pctTransform =
-    pctAlign === "left" ? "translateX(-20%)" : pctAlign === "right" ? "translateX(-80%)" : "translateX(-50%)";
+    pctAlign === "right" ? "translateX(-80%)" : pctAlign === "left" ? "translateX(-20%)" : "translateX(-50%)";
 
   return (
     <div>
@@ -63,7 +62,7 @@ export default function AxisGauge({
       <div className="relative">
         <div className="w-full h-3 rounded-full overflow-hidden relative"
           style={{
-            background: "linear-gradient(90deg, #F5A3C4 0%, #F9D1E0 30%, #F3E8FF 50%, #E8D5F5 70%, #D8B4FE 100%)",
+            background: "linear-gradient(90deg, #D8B4FE 0%, #E8D5F5 30%, #F3E8FF 50%, #F9D1E0 70%, #F5A3C4 100%)",
           }}
         >
           {/* Reference lines at 20%, 40%, 60%, 80% */}
@@ -104,8 +103,8 @@ export default function AxisGauge({
 
       {/* Bottom labels */}
       <div className="flex justify-between mt-1">
-        <span className="text-[10px] text-gray-400">{leftLabel}</span>
         <span className="text-[10px] text-gray-400">{rightLabel}</span>
+        <span className="text-[10px] text-gray-400">{leftLabel}</span>
       </div>
     </div>
   );
