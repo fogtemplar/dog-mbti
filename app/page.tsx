@@ -49,12 +49,8 @@ export default function LandingPage() {
         우리 강아지 성향 알아보기 🐾
       </Link>
 
-      <div className="mt-5 flex items-center gap-3 text-xs text-[#B8A0BC]">
-        <span className="flex items-center gap-1">⏱ 약 3분</span>
-        <span className="w-1 h-1 rounded-full bg-[#D4C0D8]" />
-        <span>무료</span>
-        <span className="w-1 h-1 rounded-full bg-[#D4C0D8]" />
-        <span>재미로 즐기기</span>
+      <div className="mt-5 text-xs text-[#B8A0BC]">
+        <span>⏱ 약 3분 소요</span>
       </div>
 
       <Link
