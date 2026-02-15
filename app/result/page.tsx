@@ -361,21 +361,6 @@ function ResultContent() {
       <div className="flex flex-col items-center min-h-dvh px-6 pt-16 pb-12 text-center relative overflow-hidden">
         <div className="absolute top-14 left-6 text-2xl animate-float opacity-15">💜</div>
 
-        {/* 아이콘 영역 (고정 높이) */}
-        <div className="h-28 flex items-center justify-center animate-scale-in" style={{ animationDelay: "0.2s" }}>
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-white rounded-2xl flex flex-col items-center justify-center shadow-md">
-              <span className="text-lg font-black text-purple-600">{ownerMbti}</span>
-              <span className="text-[9px] text-gray-400">{displayOwner}</span>
-            </div>
-            <div className="text-2xl animate-wiggle">💕</div>
-            <div className="w-16 h-16 bg-white rounded-2xl flex flex-col items-center justify-center shadow-md">
-              <span className="text-lg font-black text-[#E879A4]">{result.code}</span>
-              <span className="text-[9px] text-gray-400">{displayName}</span>
-            </div>
-          </div>
-        </div>
-
         {/* 서브타이틀 + 헤딩 */}
         <p className="text-sm text-gray-500 mb-2 animate-slide-up">
           견주 × 강아지 궁합
@@ -383,6 +368,19 @@ function ResultContent() {
         <h2 className="text-xl font-black mb-6 animate-slide-up" style={{ animationDelay: "0.15s" }}>
           우리의 케미는?
         </h2>
+
+        {/* 궁합 카드 */}
+        <div className="flex items-center justify-center gap-3 mb-6 animate-scale-in" style={{ animationDelay: "0.3s" }}>
+          <div className="w-24 bg-white rounded-2xl py-3 px-2 flex flex-col items-center shadow-md">
+            <span className="text-lg font-black text-purple-600">{ownerMbti}</span>
+            <span className="text-xs text-gray-500 mt-0.5">{displayOwner}</span>
+          </div>
+          <div className="text-2xl animate-wiggle">💕</div>
+          <div className="w-24 bg-white rounded-2xl py-3 px-2 flex flex-col items-center shadow-md">
+            <span className="text-lg font-black text-[#E879A4]">{result.code}</span>
+            <span className="text-xs text-gray-500 mt-0.5">{displayName}</span>
+          </div>
+        </div>
 
         {/* 컨텐츠 영역 */}
         <div className="flex-1">
@@ -505,13 +503,15 @@ function ResultContent() {
           <h3 className="text-sm font-bold text-purple-700 mb-3">
             💜 {ownerMbti} {displayOwner} × {result.code} {displayName}
           </h3>
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="w-24 bg-white rounded-2xl py-3 px-2 flex flex-col items-center shadow-sm">
               <span className="text-lg font-black text-purple-600">{ownerMbti}</span>
+              <span className="text-xs text-gray-500 mt-0.5">{displayOwner}</span>
             </div>
-            <div className="text-2xl">🤝</div>
-            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+            <div className="text-2xl">💕</div>
+            <div className="w-24 bg-white rounded-2xl py-3 px-2 flex flex-col items-center shadow-sm">
               <span className="text-lg font-black text-[#E879A4]">{result.code}</span>
+              <span className="text-xs text-gray-500 mt-0.5">{displayName}</span>
             </div>
           </div>
           <p className="text-sm text-gray-600 leading-relaxed">

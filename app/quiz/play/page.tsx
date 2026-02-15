@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 import { allQuestions } from "@/data/questions";
@@ -8,24 +7,9 @@ import { fillName } from "@/lib/calculate";
 import ProgressBar from "@/components/ProgressBar";
 import QuestionCard from "@/components/QuestionCard";
 
-/** 다음 이미지를 미리 로드 */
-function usePreloadImages(currentIndex: number) {
-  useEffect(() => {
-    const toPreload = [currentIndex + 1, currentIndex + 2];
-    toPreload.forEach((i) => {
-      if (i >= 0 && i < allQuestions.length) {
-        const img = new Image();
-        img.src = `/quiz/${i + 1}.png`;
-      }
-    });
-  }, [currentIndex]);
-}
-
 export default function QuizPlayPage() {
   const router = useRouter();
   const { dogName, currentIndex, selectAnswer, goBack } = useQuizStore();
-
-  usePreloadImages(currentIndex);
 
   const question = allQuestions[currentIndex];
   const isLast = currentIndex === allQuestions.length - 1;

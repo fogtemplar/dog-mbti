@@ -49,8 +49,56 @@ export default function ProfilePage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [showBreedPicker, setShowBreedPicker] = useState(false);
   const [showPhotoMenu, setShowPhotoMenu] = useState(false);
+  const [showWebcam, setShowWebcam] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const isMobile = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  const openCamera = async () => {
+    setShowPhotoMenu(false);
+    if (isMobile) {
+      cameraRef.current?.click();
+      return;
+    }
+    // PC: 웹캠 모달
+    setShowWebcam(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch {
+      setShowWebcam(false);
+      alert("카메라에 접근할 수 없습니다.");
+    }
+  };
+
+  const captureWebcam = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(video, 0, 0);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+    const resized = await resizeImageToDataUrl(dataUrl, 512, 0.7);
+    setPreview(resized);
+    setPhotoUrl(resized);
+    try { localStorage.setItem(PHOTO_STORAGE_KEY, resized); } catch { /* ignore */ }
+    closeWebcam();
+  };
+
+  const closeWebcam = () => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    setShowWebcam(false);
+  };
 
   const mbtiAxes = [
     { index: 0, axis: "에너지", color: "#E879A4", options: [{ letter: "E", label: "외향" }, { letter: "I", label: "내향" }] },
@@ -169,7 +217,7 @@ export default function ProfilePage() {
               <p className="text-base font-bold text-center mb-4">사진 등록</p>
               <div className="flex flex-col gap-2">
                 <button
-                  onClick={() => { setShowPhotoMenu(false); cameraRef.current?.click(); }}
+                  onClick={openCamera}
                   className="w-full py-4 bg-[#E879A4] text-white rounded-2xl font-bold text-sm active:scale-[0.98] transition-transform"
                 >
                   📸 카메라로 촬영
@@ -185,6 +233,38 @@ export default function ProfilePage() {
                   className="w-full py-3 text-gray-400 text-sm"
                 >
                   취소
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 웹캠 모달 */}
+        {showWebcam && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={closeWebcam}>
+            <div className="w-full max-w-md bg-white rounded-3xl p-4 mx-4" onClick={(e) => e.stopPropagation()}>
+              <p className="text-base font-bold text-center mb-3">카메라 촬영</p>
+              <div className="relative rounded-2xl overflow-hidden bg-black mb-3">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="w-full aspect-square object-cover"
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={closeWebcam}
+                  className="flex-1 py-3 bg-gray-100 text-gray-500 rounded-2xl font-bold text-sm"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={captureWebcam}
+                  className="flex-1 py-3 bg-[#E879A4] text-white rounded-2xl font-bold text-sm active:scale-[0.98] transition-transform"
+                >
+                  촬영
                 </button>
               </div>
             </div>

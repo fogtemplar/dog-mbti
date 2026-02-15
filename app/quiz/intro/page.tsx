@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 
 export default function QuizIntroPage() {
-  // 첫 몇 장 이미지 미리 로드
+  // 전체 퀴즈 이미지 미리 로드
   useEffect(() => {
-    for (let i = 1; i <= 3; i++) {
+    for (let i = 1; i <= 20; i++) {
       const img = new Image();
       img.src = `/quiz/${i}.png`;
     }
@@ -30,7 +30,7 @@ export default function QuizIntroPage() {
 
       <div className="w-full bg-white/80 backdrop-blur rounded-3xl p-5 mt-6 mb-6 text-left space-y-3 border border-pink-100">
         <div className="flex items-start gap-3">
-          <span className="text-xl">💖</span>
+          <span className="text-xl w-7 text-center shrink-0">💖</span>
           <div>
             <p className="font-semibold text-sm">정답은 없어요!</p>
             <p className="text-xs text-gray-500">
@@ -39,7 +39,7 @@ export default function QuizIntroPage() {
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <span className="text-xl">📝</span>
+          <span className="text-xl w-7 text-center shrink-0">📝</span>
           <div>
             <p className="font-semibold text-sm">총 20문항</p>
             <p className="text-xs text-gray-500">
@@ -48,7 +48,7 @@ export default function QuizIntroPage() {
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <span className="text-xl">⏱</span>
+          <span className="text-xl w-7 text-center shrink-0">⏱</span>
           <div>
             <p className="font-semibold text-sm">약 3분 소요</p>
             <p className="text-xs text-gray-500">
