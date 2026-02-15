@@ -9,7 +9,7 @@ export default function QuizIntroPage() {
   useEffect(() => {
     for (let i = 1; i <= 20; i++) {
       const img = new Image();
-      img.src = `/quiz/${i}.png`;
+      img.src = `/quiz/${i}.webp`;
     }
   }, []);
   const router = useRouter();

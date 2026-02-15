@@ -30,6 +30,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const title = `${result.emoji} ${shared.dogName}는 ${result.nickname}! | 너는내운멍`;
   const description = `${shared.dogName}의 너는내운멍 결과: ${result.code} (${result.nickname}) - ${result.summary}`;
 
+  const ogImage = `https://www.daeng.me/api/og?d=${encodeURIComponent(d)}`;
+
   return {
     title,
     description,
@@ -38,11 +40,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       description,
       type: "website",
       siteName: "너는내운멍 - 강아지 성향 테스트",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [ogImage],
     },
   };
 }

@@ -57,6 +57,13 @@ export default function ProfilePage() {
 
   const isMobile = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+  // 웹캠 스트림 cleanup (페이지 이탈 시 카메라 해제)
+  useEffect(() => {
+    return () => {
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
+
   const openCamera = async () => {
     setShowPhotoMenu(false);
     if (isMobile) {

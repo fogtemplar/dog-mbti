@@ -42,7 +42,7 @@ export default function QuizPlayPage() {
         {/* 질문 일러스트 */}
         <div className="mb-4 flex justify-center animate-fade-in" key={`illust-${question.id}`}>
           <img
-            src={`/quiz/${currentIndex + 1}.png`}
+            src={`/quiz/${currentIndex + 1}.webp`}
             alt=""
             className="max-w-full h-auto drop-shadow-md"
             draggable={false}
