@@ -14,6 +14,7 @@ import {
   percentagesToPctArray,
 } from "@/lib/sharePayload";
 import ShareCard from "@/components/ShareCard";
+import { isPremiumUnlocked } from "@/lib/premiumStore";
 
 export default function ResultPage() {
   return (
@@ -79,10 +80,10 @@ function ResultContent() {
   const STEP_FINAL = totalHintPages + 3;
   const [step, setStep] = useState(isSharedView ? STEP_FINAL : 0);
 
-  // 공유 URL 생성
-  const shareUrl = useMemo(() => {
+  // 공유 페이로드 인코딩 (공유 URL + 프리미엄 URL에서 재사용)
+  const shareEncoded = useMemo(() => {
     if (typeof window === "undefined" || !type) return "";
-    const encoded = encodeSharePayload({
+    return encodeSharePayload({
       type,
       dogName: dogName || "강아지",
       ownerName: ownerName || undefined,
@@ -90,8 +91,12 @@ function ResultContent() {
       ownerMbti: ownerMbti || undefined,
       pcts: percentagesToPctArray(percentages),
     });
-    return `${window.location.origin}/result?d=${encoded}`;
   }, [type, dogName, ownerName, breedId, ownerMbti, percentages]);
+
+  const shareUrl = useMemo(() => {
+    if (!shareEncoded) return "";
+    return `${window.location.origin}/result?d=${shareEncoded}`;
+  }, [shareEncoded]);
 
   // 위변조된 공유 링크이거나 결과 없음
   if (!result) {
@@ -435,6 +440,25 @@ function ResultContent() {
         />
       </div>
 
+      {!isSharedView && (
+        <div className="bg-gradient-to-r from-[#E879A4] to-[#C084FC] rounded-2xl p-6 text-white text-center mb-6 animate-slide-up" style={{ animationDelay: "0.15s" }}>
+          <p className="text-lg font-bold mb-2">
+            {isPremiumUnlocked(type) ? "📖 심층 리포트" : "🔒 심층 리포트"}
+          </p>
+          <p className="text-sm opacity-90 mb-4">
+            {displayName}에게 딱 맞는 놀이법, 산책 팁,
+            <br />
+            궁합 타입 분석이 준비되어 있어요!
+          </p>
+          <button
+            onClick={() => router.push(`/premium?d=${shareEncoded}`)}
+            className="px-6 py-3 bg-white text-[#E879A4] rounded-xl font-bold text-sm hover:bg-gray-50 active:scale-[0.98] transition-all"
+          >
+            {isPremiumUnlocked(type) ? "심층 리포트 보기" : "990원으로 잠금 해제하기"}
+          </button>
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl p-5 mb-6 animate-slide-up" style={{ animationDelay: "0.2s" }}>
         <h3 className="text-sm font-bold text-gray-500 mb-3">
           {displayName}의 성향 특징
@@ -544,18 +568,6 @@ function ResultContent() {
           </p>
         </div>
       ) : null}
-
-      <div className="bg-gradient-to-r from-[#E879A4] to-[#C084FC] rounded-2xl p-6 text-white text-center mb-6 animate-slide-up" style={{ animationDelay: "0.65s" }}>
-        <p className="text-lg font-bold mb-2">🔒 심층 리포트</p>
-        <p className="text-sm opacity-90 mb-4">
-          {displayName}에게 딱 맞는 놀이법, 산책 팁,
-          <br />
-          궁합 타입 분석이 준비되어 있어요!
-        </p>
-        <button className="px-6 py-3 bg-white text-[#E879A4] rounded-xl font-bold text-sm hover:bg-gray-50 transition-colors">
-          준비 중이에요 (Coming Soon)
-        </button>
-      </div>
 
       <div className="flex gap-3 mb-4">
         <button

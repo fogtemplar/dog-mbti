@@ -117,8 +117,11 @@ export default function ShareCard({
     return blob;
   }, [activeRef]);
 
-  const handleSave = async () => {
+  const [showSaveMenu, setShowSaveMenu] = useState(false);
+
+  const handleDownload = async () => {
     setSaving(true);
+    setShowSaveMenu(false);
     try {
       const blob = await captureCard();
       if (!blob) return;
@@ -128,6 +131,23 @@ export default function ShareCard({
       a.download = `너는내운멍_${dogName}_${mode === "vertical" ? "세로" : "가로"}.png`;
       a.click();
       URL.revokeObjectURL(url);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCopyImage = async () => {
+    setSaving(true);
+    setShowSaveMenu(false);
+    try {
+      const blob = await captureCard();
+      if (!blob) return;
+      await navigator.clipboard.write([
+        new ClipboardItem({ "image/png": blob }),
+      ]);
+      alert("카드 이미지가 클립보드에 복사되었어요!");
+    } catch {
+      alert("이미지 복사에 실패했어요. 저장을 이용해 주세요.");
     } finally {
       setSaving(false);
     }
@@ -209,17 +229,36 @@ export default function ShareCard({
       </div>
 
       {/* ── 액션 버튼 ── */}
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex gap-2 relative">
+        <div className="flex-1 relative">
+          <button
+            onClick={() => setShowSaveMenu((v) => !v)}
+            disabled={saving}
+            className="w-full py-3.5 bg-[#E879A4] text-white rounded-2xl text-sm font-bold hover:bg-[#D4658F] active:scale-[0.98] transition-all disabled:opacity-50"
+            style={{ boxShadow: "0 4px 14px rgba(232,121,164,0.3)" }}
+          >
+            {saving ? "처리 중..." : "📥 카드 저장"}
+          </button>
+          {showSaveMenu && (
+            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden z-10">
+              <button
+                onClick={handleCopyImage}
+                className="w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-pink-50 transition-colors text-left"
+              >
+                📋 이미지 복사
+              </button>
+              <div className="h-px bg-gray-100" />
+              <button
+                onClick={handleDownload}
+                className="w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-pink-50 transition-colors text-left"
+              >
+                💾 이미지 저장
+              </button>
+            </div>
+          )}
+        </div>
         <button
-          onClick={handleSave}
-          disabled={saving}
-          className="flex-1 py-3.5 bg-[#E879A4] text-white rounded-2xl text-sm font-bold hover:bg-[#D4658F] active:scale-[0.98] transition-all disabled:opacity-50"
-          style={{ boxShadow: "0 4px 14px rgba(232,121,164,0.3)" }}
-        >
-          {saving ? "저장 중..." : "📥 카드 저장"}
-        </button>
-        <button
-          onClick={() => setShowSharePanel((v) => !v)}
+          onClick={() => { setShowSharePanel((v) => !v); setShowSaveMenu(false); }}
           className="flex-1 py-3.5 bg-white border-2 border-[#E879A4] text-[#E879A4] rounded-2xl text-sm font-bold hover:bg-[#E879A4]/5 active:scale-[0.98] transition-all"
         >
           {showSharePanel ? "✕ 닫기" : "📤 공유하기"}
