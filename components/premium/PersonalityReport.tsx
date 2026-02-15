@@ -17,7 +17,7 @@ interface PersonalityReportProps {
   photoUrl?: string | null;
 }
 
-const AXIS_NAMES = ["사교성", "활력", "탐구심", "주도성"];
+const AXIS_NAMES = ["사교성", "활동성", "호기심", "주도성"];
 
 /* ── 1. 키워드 뱃지 ── */
 export function generateKeywords(pcts: AxisPercentage[]): string[] {
@@ -34,7 +34,7 @@ export function generateKeywords(pcts: AxisPercentage[]): string[] {
   else if (hc >= 60) tags.push("#활발이");
   else if (hc <= 25) tags.push("#힐링메이트");
   else if (hc <= 40) tags.push("#차분이");
-  else tags.push("#적당한활력");
+  else tags.push("#적당한활동성");
 
   if (xg >= 75) tags.push("#호기심대장");
   else if (xg >= 60) tags.push("#탐험가");

@@ -16,7 +16,7 @@ const CY = 150;
 const MAX_R = 90;
 const ANGLES = [-Math.PI / 2, 0, Math.PI / 2, Math.PI]; // top, right, bottom, left
 const GRID_LEVELS = [25, 50, 75, 100];
-const AXIS_NAMES = ["사교성", "활력", "탐구심", "주도성"];
+const AXIS_NAMES = ["사교성", "활동성", "호기심", "주도성"];
 
 function getPoint(axisIndex: number, pct: number) {
   const r = (pct / 100) * MAX_R;
@@ -35,7 +35,7 @@ function ownerMbtiToRadarPcts(mbti: string): number[] {
   const sn = mbti[1] === "S" ? 65 : 35;
   const jp = mbti[3] === "P" ? 75 : 25;
   const tf = mbti[2] === "T" ? 70 : 30;
-  return [ei, sn, jp, tf]; // 사교성, 활력, 탐구심, 주도성
+  return [ei, sn, jp, tf]; // 사교성, 활동성, 호기심, 주도성
 }
 
 export default function RadarChart({
@@ -165,7 +165,7 @@ export default function RadarChart({
           {percentages[0]?.left.label} ↔ {percentages[0]?.right.label}
         </text>
 
-        {/* Right: 활력 */}
+        {/* Right: 활동성 */}
         <text x={290} y={CY - 6} fontSize="16" fontWeight="900" fill="#374151" textAnchor="middle">
           {AXIS_NAMES[1]}
         </text>
@@ -173,7 +173,7 @@ export default function RadarChart({
           {percentages[1]?.left.label} ↔ {percentages[1]?.right.label}
         </text>
 
-        {/* Bottom: 탐구심 */}
+        {/* Bottom: 호기심 */}
         <text x={CX} y={280} fontSize="12" fontWeight="600" fill="#7c7c8a" textAnchor="middle">
           {percentages[2]?.left.label} ↔ {percentages[2]?.right.label}
         </text>
