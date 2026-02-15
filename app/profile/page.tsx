@@ -48,7 +48,9 @@ export default function ProfilePage() {
   const [mbti, setMbti] = useState(["", "", "", ""]);
   const [preview, setPreview] = useState<string | null>(null);
   const [showBreedPicker, setShowBreedPicker] = useState(false);
+  const [showPhotoMenu, setShowPhotoMenu] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
 
   const mbtiAxes = [
     { index: 0, axis: "에너지", color: "#E879A4", options: [{ letter: "E", label: "외향" }, { letter: "I", label: "내향" }] },
@@ -105,8 +107,17 @@ export default function ProfilePage() {
     <div className="flex flex-col min-h-dvh px-6 py-10">
       {/* 사진 + 이름 */}
       <div className="flex flex-col items-center mb-8">
+        {/* 앨범 선택용 */}
         <input
           ref={fileRef}
+          type="file"
+          accept="image/*"
+          onChange={handlePhoto}
+          className="hidden"
+        />
+        {/* 카메라 촬영용 */}
+        <input
+          ref={cameraRef}
           type="file"
           accept="image/*"
           capture="environment"
@@ -121,7 +132,7 @@ export default function ProfilePage() {
               className="w-28 h-28 object-cover rounded-full border-4 border-[#E879A4]/20"
             />
             <button
-              onClick={() => fileRef.current?.click()}
+              onClick={() => setShowPhotoMenu(true)}
               className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#E879A4] text-white rounded-full text-sm flex items-center justify-center shadow-lg"
             >
               📷
@@ -143,7 +154,7 @@ export default function ProfilePage() {
           </div>
         ) : (
           <button
-            onClick={() => fileRef.current?.click()}
+            onClick={() => setShowPhotoMenu(true)}
             className="w-28 h-28 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#E879A4] hover:text-pink-500 transition-colors mb-4"
           >
             <span className="text-2xl mb-1">📷</span>
@@ -151,8 +162,37 @@ export default function ProfilePage() {
           </button>
         )}
 
+        {/* 사진 선택 메뉴 */}
+        {showPhotoMenu && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={() => setShowPhotoMenu(false)}>
+            <div className="w-full max-w-md bg-white rounded-t-3xl p-6 pb-8 animate-slide-up" onClick={(e) => e.stopPropagation()}>
+              <p className="text-base font-bold text-center mb-4">사진 등록</p>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => { setShowPhotoMenu(false); cameraRef.current?.click(); }}
+                  className="w-full py-4 bg-[#E879A4] text-white rounded-2xl font-bold text-sm active:scale-[0.98] transition-transform"
+                >
+                  📸 카메라로 촬영
+                </button>
+                <button
+                  onClick={() => { setShowPhotoMenu(false); fileRef.current?.click(); }}
+                  className="w-full py-4 bg-white border-2 border-[#E879A4] text-[#E879A4] rounded-2xl font-bold text-sm active:scale-[0.98] transition-transform"
+                >
+                  🖼️ 앨범에서 선택
+                </button>
+                <button
+                  onClick={() => setShowPhotoMenu(false)}
+                  className="w-full py-3 text-gray-400 text-sm"
+                >
+                  취소
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <p className="text-xs text-gray-400 mb-4 leading-relaxed text-center">
-          사진을 등록하면 우리 아이 사진이 들어간<br />세상에 하나뿐인 멍BTI 카드를 만들 수 있어요!
+          사진을 등록하면 우리 아이 사진이 들어간<br />세상에 하나뿐인 너는내운멍 카드를 만들 수 있어요!
         </p>
 
         <h1 className="text-xl font-black mb-4">우리 아이 이름은?</h1>

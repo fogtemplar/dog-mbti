@@ -1,9 +1,17 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 
 export default function QuizIntroPage() {
+  // 첫 몇 장 이미지 미리 로드
+  useEffect(() => {
+    for (let i = 1; i <= 3; i++) {
+      const img = new Image();
+      img.src = `/quiz/${i}.png`;
+    }
+  }, []);
   const router = useRouter();
   const dogName = useQuizStore((s) => s.dogName);
 

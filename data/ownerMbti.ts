@@ -5,7 +5,7 @@ export interface OwnerMatch {
 }
 
 // ────────────────────────────────────────────
-// 견주 실제 MBTI × 강아지 멍BTI  시너지 메시지
+// 견주 실제 MBTI × 강아지 너는내운멍  시너지 메시지
 // ────────────────────────────────────────────
 const socialSynergy: Record<string, Record<string, string>> = {
   S: {
@@ -89,7 +89,7 @@ export function generateSynergyMessage(dogType: string, ownerMbti: string, dogNa
   return picked.map((m) => m.replace(/\{name\}/g, dogName).replace(/견주님/g, `${display}`)).join(" ");
 }
 
-// 멍BTI 타입별 어울리는 견주 MBTI
+// 너는내운멍 타입별 어울리는 견주 MBTI
 export const ownerMatches: Record<string, OwnerMatch> = {
   SHXB: {
     mbti: "ENFP",

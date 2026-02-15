@@ -10,10 +10,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const result = resultData[type];
 
   if (!result) {
-    return { title: "멍BTI - 결과" };
+    return { title: "너는내운멍 - 결과" };
   }
 
-  const title = `${result.emoji} ${result.code} - ${result.nickname} | 멍BTI`;
+  const title = `${result.emoji} ${result.code} - ${result.nickname} | 너는내운멍`;
   const description = result.summary;
 
   return {
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       type: "website",
-      siteName: "멍BTI - 강아지 성향 테스트",
+      siteName: "너는내운멍 - 강아지 성향 테스트",
     },
     twitter: {
       card: "summary_large_image",

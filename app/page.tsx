@@ -22,15 +22,16 @@ export default function LandingPage() {
       <div className="absolute bottom-20 right-12 text-xl animate-float opacity-15" style={{ animationDelay: "2s" }}>💕</div>
 
       {/* 로고 영역 */}
-      <div className="relative mb-4">
-        <div className="animate-bounce-slow text-7xl">🐶</div>
+      <div className="relative mb-6">
+        <img
+          src="/logo.png"
+          alt="너는내운멍"
+          className="w-48 h-auto mx-auto animate-bounce-slow"
+          draggable={false}
+        />
         <div className="absolute -top-1 -right-3 text-2xl animate-sparkle">✨</div>
         <div className="absolute -bottom-1 -left-3 text-xl animate-sparkle" style={{ animationDelay: "0.7s" }}>💖</div>
       </div>
-
-      <h1 className="text-4xl font-black mb-2">
-        멍<span className="bg-gradient-to-r from-[#E879A4] to-[#A78BFA] bg-clip-text text-transparent">BTI</span>
-      </h1>
       <p className="text-lg font-semibold text-gray-700 mb-1">
         우리 강아지 성향 테스트
       </p>

@@ -3,7 +3,7 @@ export interface Breed {
   name: string;
   size: "소형견" | "중형견" | "대형견" | "기타";
   personality: string; // 알려진 평균 성격
-  typicalType: string; // 평균적으로 어울리는 멍BTI 코드
+  typicalType: string; // 평균적으로 어울리는 너는내운멍 코드
 }
 
 export const breeds: Breed[] = [

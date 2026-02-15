@@ -14,21 +14,21 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const d = resolved?.d;
 
   if (!d || typeof d !== "string") {
-    return { title: "멍BTI - 결과" };
+    return { title: "너는내운멍 - 결과" };
   }
 
   const shared = decodeSharePayload(d);
   if (!shared) {
-    return { title: "멍BTI - 결과" };
+    return { title: "너는내운멍 - 결과" };
   }
 
   const result = resultData[shared.type];
   if (!result) {
-    return { title: "멍BTI - 결과" };
+    return { title: "너는내운멍 - 결과" };
   }
 
-  const title = `${result.emoji} ${shared.dogName}는 ${result.nickname}! | 멍BTI`;
-  const description = `${shared.dogName}의 멍BTI 결과: ${result.code} (${result.nickname}) - ${result.summary}`;
+  const title = `${result.emoji} ${shared.dogName}는 ${result.nickname}! | 너는내운멍`;
+  const description = `${shared.dogName}의 너는내운멍 결과: ${result.code} (${result.nickname}) - ${result.summary}`;
 
   return {
     title,
@@ -37,7 +37,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       title,
       description,
       type: "website",
-      siteName: "멍BTI - 강아지 성향 테스트",
+      siteName: "너는내운멍 - 강아지 성향 테스트",
     },
     twitter: {
       card: "summary_large_image",

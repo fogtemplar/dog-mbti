@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   const dogName = payload?.dogName || "강아지";
   const code = result?.code || "----";
-  const nickname = result?.nickname || "멍BTI 결과";
+  const nickname = result?.nickname || "너는내운멍 결과";
   const emoji = result?.emoji || "🐾";
 
   return new ImageResponse(
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <div style={{ fontSize: "22px", fontWeight: 700, color: "#8B5CF6" }}>멍BTI 결과</div>
+            <div style={{ fontSize: "22px", fontWeight: 700, color: "#8B5CF6" }}>너는내운멍 결과</div>
             <div style={{ fontSize: "44px", fontWeight: 800, color: "#111827" }}>
               {dogName}의 성향은
             </div>

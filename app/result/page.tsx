@@ -152,36 +152,40 @@ function ResultContent() {
     ];
 
     return (
-      <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center relative overflow-hidden">
+      <div className="flex flex-col items-center min-h-dvh px-6 pt-16 pb-12 text-center relative overflow-hidden">
         <div className="absolute top-10 left-8 text-2xl animate-float opacity-20">🌸</div>
         <div className="absolute top-16 right-10 text-xl animate-sparkle opacity-15">✨</div>
 
-        {isFirst && (photoUrl ? (
-          <img
-            src={photoUrl}
-            alt={displayName}
-            className="w-28 h-28 rounded-full object-cover border-4 border-[#E879A4]/20 mb-6 animate-scale-in"
-          />
-        ) : (
-          <div className="text-6xl mb-6 animate-scale-in">{result.emoji}</div>
-        ))}
+        {/* 아이콘 영역 (고정 높이) */}
+        <div className="h-28 flex items-center justify-center animate-scale-in">
+          {isFirst && (photoUrl ? (
+            <img
+              src={photoUrl}
+              alt={displayName}
+              className="w-24 h-24 rounded-full object-cover border-4 border-[#E879A4]/20"
+            />
+          ) : (
+            <div className="text-6xl">{result.emoji}</div>
+          ))}
+          {!isFirst && (
+            <div className="text-5xl">
+              {["🐾", "💡", "✨", "🎯"][step] || "🐾"}
+            </div>
+          )}
+        </div>
 
-        {!isFirst && (
-          <div className="text-5xl mb-6 animate-scale-in">
-            {["🐾", "💡", "✨", "🎯"][step] || "🐾"}
-          </div>
-        )}
-
+        {/* 서브타이틀 + 헤딩 */}
         <p className="text-sm text-gray-500 mb-2 animate-slide-up" style={{ animationDelay: "0.2s" }}>
           {isFirst ? "분석이 끝났어요!" : `${step + 1} / ${totalHintPages}`}
         </p>
-        <h1 className="text-xl font-black mb-4 animate-slide-up" style={{ animationDelay: "0.4s" }}>
+        <h1 className="text-xl font-black mb-6 animate-slide-up" style={{ animationDelay: "0.4s" }}>
           <span className="bg-gradient-to-r from-[#E879A4] to-[#C084FC] bg-clip-text text-transparent">
             {headings[step] || headings[0]}
           </span>
         </h1>
 
-        <div className="w-full max-w-xs space-y-3 mb-8">
+        {/* 컨텐츠 영역 */}
+        <div className="w-full max-w-xs space-y-3 flex-1">
           {hintLines.map((line, i) => (
             <div
               key={i}
@@ -193,25 +197,27 @@ function ResultContent() {
           ))}
         </div>
 
-        {/* 페이지 인디케이터 */}
-        <div className="flex gap-2 mb-6 animate-slide-up" style={{ animationDelay: "1s" }}>
-          {Array.from({ length: totalHintPages }).map((_, i) => (
-            <div
-              key={i}
-              className={`w-2 h-2 rounded-full transition-all ${
-                i === step ? "bg-[#E879A4] w-6" : i < step ? "bg-[#E879A4]/40" : "bg-gray-200"
-              }`}
-            />
-          ))}
-        </div>
+        {/* 하단 고정: 인디케이터 + 버튼 */}
+        <div className="mt-8 flex flex-col items-center">
+          <div className="flex gap-2 mb-5 animate-slide-up" style={{ animationDelay: "1s" }}>
+            {Array.from({ length: totalHintPages }).map((_, i) => (
+              <div
+                key={i}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  i === step ? "bg-[#E879A4] w-6" : i < step ? "bg-[#E879A4]/40" : "bg-gray-200"
+                }`}
+              />
+            ))}
+          </div>
 
-        <button
-          onClick={nextStep}
-          className="px-8 py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full font-bold text-base animate-slide-up active:scale-[0.98] transition-transform"
-          style={{ animationDelay: "1.1s", boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
-        >
-          {isLast ? "성향 분석 보기 →" : "다음 →"}
-        </button>
+          <button
+            onClick={nextStep}
+            className="px-8 py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full font-bold text-base animate-slide-up active:scale-[0.98] transition-transform"
+            style={{ animationDelay: "1.1s", boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
+          >
+            {isLast ? "성향 분석 보기 →" : "다음 →"}
+          </button>
+        </div>
       </div>
     );
   }
@@ -220,17 +226,24 @@ function ResultContent() {
   if (step === STEP_AXIS) {
     const axisLabels = ["사교성", "감정표현", "탐험심", "행동패턴"];
     return (
-      <div className="flex flex-col items-center justify-center min-h-dvh px-6 relative overflow-hidden">
+      <div className="flex flex-col items-center min-h-dvh px-6 pt-16 pb-12 text-center relative overflow-hidden">
         <div className="absolute bottom-20 right-6 text-xl animate-float opacity-15">💖</div>
 
+        {/* 아이콘 영역 (고정 높이) */}
+        <div className="h-28 flex items-center justify-center animate-scale-in">
+          <div className="text-5xl">📊</div>
+        </div>
+
+        {/* 서브타이틀 + 헤딩 */}
         <p className="text-sm text-gray-500 mb-2 animate-slide-up">
           {displayName}의 성향 분석
         </p>
-        <h2 className="text-xl font-black text-center mb-8 animate-slide-up" style={{ animationDelay: "0.15s" }}>
+        <h2 className="text-xl font-black mb-6 animate-slide-up" style={{ animationDelay: "0.15s" }}>
           이런 성향을 갖고 있어요
         </h2>
 
-        <div className="w-full max-w-sm space-y-4 mb-8">
+        {/* 컨텐츠 영역 */}
+        <div className="w-full max-w-sm space-y-4 flex-1">
           {percentages.map((p, i) => {
             const dominant = p.left.pct >= p.right.pct ? p.left : p.right;
             return (
@@ -258,13 +271,16 @@ function ResultContent() {
           })}
         </div>
 
-        <button
-          onClick={nextStep}
-          className="px-8 py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full font-bold text-base animate-slide-up active:scale-[0.98] transition-transform"
-          style={{ animationDelay: "1s", boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
-        >
-          결과 타입 보기 →
-        </button>
+        {/* 하단 고정: 버튼 */}
+        <div className="mt-8">
+          <button
+            onClick={nextStep}
+            className="px-8 py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full font-bold text-base animate-slide-up active:scale-[0.98] transition-transform"
+            style={{ animationDelay: "1s", boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
+          >
+            결과 타입 보기 →
+          </button>
+        </div>
       </div>
     );
   }
@@ -272,20 +288,21 @@ function ResultContent() {
   // ─── 타입 공개 ───
   if (step === STEP_TYPE) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center relative overflow-hidden">
+      <div className="flex flex-col items-center min-h-dvh px-6 pt-16 pb-12 text-center relative overflow-hidden">
         <div className="absolute top-12 right-10 text-2xl animate-sparkle opacity-20">🌟</div>
         <div className="absolute bottom-28 left-8 text-xl animate-float opacity-15">🐾</div>
 
-        <p className="text-sm text-gray-500 mb-3 animate-slide-up">
-          {displayName}의 성향 타입은
-        </p>
-
-        <div className="animate-scale-in" style={{ animationDelay: "0.3s" }}>
-          <p className="text-5xl font-black tracking-[0.2em] bg-gradient-to-r from-[#E879A4] to-[#C084FC] bg-clip-text text-transparent mb-2">
+        {/* 아이콘 영역 (고정 높이) */}
+        <div className="h-28 flex items-center justify-center animate-scale-in" style={{ animationDelay: "0.3s" }}>
+          <p className="text-5xl font-black tracking-[0.2em] bg-gradient-to-r from-[#E879A4] to-[#C084FC] bg-clip-text text-transparent">
             {result.code}
           </p>
         </div>
 
+        {/* 서브타이틀 + 헤딩 */}
+        <p className="text-sm text-gray-500 mb-2 animate-slide-up">
+          {displayName}의 성향 타입은
+        </p>
         <h2
           className="text-2xl font-black mb-2 animate-slide-up"
           style={{ animationDelay: "0.6s" }}
@@ -293,41 +310,47 @@ function ResultContent() {
           {result.emoji} {result.nickname}
         </h2>
 
-        <p
-          className="text-sm text-gray-600 leading-relaxed max-w-xs mb-6 animate-slide-up"
-          style={{ animationDelay: "0.8s" }}
-        >
-          {fillName(result.summary, displayName)}
-        </p>
-
-        {breed && breed.id !== "other" && (
-          <div
-            className="w-full max-w-xs bg-white/80 backdrop-blur rounded-2xl p-4 mb-6 animate-slide-up"
-            style={{ animationDelay: "1s" }}
+        {/* 컨텐츠 영역 */}
+        <div className="flex-1 flex flex-col items-center">
+          <p
+            className="text-sm text-gray-600 leading-relaxed max-w-xs mb-6 animate-slide-up"
+            style={{ animationDelay: "0.8s" }}
           >
-            <p className="text-xs font-bold text-gray-400 mb-1">🐕 {breed.name} 평균 성격</p>
-            {isSameAsBreed ? (
-              <p className="text-sm text-[#E879A4] font-medium">
-                {breed.name}의 전형적인 성격과 일치해요!
-              </p>
-            ) : breedTypicalResult ? (
-              <p className="text-xs text-gray-500 leading-relaxed">
-                평균 타입은 {breed.typicalType}({breedTypicalResult.nickname})이지만,
-                {displayName}만의 개성이 돋보여요!
-              </p>
-            ) : (
-              <p className="text-xs text-gray-500 leading-relaxed">{breed.personality}</p>
-            )}
-          </div>
-        )}
+            {fillName(result.summary, displayName)}
+          </p>
 
-        <button
-          onClick={nextStep}
-          className="px-8 py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full font-bold text-base animate-slide-up active:scale-[0.98] transition-transform"
-          style={{ animationDelay: "1.2s", boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
-        >
-          {ownerMbti ? `${displayOwner}과의 궁합은? →` : "카드 확인하기 →"}
-        </button>
+          {breed && breed.id !== "other" && (
+            <div
+              className="w-full max-w-xs bg-white/80 backdrop-blur rounded-2xl p-4 mb-6 animate-slide-up"
+              style={{ animationDelay: "1s" }}
+            >
+              <p className="text-xs font-bold text-gray-400 mb-1">🐕 {breed.name} 평균 성격</p>
+              {isSameAsBreed ? (
+                <p className="text-sm text-[#E879A4] font-medium">
+                  {breed.name}의 전형적인 성격과 일치해요!
+                </p>
+              ) : breedTypicalResult ? (
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  평균 타입은 {breed.typicalType}({breedTypicalResult.nickname})이지만,
+                  {displayName}만의 개성이 돋보여요!
+                </p>
+              ) : (
+                <p className="text-xs text-gray-500 leading-relaxed">{breed.personality}</p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* 하단 고정: 버튼 */}
+        <div className="mt-8">
+          <button
+            onClick={nextStep}
+            className="px-8 py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full font-bold text-base animate-slide-up active:scale-[0.98] transition-transform"
+            style={{ animationDelay: "1.2s", boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
+          >
+            {ownerMbti ? `${displayOwner}과의 궁합은? →` : "카드 확인하기 →"}
+          </button>
+        </div>
       </div>
     );
   }
@@ -335,48 +358,61 @@ function ResultContent() {
   // ─── 견주 궁합 ───
   if (step === STEP_SYNERGY && ownerMbti) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center relative overflow-hidden">
+      <div className="flex flex-col items-center min-h-dvh px-6 pt-16 pb-12 text-center relative overflow-hidden">
         <div className="absolute top-14 left-6 text-2xl animate-float opacity-15">💜</div>
 
-        <p className="text-sm text-gray-500 mb-3 animate-slide-up">
+        {/* 아이콘 영역 (고정 높이) */}
+        <div className="h-28 flex items-center justify-center animate-scale-in" style={{ animationDelay: "0.2s" }}>
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-white rounded-2xl flex flex-col items-center justify-center shadow-md">
+              <span className="text-lg font-black text-purple-600">{ownerMbti}</span>
+              <span className="text-[9px] text-gray-400">{displayOwner}</span>
+            </div>
+            <div className="text-2xl animate-wiggle">💕</div>
+            <div className="w-16 h-16 bg-white rounded-2xl flex flex-col items-center justify-center shadow-md">
+              <span className="text-lg font-black text-[#E879A4]">{result.code}</span>
+              <span className="text-[9px] text-gray-400">{displayName}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 서브타이틀 + 헤딩 */}
+        <p className="text-sm text-gray-500 mb-2 animate-slide-up">
           견주 × 강아지 궁합
         </p>
+        <h2 className="text-xl font-black mb-6 animate-slide-up" style={{ animationDelay: "0.15s" }}>
+          우리의 케미는?
+        </h2>
 
-        <div className="flex items-center gap-4 mb-6 animate-scale-in" style={{ animationDelay: "0.2s" }}>
-          <div className="w-16 h-16 bg-white rounded-2xl flex flex-col items-center justify-center shadow-md">
-            <span className="text-lg font-black text-purple-600">{ownerMbti}</span>
-            <span className="text-[9px] text-gray-400">{displayOwner}</span>
-          </div>
-          <div className="text-2xl animate-wiggle">💕</div>
-          <div className="w-16 h-16 bg-white rounded-2xl flex flex-col items-center justify-center shadow-md">
-            <span className="text-lg font-black text-[#E879A4]">{result.code}</span>
-            <span className="text-[9px] text-gray-400">{displayName}</span>
+        {/* 컨텐츠 영역 */}
+        <div className="flex-1">
+          <div
+            className="w-full max-w-xs bg-white/80 backdrop-blur rounded-2xl p-5 mb-6 text-left animate-slide-up"
+            style={{ animationDelay: "0.5s" }}
+          >
+            <p className="text-sm text-gray-700 leading-relaxed">
+              {generateSynergyMessage(type, ownerMbti, displayName, ownerName || undefined)}
+            </p>
+            {ownerMatch && ownerMbti === ownerMatch.mbti && (
+              <div className="mt-3 bg-purple-50 rounded-xl p-3">
+                <p className="text-sm text-purple-600 font-medium">
+                  ✨ 최고의 궁합이에요!
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
-        <div
-          className="w-full max-w-xs bg-white/80 backdrop-blur rounded-2xl p-5 mb-6 text-left animate-slide-up"
-          style={{ animationDelay: "0.5s" }}
-        >
-          <p className="text-sm text-gray-700 leading-relaxed">
-            {generateSynergyMessage(type, ownerMbti, displayName, ownerName || undefined)}
-          </p>
-          {ownerMatch && ownerMbti === ownerMatch.mbti && (
-            <div className="mt-3 bg-purple-50 rounded-xl p-3">
-              <p className="text-sm text-purple-600 font-medium">
-                ✨ 최고의 궁합이에요!
-              </p>
-            </div>
-          )}
+        {/* 하단 고정: 버튼 */}
+        <div className="mt-8">
+          <button
+            onClick={nextStep}
+            className="px-8 py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full font-bold text-base animate-slide-up active:scale-[0.98] transition-transform"
+            style={{ animationDelay: "0.8s", boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
+          >
+            카드 확인하기 →
+          </button>
         </div>
-
-        <button
-          onClick={nextStep}
-          className="px-8 py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full font-bold text-base animate-slide-up active:scale-[0.98] transition-transform"
-          style={{ animationDelay: "0.8s", boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
-        >
-          카드 확인하기 →
-        </button>
       </div>
     );
   }

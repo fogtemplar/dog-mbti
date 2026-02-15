@@ -131,7 +131,7 @@ function buildPlatforms(): PlatformDef[] {
           const blobUrl = URL.createObjectURL(file);
           const a = document.createElement("a");
           a.href = blobUrl;
-          a.download = "멍BTI_카드.png";
+          a.download = "너는내운멍_카드.png";
           a.click();
           URL.revokeObjectURL(blobUrl);
           alert("카드 이미지가 저장되었어요!\n인스타그램 스토리에 업로드해 보세요 📸");
@@ -207,7 +207,7 @@ export default function SocialShare({ url, title, description, dogName, captureC
         if (p.useImageShare || p.specialAction) {
           const blob = await captureCard();
           if (blob) {
-            file = new File([blob], `${dogName}_멍BTI.png`, { type: "image/png" });
+            file = new File([blob], `${dogName}_너는내운멍.png`, { type: "image/png" });
           }
         }
 

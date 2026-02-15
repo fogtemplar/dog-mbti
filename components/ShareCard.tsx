@@ -23,6 +23,46 @@ interface ShareCardProps {
   shareUrl?: string;
 }
 
+/** 한국어 받침 여부 → "우리 콩이의 성격은?" vs "우리 초코의 성격은?" */
+function nameWithUi(name: string): string {
+  if (!name) return "의";
+  const last = name.charCodeAt(name.length - 1);
+  if (last >= 0xAC00 && last <= 0xD7A3 && (last - 0xAC00) % 28 !== 0) {
+    return `${name}이의`;
+  }
+  return `${name}의`;
+}
+
+/** 견주 MBTI + 강아지 성향 코드 → 관계 한줄 요약 */
+function getRelationshipLine(ownerMbti: string, dogCode: string): string {
+  if (!ownerMbti || ownerMbti.length !== 4 || !dogCode || dogCode.length !== 4) {
+    return "함께하는 모든 순간이 특별한 사이";
+  }
+  const oE = ownerMbti[0] === "E";
+  const dS = dogCode[0] === "S";
+  const dH = dogCode[1] === "H";
+  if (oE && dS && dH) return "함께라면 어디든 신나는 에너지 폭발 소울메이트";
+  if (oE && dS && !dH) return "서로의 사교성이 빛나는 여유로운 베스트 파트너";
+  if (oE && !dS && dH) return "밝은 보호자와 독립적인 아이의 활기찬 밸런스";
+  if (oE && !dS && !dH) return "보호자의 에너지가 차분한 아이에게 활력을 주는 관계";
+  if (!oE && dS && dH) return "사교적인 아이 덕분에 세상이 더 넓어지는 관계";
+  if (!oE && dS && !dH) return "서로의 페이스를 존중하며 함께하는 따뜻한 관계";
+  if (!oE && !dS && dH) return "조용한 보호자와 활발한 아이의 의외의 케미";
+  return "조용히 곁에 있는 것만으로 충분한 힐링 파트너";
+}
+
+/** 밝은 accent 색상을 텍스트용으로 어둡게 조정 (배경과 충분한 대비 확보) */
+function readableAccent(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  if (brightness <= 0.4) return hex;
+  const factor = 0.4 / brightness;
+  const d = (c: number) => Math.round(c * factor).toString(16).padStart(2, "0");
+  return `#${d(r)}${d(g)}${d(b)}`;
+}
+
 /* ── 타입별 프리미엄 그라디언트 ── */
 const premiumGradients: Record<string, { bg: string; accent: string }> = {
   "#FFF3E0": { bg: "linear-gradient(145deg, #FFF3E0 0%, #FFE0B2 40%, #FFCC80 70%, #FFB74D 100%)", accent: "#FF9800" },
@@ -85,7 +125,7 @@ export default function ShareCard({
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `멍BTI_${dogName}_${mode === "vertical" ? "세로" : "가로"}.png`;
+      a.download = `너는내운멍_${dogName}_${mode === "vertical" ? "세로" : "가로"}.png`;
       a.click();
       URL.revokeObjectURL(url);
     } finally {
@@ -150,7 +190,7 @@ export default function ShareCard({
       </div>
 
       {/* ── 가로형 카드 ── */}
-      <div style={{ display: mode === "horizontal" ? "flex" : "none", justifyContent: "center" }}>
+      <div style={{ display: mode === "horizontal" ? "block" : "none", overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
         <HorizontalCard
           ref={horizontalRef}
           dogName={dogName}
@@ -191,7 +231,7 @@ export default function ShareCard({
           <SocialShare
             url={shareUrl || window.location.href}
             title={`${dogName}는 ${nickname} 타입! 🐾`}
-            description={`${dogName}의 멍BTI 결과: ${code} (${nickname}) - 우리 강아지 성향 테스트`}
+            description={`${dogName}의 너는내운멍 결과: ${code} (${nickname}) - 우리 강아지 성향 테스트`}
             dogName={dogName}
             captureCard={captureCard}
           />
@@ -232,7 +272,7 @@ function StatBar({ label, pct, accent, barHeight = 10, fontSize = 10, labelWidth
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
       <span style={{
-        fontSize: `${fontSize}px`, fontWeight: 700, color: "#6b7280",
+        fontSize: `${fontSize}px`, fontWeight: 700, color: "#4b5563",
         width: `${labelWidth}px`, textAlign: "right" as const, flexShrink: 0,
       }}>
         {label}
@@ -249,7 +289,7 @@ function StatBar({ label, pct, accent, barHeight = 10, fontSize = 10, labelWidth
       </div>
       <span style={{
         fontSize: `${fontSize}px`, fontWeight: 900,
-        width: `${pctWidth}px`, flexShrink: 0, color: accent,
+        width: `${pctWidth}px`, flexShrink: 0, color: readableAccent(accent),
       }}>
         {pct}%
       </span>
@@ -266,6 +306,7 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
   { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
   ref,
 ) {
+  const textAccent = readableAccent(colors.accent);
   return (
     <div
       ref={ref}
@@ -298,31 +339,13 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
             position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
             background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.15) 35%, transparent 60%)",
           }} />
-          {/* 상단 좌 배지 */}
-          <div style={{
-            position: "absolute", top: "12px", left: "12px",
-            padding: "4px 10px", borderRadius: "999px",
-            fontSize: "10px", fontWeight: 900, color: "#fff",
-            letterSpacing: "0.05em", background: "rgba(0,0,0,0.35)",
-          }}>
-            멍BTI
-          </div>
-          {/* 상단 우 이모지 */}
-          <div style={{
-            position: "absolute", top: "12px", right: "12px",
-            width: "32px", height: "32px", borderRadius: "50%",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "18px", background: "rgba(0,0,0,0.35)",
-          }}>
-            {emoji}
-          </div>
           {/* 하단 타이포 */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 20px 16px" }}>
             <div style={{
-              fontSize: "12px", fontWeight: 700, color: "#fff",
+              fontSize: "16px", fontWeight: 700, color: "#fff",
               marginBottom: "4px", textShadow: "0 1px 4px rgba(0,0,0,0.4)",
             }}>
-              우리 {dogName}의 성격은?
+              우리 {nameWithUi(dogName)} 성격은?
             </div>
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
               <div>
@@ -337,61 +360,55 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
                   fontSize: "16px", fontWeight: 700, color: "rgba(255,255,255,0.9)",
                   marginTop: "4px", textShadow: "0 1px 4px rgba(0,0,0,0.3)",
                 }}>
-                  {nickname}
+                  {nickname} {emoji}
                 </div>
               </div>
-              <div style={{ textAlign: "right" as const }}>
+              {breedName && (
                 <div style={{
-                  fontSize: "13px", fontWeight: 900, color: "#fff",
-                  textShadow: "0 1px 4px rgba(0,0,0,0.4)",
+                  padding: "4px 10px", borderRadius: "999px",
+                  fontSize: "11px", fontWeight: 900, color: "#fff",
+                  background: "rgba(0,0,0,0.35)",
+                  textShadow: "0 1px 3px rgba(0,0,0,0.3)",
                 }}>
-                  🐾 {dogName}{breedName ? ` (${breedName})` : ""}
+                  {breedName}
                 </div>
-                {ownerName && (
-                  <div style={{
-                    fontSize: "12px", fontWeight: 700, color: "rgba(255,255,255,0.85)",
-                    marginTop: "3px", textShadow: "0 1px 4px rgba(0,0,0,0.3)",
-                  }}>
-                    👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           </div>
         </div>
       ) : (
         <div style={{ padding: "32px 20px 20px", textAlign: "center" as const, position: "relative" }}>
+          {/* 너는내운멍 뱃지 (사진 없을 때만) */}
           <div style={{
-            position: "absolute", top: "12px", left: "12px",
+            position: "absolute", top: "12px", left: "16px",
             padding: "4px 10px", borderRadius: "999px",
-            fontSize: "10px", fontWeight: 900, color: colors.accent,
-            background: "rgba(255,255,255,0.6)", letterSpacing: "0.05em",
+            fontSize: "10px", fontWeight: 900, color: textAccent,
+            background: "rgba(255,255,255,0.6)",
           }}>
-            멍BTI
+            너는내운멍
           </div>
-          <div style={{ fontSize: "72px", marginBottom: "12px" }}>{emoji}</div>
           <div style={{
-            fontSize: "12px", fontWeight: 700, color: colors.accent,
+            fontSize: "16px", fontWeight: 700, color: textAccent,
             marginBottom: "4px",
           }}>
-            우리 {dogName}의 성격은?
+            우리 {nameWithUi(dogName)} 성격은?
           </div>
-          <div style={{ fontSize: "32px", fontWeight: 900, letterSpacing: "0.2em", lineHeight: 1, color: colors.accent }}>
+          <div style={{ fontSize: "32px", fontWeight: 900, letterSpacing: "0.2em", lineHeight: 1, color: textAccent }}>
             {code}
           </div>
           <div style={{ fontSize: "16px", fontWeight: 700, color: "#1f2937", marginTop: "4px" }}>
-            {nickname}
+            {nickname} {emoji}
           </div>
-          <div style={{ marginTop: "10px" }}>
-            <div style={{ fontSize: "13px", fontWeight: 900, color: colors.accent }}>
-              🐾 {dogName}{breedName ? ` (${breedName})` : ""}
+          {breedName && (
+            <div style={{
+              display: "inline-block", marginTop: "10px",
+              padding: "4px 12px", borderRadius: "999px",
+              fontSize: "11px", fontWeight: 900, color: textAccent,
+              background: "rgba(255,255,255,0.6)",
+            }}>
+              {breedName}
             </div>
-            {ownerName && (
-              <div style={{ fontSize: "12px", fontWeight: 700, color: "#6b7280", marginTop: "3px" }}>
-                👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
-              </div>
-            )}
-          </div>
+          )}
         </div>
       )}
 
@@ -417,6 +434,35 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
           <p style={{ fontSize: "11px", color: "#4b5563", lineHeight: 1.6, margin: 0 }}>
             {summary}
           </p>
+        </div>
+
+        {/* 관계 박스 */}
+        <div style={{
+          borderRadius: "12px", padding: "12px 16px", marginBottom: "14px",
+          background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
+          textAlign: "center" as const,
+        }}>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", flexWrap: "wrap" as const }}>
+            {ownerName && (
+              <>
+                <span style={{ fontSize: "12px", fontWeight: 800, color: "#4b5563" }}>
+                  👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
+                </span>
+                <span style={{ fontSize: "10px", color: "#9ca3af" }}>×</span>
+              </>
+            )}
+            <span style={{ fontSize: "12px", fontWeight: 800, color: textAccent }}>
+              🐾 {dogName} ({code})
+            </span>
+          </div>
+          {ownerName && ownerMbti && (
+            <p style={{
+              fontSize: "10px", color: "#6b7280", margin: "6px 0 0",
+              fontWeight: 600, fontStyle: "italic" as const,
+            }}>
+              &ldquo;{getRelationshipLine(ownerMbti, code)}&rdquo;
+            </p>
+          )}
         </div>
 
       </div>
@@ -448,12 +494,15 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
   { dogName, nickname, code, emoji, summary, photoUrl, percentages, breedName, ownerName, ownerMbti, colors },
   ref,
 ) {
+  const textAccent = readableAccent(colors.accent);
   return (
     <div
       ref={ref}
       data-capture-root
       style={{
-        width: "600px",
+        width: "100%",
+        maxWidth: "600px",
+        minWidth: "340px",
         flexShrink: 0,
         borderRadius: "20px",
         overflow: "hidden",
@@ -472,7 +521,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
       <div style={{ display: "flex" }}>
         {/* 좌측: 사진 */}
         <div data-photo-container style={{
-          width: "35%", position: "relative", flexShrink: 0, minHeight: "200px",
+          width: "35%", position: "relative", flexShrink: 0, minHeight: "180px",
           overflow: "hidden",
           ...(photoUrl ? {
             backgroundImage: `url(${photoUrl})`,
@@ -487,21 +536,6 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
                 position: "absolute", left: 0, right: 0, bottom: 0, height: "60px",
                 background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 100%)",
               }} />
-              {/* 이름 오버레이 */}
-              <div style={{
-                position: "absolute", bottom: "8px", left: "8px", right: "8px",
-                padding: "6px 10px", borderRadius: "8px",
-                background: "rgba(0,0,0,0.5)",
-              }}>
-                <div style={{ fontSize: "13px", fontWeight: 900, color: "#fff" }}>
-                  🐾 {dogName}{breedName ? ` (${breedName})` : ""}
-                </div>
-                {ownerName && (
-                  <div style={{ fontSize: "11px", fontWeight: 700, color: "rgba(255,255,255,0.85)", marginTop: "3px" }}>
-                    👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
-                  </div>
-                )}
-              </div>
             </>
           ) : (
             <div style={{
@@ -510,17 +544,14 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               background: `${colors.accent}10`,
             }}>
               <span style={{ fontSize: "48px", marginBottom: "4px" }}>{emoji}</span>
-              <span style={{ fontSize: "13px", fontWeight: 900, color: "#4b5563" }}>
-                🐾 {dogName}
+              <span style={{
+                fontSize: "9px", fontWeight: 900, color: textAccent,
+                background: "rgba(255,255,255,0.6)",
+                padding: "3px 8px", borderRadius: "999px",
+                marginTop: "4px",
+              }}>
+                너는내운멍
               </span>
-              {breedName && (
-                <span style={{ fontSize: "10px", color: "#9ca3af", marginTop: "2px" }}>{breedName}</span>
-              )}
-              {ownerName && (
-                <span style={{ fontSize: "11px", fontWeight: 700, color: "#6b7280", marginTop: "4px" }}>
-                  👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
-                </span>
-              )}
             </div>
           )}
         </div>
@@ -535,28 +566,30 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "2px" }}>
               <div>
                 <div style={{
-                  fontSize: "10px", fontWeight: 700, color: colors.accent,
+                  fontSize: "12px", fontWeight: 700, color: textAccent,
                   marginBottom: "2px",
                 }}>
-                  우리 {dogName}의 성격은?
+                  우리 {nameWithUi(dogName)} 성격은?
                 </div>
                 <div style={{
                   fontSize: "22px", fontWeight: 900, letterSpacing: "0.15em",
-                  lineHeight: 1, color: colors.accent,
+                  lineHeight: 1, color: textAccent,
                 }}>
                   {code}
                 </div>
               </div>
-              <div style={{
-                padding: "3px 8px", borderRadius: "999px",
-                fontSize: "9px", fontWeight: 900, letterSpacing: "0.05em",
-                color: colors.accent, background: "rgba(255,255,255,0.5)", flexShrink: 0,
-              }}>
-                멍BTI
-              </div>
+              {breedName && (
+                <div style={{
+                  padding: "3px 8px", borderRadius: "999px",
+                  fontSize: "9px", fontWeight: 900,
+                  color: textAccent, background: "rgba(255,255,255,0.5)", flexShrink: 0,
+                }}>
+                  {breedName}
+                </div>
+              )}
             </div>
             <div style={{ fontSize: "12px", fontWeight: 700, color: "#1f2937" }}>
-              {emoji} {nickname}
+              {nickname} {emoji}
             </div>
           </div>
 
@@ -589,6 +622,34 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               <p style={{ fontSize: "10px", color: "#4b5563", lineHeight: 1.5, margin: 0 }}>
                 {summary}
               </p>
+            </div>
+            {/* 관계 박스 */}
+            <div style={{
+              borderRadius: "10px", padding: "8px 10px", marginBottom: "8px",
+              background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.7)",
+              textAlign: "center" as const,
+            }}>
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", flexWrap: "wrap" as const }}>
+                {ownerName && (
+                  <>
+                    <span style={{ fontSize: "10px", fontWeight: 800, color: "#4b5563" }}>
+                      👤 {ownerName}{ownerMbti ? ` (${ownerMbti})` : ""}
+                    </span>
+                    <span style={{ fontSize: "9px", color: "#9ca3af" }}>×</span>
+                  </>
+                )}
+                <span style={{ fontSize: "10px", fontWeight: 800, color: textAccent }}>
+                  🐾 {dogName} ({code})
+                </span>
+              </div>
+              {ownerName && ownerMbti && (
+                <p style={{
+                  fontSize: "9px", color: "#6b7280", margin: "4px 0 0",
+                  fontWeight: 600, fontStyle: "italic" as const,
+                }}>
+                  &ldquo;{getRelationshipLine(ownerMbti, code)}&rdquo;
+                </p>
+              )}
             </div>
             {/* 하단 브랜딩 */}
             <div style={{
