@@ -17,6 +17,7 @@ import ShareCard from "@/components/ShareCard";
 import { breeds } from "@/data/breeds";
 import { useQuizStore } from "@/store/quizStore";
 import { premiumExtraData } from "@/data/premiumExtra";
+import PersonalityReport from "@/components/premium/PersonalityReport";
 
 export default function PremiumPage() {
   return (
@@ -254,6 +255,17 @@ function PremiumContent() {
           shareUrl={resultShareUrl}
         />
       </div>
+
+      {/* ── 성향 진단표 ── */}
+      <PersonalityReport
+        percentages={percentages}
+        ownerMbti={ownerMbti}
+        ownerName={ownerName}
+        dogName={dogName}
+        nickname={result.nickname}
+        typeCode={code}
+        photoUrl={photoUrl}
+      />
 
       {/* ── 1. 축별 상세 해석 ── */}
       <div className="mb-6 animate-slide-up">
