@@ -102,6 +102,15 @@ body {
   animation: count-up 0.4s ease-out both;
 }
 
+@keyframes pulse-slow {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2.5s ease-in-out infinite;
+}
+
 /* 귀여운 버튼 호버 효과 */
 .btn-cute {
   position: relative;

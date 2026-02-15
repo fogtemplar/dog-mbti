@@ -203,10 +203,16 @@ export default function ProfilePage() {
         ) : (
           <button
             onClick={() => setShowPhotoMenu(true)}
-            className="w-28 h-28 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#E879A4] hover:text-pink-500 transition-colors mb-4"
+            className="w-32 h-32 rounded-full flex flex-col items-center justify-center mb-4 animate-pulse-slow"
+            style={{
+              background: "linear-gradient(135deg, #FFF0F5, #F3E8FF)",
+              border: "3px dashed #E879A4",
+              boxShadow: "0 4px 20px rgba(232,121,164,0.15)",
+            }}
           >
-            <span className="text-2xl mb-1">📷</span>
-            <span className="text-[10px]">사진 (선택)</span>
+            <span className="text-3xl mb-1">📸</span>
+            <span className="text-xs font-bold text-[#E879A4]">사진 등록</span>
+            <span className="text-[9px] text-[#C084FC] mt-0.5">눌러서 추가!</span>
           </button>
         )}
 
@@ -271,8 +277,9 @@ export default function ProfilePage() {
           </div>
         )}
 
-        <p className="text-xs text-gray-400 mb-4 leading-relaxed text-center">
-          사진을 등록하면 우리 아이 사진이 들어간<br />세상에 하나뿐인 너는내운멍 카드를 만들 수 있어요!
+        <p className="text-xs font-medium text-[#E879A4]/70 mb-4 leading-relaxed text-center">
+          사진을 등록하면 우리 아이 사진이 들어간<br />
+          <span className="font-bold text-[#E879A4]">세상에 하나뿐인 너는내운멍 카드</span>를 만들 수 있어요!
         </p>
 
         <h1 className="text-xl font-black mb-4">우리 아이 이름은?</h1>
