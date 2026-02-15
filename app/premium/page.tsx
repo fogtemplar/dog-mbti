@@ -197,11 +197,6 @@ function PremiumContent() {
   const breedName = payload?.breedId
     ? breeds.find((b) => b.id === payload.breedId)?.name
     : undefined;
-  const resultShareUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/result?d=${dParam}`
-      : "";
-
   const goodPoints = ownerMbti
     ? generateDeepSynergyGoodPoints(code, ownerMbti, dogName, ownerName)
     : [];
@@ -252,7 +247,6 @@ function PremiumContent() {
           breedName={breedName}
           ownerName={ownerName}
           ownerMbti={ownerMbti}
-          shareUrl={resultShareUrl}
         />
       </div>
 
@@ -265,7 +259,6 @@ function PremiumContent() {
         nickname={result.nickname}
         typeCode={code}
         photoUrl={photoUrl}
-        shareUrl={resultShareUrl}
       />
 
       {/* ── 1. 축별 상세 해석 ── */}

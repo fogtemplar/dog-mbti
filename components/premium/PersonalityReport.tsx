@@ -15,7 +15,6 @@ interface PersonalityReportProps {
   nickname: string;
   typeCode?: string;
   photoUrl?: string | null;
-  shareUrl?: string;
 }
 
 const AXIS_NAMES = ["사교성", "활력", "탐구심", "주도성"];
@@ -104,7 +103,6 @@ export default function PersonalityReport({
   nickname,
   typeCode,
   photoUrl,
-  shareUrl,
 }: PersonalityReportProps) {
   const captureRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
@@ -282,11 +280,11 @@ export default function PersonalityReport({
       </div>
 
       {/* ── SNS 공유 패널 ── */}
-      {showSharePanel && shareUrl && (
+      {showSharePanel && (
         <SocialShare
-          url={shareUrl}
-          title={`${dogName}의 종합 성향 진단표`}
-          description={`${dogName}는 "${nickname}" 타입! 🐾`}
+          url="https://www.daeng.me"
+          title={`우리 ${dogName} 성향 분석 완료! "${nickname}" 타입이래 🐾 너도 해봐!`}
+          description={`강아지 성향 테스트 너는내운멍에서 확인해봐!`}
           dogName={dogName}
           captureCard={captureCard}
         />

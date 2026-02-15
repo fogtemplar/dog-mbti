@@ -20,7 +20,6 @@ interface ShareCardProps {
   breedName?: string;
   ownerName?: string;
   ownerMbti?: string;
-  shareUrl?: string;
 }
 
 /** 한국어 받침 여부 → "우리 콩이의 성격은?" vs "우리 초코의 성격은?" */
@@ -91,7 +90,6 @@ export default function ShareCard({
   breedName,
   ownerName,
   ownerMbti,
-  shareUrl,
 }: ShareCardProps) {
   const verticalRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
@@ -155,7 +153,7 @@ export default function ShareCard({
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(shareUrl || window.location.href);
+      await navigator.clipboard.writeText("https://www.daeng.me");
       alert("링크가 복사되었어요!");
     } catch {
       alert("링크 복사에 실패했어요. 주소창에서 직접 복사해 주세요.");
@@ -268,9 +266,9 @@ export default function ShareCard({
       {showSharePanel && (
         <div className="animate-slide-up">
           <SocialShare
-            url={shareUrl || window.location.href}
-            title={`${dogName}는 ${nickname} 타입! 🐾`}
-            description={`${dogName}의 너는내운멍 결과: ${code} (${nickname}) - 우리 강아지 성향 테스트`}
+            url="https://www.daeng.me"
+            title={`우리 ${dogName}는 ${nickname}! 🐾 너네 강아지도 테스트 해봐!`}
+            description={`강아지 성향 테스트 너는내운멍에서 확인해봐!`}
             dogName={dogName}
             captureCard={captureCard}
           />

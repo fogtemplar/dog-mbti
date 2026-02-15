@@ -99,11 +99,6 @@ function ResultContent() {
     });
   }, [type, dogName, ownerName, breedId, ownerMbti, percentages]);
 
-  const shareUrl = useMemo(() => {
-    if (!shareEncoded) return "";
-    return `${window.location.origin}/result?d=${shareEncoded}`;
-  }, [shareEncoded]);
-
   // 위변조된 공유 링크이거나 결과 없음
   if (!result) {
     return (
@@ -442,7 +437,6 @@ function ResultContent() {
           breedName={breed?.name}
           ownerName={ownerName || undefined}
           ownerMbti={ownerMbti || ownerMatch?.mbti}
-          shareUrl={shareUrl}
         />
       </div>
 
