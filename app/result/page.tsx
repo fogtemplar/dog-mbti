@@ -230,7 +230,7 @@ function ResultContent() {
 
   // ─── 축별 성향 분석 ───
   if (step === STEP_AXIS) {
-    const axisLabels = ["사교성", "감정표현", "탐험심", "행동패턴"];
+    const axisLabels = ["사교성", "활동성", "호기심", "주도성"];
     return (
       <div className="flex flex-col items-center min-h-dvh px-6 pt-16 pb-12 text-center relative overflow-hidden">
         <div className="absolute bottom-20 right-6 text-xl animate-float opacity-15">💖</div>
@@ -260,7 +260,7 @@ function ResultContent() {
               >
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-xs font-bold text-gray-400">{axisLabels[i]}</span>
-                  <span className="text-sm font-black text-[#E879A4]">{dominant.label} {dominant.pct}%</span>
+                  <span className="text-sm font-black text-[#E879A4]">{dominant.pct}%</span>
                 </div>
                 <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
                   <div

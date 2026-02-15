@@ -4,6 +4,8 @@ import { useRef, useState, useCallback, forwardRef } from "react";
 import { toBlob } from "html-to-image";
 import SocialShare from "@/components/SocialShare";
 
+const AXIS_NAMES = ["사교성", "활동성", "호기심", "주도성"];
+
 interface ShareCardProps {
   dogName: string;
   nickname: string;
@@ -457,7 +459,7 @@ const VerticalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Vertica
             const dominant = p.left.pct >= p.right.pct ? p.left : p.right;
             return (
               <div key={p.axis} style={{ marginBottom: i < percentages.length - 1 ? "8px" : "0" }}>
-                <StatBar label={dominant.label} pct={dominant.pct} accent={colors.accent} />
+                <StatBar label={AXIS_NAMES[i]} pct={dominant.pct} accent={colors.accent} />
               </div>
             );
           })}
@@ -637,7 +639,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
               return (
                 <div key={p.axis} style={{ marginBottom: i < percentages.length - 1 ? "5px" : "0" }}>
                   <StatBar
-                    label={dominant.label}
+                    label={AXIS_NAMES[i]}
                     pct={dominant.pct}
                     accent={colors.accent}
                     barHeight={7}
