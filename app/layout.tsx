@@ -11,6 +11,20 @@ export const metadata: Metadata = {
     title: "너는내운멍 - 우리 강아지 성향 테스트",
     description: "우리 강아지는 어떤 성향일까? 20개 질문으로 알아보세요!",
     type: "website",
+    images: [
+      {
+        url: "/logo.png",
+        width: 800,
+        height: 450,
+        alt: "너는내운멍 - 강아지 성향 테스트",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "너는내운멍 - 우리 강아지 성향 테스트",
+    description: "우리 강아지는 어떤 성향일까? 20개 질문으로 알아보세요!",
+    images: ["/logo.png"],
   },
 };
 

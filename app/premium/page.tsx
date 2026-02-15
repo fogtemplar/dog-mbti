@@ -265,6 +265,7 @@ function PremiumContent() {
         nickname={result.nickname}
         typeCode={code}
         photoUrl={photoUrl}
+        shareUrl={resultShareUrl}
       />
 
       {/* ── 1. 축별 상세 해석 ── */}

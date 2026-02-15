@@ -52,10 +52,10 @@ function FacebookIcon() {
   );
 }
 
-function TelegramIcon() {
+function ThreadsIcon() {
   return (
     <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff">
-      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.492-1.302.487-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+      <path d="M12.186 24h-.007C5.461 23.956.057 18.494 0 11.762c0-.076.017-.15.048-.22C.56 5.127 5.745.11 12.007.11c6.239 0 11.386 4.988 11.94 11.332.032.074.05.153.05.236-.058 6.702-5.433 12.157-12.104 12.322h.293zm-.297-2.03c5.07-.148 9.144-4.174 9.573-9.282-.388-5.156-4.49-9.22-9.576-9.22-5.107 0-9.224 4.094-9.578 9.272.43 5.058 4.475 9.07 9.508 9.23h.073zM8.678 16.822c-.676-.32-1.222-.78-1.62-1.37-.508-.752-.77-1.67-.77-2.682 0-2.596 1.866-4.55 4.34-4.55.194 0 .39.012.586.036 1.556.19 2.726.96 3.392 2.234.522 1 .59 2.078.586 2.724-.004.126-.068.244-.174.32-.106.078-.242.098-.364.058-.892-.3-1.742-.384-2.454-.238-.736.148-1.316.516-1.676 1.058-.264.396-.372.844-.316 1.296.056.442.268.832.612 1.13.59.508 1.524.614 2.318.268.624-.274 1.036-.76 1.258-1.488.076-.25.122-.51.144-.774.006-.076.046-.146.108-.192.064-.046.142-.058.218-.038.7.2 1.164.612 1.38 1.222.156.442.132.912-.07 1.356-.402.888-1.288 1.61-2.428 1.976-.628.2-1.288.286-1.96.254-1.098-.052-2.1-.414-2.91-1.05-.05-.04-.098-.082-.146-.126a5.86 5.86 0 0 1-.854-.844z" />
     </svg>
   );
 }
@@ -150,44 +150,34 @@ function buildPlatforms(): PlatformDef[] {
       icon: <XIcon />,
       bg: "#000000",
       textColor: "#fff",
+      useImageShare: true,
       getShareUrl: (url, title) =>
         `https://twitter.com/intent/tweet?text=${enc(title)}&url=${enc(url)}`,
+    },
+    {
+      name: "쓰레드",
+      icon: <ThreadsIcon />,
+      bg: "#000000",
+      textColor: "#fff",
+      useImageShare: true,
+      getShareUrl: (url, title) =>
+        `https://www.threads.net/intent/post?text=${enc(title + "\n" + url)}`,
     },
     {
       name: "페이스북",
       icon: <FacebookIcon />,
       bg: "#1877F2",
       textColor: "#fff",
+      useImageShare: true,
       getShareUrl: (url) =>
         `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`,
-    },
-    {
-      name: "텔레그램",
-      icon: <TelegramIcon />,
-      bg: "#26A5E4",
-      textColor: "#fff",
-      useImageShare: true,
-      specialAction: async (url, title, desc, file) => {
-        // 이미지 파일이 있고 Web Share API 지원하면 이미지 첨부
-        if (file && navigator.canShare?.({ files: [file] })) {
-          try {
-            await navigator.share({ title, text: desc + "\n" + url, files: [file] });
-            return;
-          } catch { /* 취소 */ }
-        }
-        // fallback: URL 공유
-        window.open(
-          `https://t.me/share/url?url=${enc(url)}&text=${enc(title)}`,
-          "_blank",
-          "noopener,noreferrer,width=600,height=500"
-        );
-      },
     },
     {
       name: "라인",
       icon: <LineIcon />,
       bg: "#06C755",
       textColor: "#fff",
+      useImageShare: true,
       getShareUrl: (url, title) =>
         `https://line.me/R/share?text=${enc(title + "\n" + url)}`,
     },

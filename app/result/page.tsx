@@ -453,72 +453,117 @@ function ResultContent() {
         const balance = calculateBalance(percentages);
         const breeds = getSimilarBreeds(percentages);
         return (
-          <div className="bg-white rounded-2xl p-5 mb-6 animate-slide-up" style={{ animationDelay: "0.15s", overflow: "hidden" }}>
-            <p className="text-sm font-bold text-gray-500 mb-3 flex items-center gap-2">
-              <span>🔍</span> {displayName}의 심층 분석 미리보기
-            </p>
-
-            {/* 키워드: 2개 공개 + 2개 블러 */}
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {keywords.slice(0, 2).map((kw) => (
-                <span key={kw} className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#FFF0F5] text-[#E879A4]">
-                  {kw}
-                </span>
-              ))}
-              {keywords.slice(2).map((_, i) => (
-                <span key={i} className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-100 select-none" style={{ filter: "blur(4px)" }}>
-                  #키워드
-                </span>
-              ))}
-            </div>
-
-            {/* 밸런스 + 순위 + 유사견종 */}
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              {/* 밸런스 지수 */}
-              <div className="bg-[#FFF5F9] rounded-xl p-3 text-center">
-                <p className="text-[10px] font-bold text-gray-500 mb-1">밸런스</p>
-                <p className="text-xl font-black text-[#E879A4]">{balance.score}</p>
-                <p className="text-[9px] text-gray-400">/ 100</p>
+          <div className="mb-6 animate-slide-up" style={{ animationDelay: "0.15s" }}>
+            <div className="bg-white rounded-2xl overflow-hidden" style={{ boxShadow: "0 2px 20px rgba(232,121,164,0.12)" }}>
+              {/* 그라데이션 헤더 */}
+              <div className="px-5 py-4" style={{ background: "linear-gradient(135deg, #E879A4, #C084FC)" }}>
+                <p className="text-white font-extrabold text-base">
+                  ✨ {displayName}의 숨겨진 성격, 궁금하지 않으세요?
+                </p>
+                <p className="text-white/80 text-xs mt-1">
+                  AI가 분석한 심층 리포트가 준비되어 있어요
+                </p>
               </div>
 
-              {/* 성향 순위: 1위만 공개 */}
-              <div className="bg-[#FFF5F9] rounded-xl p-3">
-                <p className="text-[10px] font-bold text-gray-500 mb-1">성향 순위</p>
-                <div className="flex items-center gap-1 text-[10px]">
-                  <span className="font-bold text-[#E879A4]">1.</span>
-                  <span className="text-gray-600">{ranking[0].name}</span>
-                  <span className="ml-auto font-bold text-gray-500">{ranking[0].pct}%</span>
-                </div>
-                {ranking.slice(1, 3).map((_, i) => (
-                  <div key={i} className="flex items-center gap-1 text-[10px] mt-0.5">
-                    <span className="text-gray-300 select-none" style={{ filter: "blur(3px)" }}>{i + 2}. 성향분석 00%</span>
+              <div className="p-5">
+                {/* 키워드 미리보기 */}
+                <div className="mb-4">
+                  <p className="text-[11px] font-bold text-gray-400 mb-2">🏷️ {displayName}의 성격 키워드</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {keywords.slice(0, 2).map((kw) => (
+                      <span key={kw} className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#FFF0F5] text-[#E879A4]">
+                        {kw}
+                      </span>
+                    ))}
+                    {keywords.slice(2).map((_, i) => (
+                      <span key={i} className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-300 select-none" style={{ filter: "blur(4px)" }}>
+                        #키워드발견
+                      </span>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
 
-              {/* 유사 견종: 1개만 공개 */}
-              <div className="bg-[#FFF5F9] rounded-xl p-3">
-                <p className="text-[10px] font-bold text-gray-500 mb-1">유사 견종</p>
-                <p className="text-[10px] text-gray-600">{breeds[0]}</p>
-                {breeds.slice(1).map((_, i) => (
-                  <p key={i} className="text-[10px] text-gray-300 select-none mt-0.5" style={{ filter: "blur(3px)" }}>비밀견종</p>
-                ))}
+                {/* 밸런스 점수 - 큰 강조 */}
+                <div className="rounded-xl p-4 mb-4 text-center" style={{ background: "linear-gradient(135deg, #FFF5F9, #F3E8FF)" }}>
+                  <p className="text-xs font-bold text-gray-500 mb-1">⚖️ 성격 밸런스 지수</p>
+                  <p className="text-3xl font-black bg-gradient-to-r from-[#E879A4] to-[#C084FC] bg-clip-text text-transparent">
+                    {balance.score}
+                  </p>
+                  <p className="text-[10px] text-gray-400">/ 100</p>
+                  <p className="text-xs font-semibold text-gray-600 mt-1">&quot;{balance.label}&quot;</p>
+                  <p className="text-[10px] text-gray-400 mt-1">이 점수가 의미하는 것은...? 🔒</p>
+                </div>
+
+                {/* 잠긴 콘텐츠 리스트 */}
+                <div className="space-y-2 mb-5">
+                  <p className="text-[11px] font-bold text-gray-400 mb-1">🔓 프리미엄 리포트에서 확인하세요</p>
+
+                  <div className="flex items-center gap-2.5 bg-[#FFF5F9] rounded-xl px-3 py-2.5">
+                    <span className="text-base">📊</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-bold text-gray-700">종합 진단표 & 레이더 차트</p>
+                      <p className="text-[10px] text-gray-400">1위 <span className="text-[#E879A4] font-bold">{ranking[0].name} {ranking[0].pct}%</span> · 나머지 순위는?</p>
+                    </div>
+                    <span className="text-sm text-gray-300">🔒</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 bg-[#FFF5F9] rounded-xl px-3 py-2.5">
+                    <span className="text-base">🐕</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-bold text-gray-700">유사 견종 매칭</p>
+                      <p className="text-[10px] text-gray-400"><span className="text-[#E879A4] font-bold">{breeds[0]}</span> 외 2종과 닮았어요</p>
+                    </div>
+                    <span className="text-sm text-gray-300">🔒</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 bg-[#FFF5F9] rounded-xl px-3 py-2.5">
+                    <span className="text-base">🚶</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-bold text-gray-700">맞춤 산책법 & 놀이 추천</p>
+                      <p className="text-[10px] text-gray-400">{displayName} 성향에 딱 맞는 활동은?</p>
+                    </div>
+                    <span className="text-sm text-gray-300">🔒</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 bg-[#FFF5F9] rounded-xl px-3 py-2.5">
+                    <span className="text-base">⚠️</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-bold text-gray-700">스트레스 신호 & 환경 체크</p>
+                      <p className="text-[10px] text-gray-400">{displayName}가 보내는 SOS를 알아채세요</p>
+                    </div>
+                    <span className="text-sm text-gray-300">🔒</span>
+                  </div>
+
+                  {ownerMbti && (
+                    <div className="flex items-center gap-2.5 bg-[#FFF5F9] rounded-xl px-3 py-2.5">
+                      <span className="text-base">💜</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] font-bold text-gray-700">견주 궁합 심층 분석</p>
+                        <p className="text-[10px] text-gray-400">{ownerMbti} 견주와 {displayName}의 케미는?</p>
+                      </div>
+                      <span className="text-sm text-gray-300">🔒</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* CTA 버튼 */}
+                <button
+                  onClick={() => router.push(`/premium?d=${shareEncoded}`)}
+                  className="w-full py-4 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-2xl font-bold text-[15px] hover:shadow-lg active:scale-[0.98] transition-all"
+                  style={{ boxShadow: "0 4px 20px rgba(232,121,164,0.35)" }}
+                >
+                  {unlocked ? "🩺 심층 리포트 보기" : (
+                    <>
+                      <span className="line-through text-white/50 text-xs mr-1.5">₩3,900</span>
+                      990원으로 전체 분석 보기
+                    </>
+                  )}
+                </button>
+                <p className="text-[10px] text-gray-400 mt-2 text-center">
+                  ☕ 커피 한 잔 가격으로 우리 아이를 더 잘 이해해보세요
+                </p>
               </div>
             </div>
-
-            {/* 추가 콘텐츠 안내 */}
-            <p className="text-[11px] text-gray-400 text-center mb-4 leading-relaxed">
-              이 외에도 맞춤 산책법, 스트레스 신호,<br />놀이법, 환경 체크리스트 등이 준비되어 있어요!
-            </p>
-
-            {/* CTA 버튼 */}
-            <button
-              onClick={() => router.push(`/premium?d=${shareEncoded}`)}
-              className="w-full py-3.5 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-2xl font-bold text-sm hover:shadow-lg active:scale-[0.98] transition-all"
-              style={{ boxShadow: "0 4px 14px rgba(232,121,164,0.3)" }}
-            >
-              {unlocked ? "심층 리포트 보기" : "990원으로 전체 리포트 보기"}
-            </button>
           </div>
         );
       })()}

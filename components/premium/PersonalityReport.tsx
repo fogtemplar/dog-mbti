@@ -5,6 +5,7 @@ import { toBlob } from "html-to-image";
 import type { AxisPercentage } from "@/lib/calculate";
 import RadarChart from "./RadarChart";
 import AxisGauge from "./AxisGauge";
+import SocialShare from "../SocialShare";
 
 interface PersonalityReportProps {
   percentages: AxisPercentage[];
@@ -14,6 +15,7 @@ interface PersonalityReportProps {
   nickname: string;
   typeCode?: string;
   photoUrl?: string | null;
+  shareUrl?: string;
 }
 
 const AXIS_NAMES = ["사교성", "활력", "탐구심", "주도성"];
@@ -102,6 +104,7 @@ export default function PersonalityReport({
   nickname,
   typeCode,
   photoUrl,
+  shareUrl,
 }: PersonalityReportProps) {
   const captureRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
@@ -159,26 +162,7 @@ export default function PersonalityReport({
     }
   };
 
-  const handleShare = async () => {
-    setSaving(true);
-    try {
-      const blob = await captureCard();
-      if (!blob) return;
-      const file = new File([blob], `${dogName}_종합진단표.png`, { type: "image/png" });
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({
-          title: `${dogName}의 종합 성향 진단표`,
-          text: `${dogName}는 "${nickname}" 타입! 🐾`,
-          files: [file],
-        });
-      } else {
-        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-        alert("진단표 이미지가 클립보드에 복사되었어요!");
-      }
-    } catch { /* cancelled */ } finally {
-      setSaving(false);
-    }
-  };
+  const [showSharePanel, setShowSharePanel] = useState(false);
 
   return (
     <div className="mb-6 animate-slide-up">
@@ -289,13 +273,24 @@ export default function PersonalityReport({
           )}
         </div>
         <button
-          onClick={handleShare}
+          onClick={() => setShowSharePanel((v) => !v)}
           disabled={saving}
           className="flex-1 py-3 bg-white border-2 border-[#E879A4] text-[#E879A4] rounded-2xl text-sm font-bold hover:bg-[#E879A4]/5 active:scale-[0.98] transition-all disabled:opacity-50"
         >
           📤 공유하기
         </button>
       </div>
+
+      {/* ── SNS 공유 패널 ── */}
+      {showSharePanel && shareUrl && (
+        <SocialShare
+          url={shareUrl}
+          title={`${dogName}의 종합 성향 진단표`}
+          description={`${dogName}는 "${nickname}" 타입! 🐾`}
+          dogName={dogName}
+          captureCard={captureCard}
+        />
+      )}
 
     </div>
   );
