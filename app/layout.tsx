@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import BackgroundDogs from "@/components/BackgroundDogs";
 import Footer from "@/components/Footer";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
   title: "너는내운멍 - 우리 강아지 성향 테스트",
@@ -36,6 +38,8 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="min-h-dvh bg-[#FFF5F9]">
+        <GoogleAnalytics />
+        <ServiceWorkerRegister />
         <BackgroundDogs />
         <main className="relative z-10 max-w-md mx-auto min-h-dvh">{children}</main>
         <Footer />

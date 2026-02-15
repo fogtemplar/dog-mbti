@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useQuizStore } from "@/store/quizStore";
 import { allQuestions } from "@/data/questions";
 import { fillName } from "@/lib/calculate";
@@ -14,6 +16,15 @@ export default function QuizPlayPage() {
   const question = allQuestions[currentIndex];
   const isLast = currentIndex === allQuestions.length - 1;
   const isStageTransition = currentIndex === 12;
+
+  // 퀴즈 이탈 방지
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, []);
 
   const handleSelect = (choice: "A" | "B") => {
     const value = choice === "A" ? question.choiceA.value : question.choiceB.value;
@@ -41,9 +52,11 @@ export default function QuizPlayPage() {
       <div className="flex-1 flex flex-col justify-center">
         {/* 질문 일러스트 */}
         <div className="mb-4 flex justify-center animate-fade-in" key={`illust-${question.id}`}>
-          <img
+          <Image
             src={`/quiz/${currentIndex + 1}.webp`}
             alt=""
+            width={400}
+            height={400}
             className="max-w-full h-auto drop-shadow-md"
             draggable={false}
           />

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect } from "react";
 import { useQuizStore } from "@/store/quizStore";
 
@@ -23,11 +24,14 @@ export default function LandingPage() {
 
       {/* 로고 영역 */}
       <div className="relative mb-6">
-        <img
+        <Image
           src="/logo.png"
           alt="너는내운멍"
+          width={800}
+          height={450}
           className="w-48 h-auto mx-auto animate-bounce-slow"
           draggable={false}
+          priority
         />
         <div className="absolute -top-1 -right-3 text-2xl animate-sparkle">✨</div>
         <div className="absolute -bottom-1 -left-3 text-xl animate-sparkle" style={{ animationDelay: "0.7s" }}>💖</div>
