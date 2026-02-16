@@ -188,6 +188,7 @@ export default function ProfilePage() {
             />
             <button
               onClick={() => setShowPhotoMenu(true)}
+              aria-label="사진 변경"
               className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#E879A4] text-white rounded-full text-sm flex items-center justify-center shadow-lg"
             >
               📷
@@ -202,6 +203,7 @@ export default function ProfilePage() {
                   // ignore
                 }
               }}
+              aria-label="사진 삭제"
               className="absolute -top-1 -right-1 w-6 h-6 bg-gray-400 text-white rounded-full text-xs flex items-center justify-center"
             >
               ✕
@@ -225,7 +227,7 @@ export default function ProfilePage() {
 
         {/* 사진 선택 메뉴 */}
         {showPhotoMenu && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={() => setShowPhotoMenu(false)}>
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" role="dialog" aria-modal="true" aria-label="사진 등록 메뉴" onClick={() => setShowPhotoMenu(false)}>
             <div className="w-full max-w-md bg-white rounded-t-3xl p-6 pb-8 animate-slide-up" onClick={(e) => e.stopPropagation()}>
               <p className="text-base font-bold text-center mb-4">사진 등록</p>
               <div className="flex flex-col gap-2">
@@ -254,7 +256,7 @@ export default function ProfilePage() {
 
         {/* 웹캠 모달 */}
         {showWebcam && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={closeWebcam}>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" role="dialog" aria-modal="true" aria-label="카메라 촬영" onClick={closeWebcam}>
             <div className="w-full max-w-md bg-white rounded-3xl p-4 mx-4" onClick={(e) => e.stopPropagation()}>
               <p className="text-base font-bold text-center mb-3">카메라 촬영</p>
               <div className="relative rounded-2xl overflow-hidden bg-black mb-3">

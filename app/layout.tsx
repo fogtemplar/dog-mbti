@@ -6,6 +6,8 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.daeng.me"),
+  alternates: { canonical: "/" },
   title: "너는내운멍 - 우리 강아지 성향 테스트",
   description:
     "사진 업로드와 보호자 관찰 질문으로 알아보는 강아지 MBTI 성향 테스트. 16가지 타입 중 우리 아이는?",
