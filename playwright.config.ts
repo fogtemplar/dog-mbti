@@ -4,12 +4,13 @@ export default defineConfig({
   testDir: "./e2e",
   timeout: 30000,
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://127.0.0.1:4176",
     viewport: { width: 390, height: 844 },
+    serviceWorkers: "block",
   },
   webServer: {
-    command: "npm run dev",
-    port: 3000,
+    command: "npm run dev -- --hostname 127.0.0.1 --port 4176",
+    port: 4176,
     reuseExistingServer: true,
   },
 });

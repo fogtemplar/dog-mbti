@@ -10,12 +10,86 @@
   --color-card: #FFFFFF;
   --color-text: #3D2C3E;
   --color-text-light: #8B7A8E;
+  --ait-safe-top: env(safe-area-inset-top, 0px);
+  --ait-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ait-shadow-card: 0 8px 28px rgba(74, 44, 77, 0.08);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background: var(--color-bg);
 }
 
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  overscroll-behavior-y: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+}
+
+body::selection {
+  background: rgba(232, 121, 164, 0.24);
+}
+
+button, a, input {
+  touch-action: manipulation;
+}
+
+button {
+  min-height: 44px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(232, 121, 164, 0.35);
+  outline-offset: 3px;
+}
+
+.ait-screen {
+  min-height: 100dvh;
+  padding-top: max(24px, calc(var(--ait-safe-top) + 16px));
+  padding-bottom: max(24px, calc(var(--ait-safe-bottom) + 20px));
+}
+
+.ait-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(74, 44, 77, 0.06);
+  border-radius: 20px;
+  box-shadow: var(--ait-shadow-card);
+}
+
+.ait-primary-button {
+  min-height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #e879a4, #a78bfa);
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(232, 121, 164, 0.26);
+  transition: transform 160ms ease, opacity 160ms ease, box-shadow 160ms ease;
+}
+
+.ait-primary-button:active {
+  transform: scale(0.98);
+}
+
+.ait-primary-button:disabled {
+  background: #e5e8eb;
+  color: #8b95a1;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.ait-touch-target {
+  min-width: 44px;
+  min-height: 44px;
 }
 
 @keyframes bounce-slow {
@@ -122,4 +196,13 @@ body {
   inset: 0;
   background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
   pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

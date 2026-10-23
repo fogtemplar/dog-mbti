@@ -4,9 +4,11 @@ import BackgroundDogs from "@/components/BackgroundDogs";
 import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import TossBannerAd from "@/components/ads/TossBannerAd";
+import AuthGate from "@/components/AuthGate";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.daeng.me"),
+  metadataBase: new URL("https://dogandme.vercel.app"),
   alternates: { canonical: "/" },
   title: "너는내운멍 - 우리 강아지 성향 테스트",
   description:
@@ -43,8 +45,11 @@ export default function RootLayout({
         <GoogleAnalytics />
         <ServiceWorkerRegister />
         <BackgroundDogs />
-        <main className="relative z-10 max-w-md mx-auto min-h-dvh">{children}</main>
+        <main className="relative z-10 w-full max-w-md mx-auto min-h-dvh">
+          <AuthGate>{children}</AuthGate>
+        </main>
         <Footer />
+        <TossBannerAd />
       </body>
     </html>
   );

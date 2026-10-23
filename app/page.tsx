@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useQuizStore } from "@/store/quizStore";
+import TossLoginButton from "@/components/TossLoginButton";
 
 export default function LandingPage() {
   const reset = useQuizStore((s) => s.reset);
@@ -13,7 +14,7 @@ export default function LandingPage() {
   }, [reset]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center relative overflow-hidden">
+    <div className="ait-screen flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
       {/* 배경 장식 */}
       <div className="absolute top-8 left-6 text-3xl animate-float opacity-20" style={{ animationDelay: "0s" }}>🐾</div>
       <div className="absolute top-20 right-8 text-2xl animate-float opacity-15" style={{ animationDelay: "0.5s" }}>💖</div>
@@ -45,13 +46,7 @@ export default function LandingPage() {
         우리 아이만의 성향 타입 💕
       </p>
 
-      <Link
-        href="/profile"
-        className="w-full py-4 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-full text-lg font-bold hover:shadow-lg hover:shadow-pink-200/50 active:scale-[0.98] transition-all btn-cute"
-        style={{ boxShadow: "0 4px 20px rgba(232,121,164,0.3)" }}
-      >
-        우리 강아지 성향 알아보기 🐾
-      </Link>
+      <TossLoginButton />
 
       <div className="mt-5 text-xs text-[#B8A0BC]">
         <span>⏱ 약 3분 소요</span>
@@ -59,7 +54,7 @@ export default function LandingPage() {
 
       <Link
         href="/history"
-        className="mt-5 text-sm text-[#C084FC]/70 hover:text-[#C084FC] font-medium transition-colors"
+        className="ait-touch-target mt-3 px-4 text-sm text-[#8B7A8E] hover:text-[#C084FC] font-medium transition-colors flex items-center justify-center"
       >
         📋 이전 테스트 기록 보기
       </Link>

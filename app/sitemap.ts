@@ -1,8 +1,10 @@
 import type { MetadataRoute } from "next";
 import { resultData } from "@/data/results";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://www.daeng.me";
+  const base = "https://dogandme.vercel.app";
 
   const typePages = Object.keys(resultData).map((type) => ({
     url: `${base}/result/${type}`,
@@ -12,10 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: base, lastModified: new Date(), priority: 1 },
-    { url: `${base}/profile`, lastModified: new Date(), priority: 0.9 },
-    { url: `${base}/quiz/intro`, lastModified: new Date(), priority: 0.8 },
-    { url: `${base}/history`, lastModified: new Date(), priority: 0.5 },
-    { url: `${base}/premium`, lastModified: new Date(), priority: 0.6 },
     { url: `${base}/privacy`, lastModified: new Date(), priority: 0.3 },
     { url: `${base}/terms`, lastModified: new Date(), priority: 0.3 },
     ...typePages,

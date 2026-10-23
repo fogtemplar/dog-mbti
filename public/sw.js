@@ -1,4 +1,4 @@
-const CACHE_NAME = "daengme-v1";
+const CACHE_NAME = "dogandme-static-v2";
 const PRECACHE = ["/", "/logo.png"];
 
 self.addEventListener("install", (e) => {
@@ -19,13 +19,18 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
+  const url = new URL(e.request.url);
+  if (url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
   e.respondWith(
     fetch(e.request)
       .then((res) => {
-        const clone = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        const cacheControl = res.headers.get("cache-control") || "";
+        if (res.ok && !cacheControl.includes("no-store") && e.request.destination !== "document") {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        }
         return res;
       })
-      .catch(() => caches.match(e.request))
+      .catch(async () => (await caches.match(e.request)) || Response.error())
   );
 });

@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
@@ -7,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/analyzing"],
     },
-    sitemap: "https://www.daeng.me/sitemap.xml",
+    sitemap: "https://dogandme.vercel.app/sitemap.xml",
   };
 }

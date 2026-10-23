@@ -1,4 +1,5 @@
 const STORAGE_KEY = "mungbti-premium";
+const GLOBAL_ENTITLEMENT_KEY = "__all_reports__";
 
 interface PremiumUnlockEntry {
   unlockedAt: string;
@@ -26,8 +27,18 @@ function saveUnlocks(data: PremiumUnlocks): void {
   }
 }
 
-export function isPremiumUnlocked(resultCode: string): boolean {
-  return !!loadUnlocks()[resultCode];
+/** UI 캐시 전용입니다. 유료 콘텐츠 접근 권한은 /api/auth/me의 서명된 세션으로 확인합니다. */
+export function hasCachedPremium(resultCode: string): boolean {
+  const unlocks = loadUnlocks();
+  return !!unlocks[GLOBAL_ENTITLEMENT_KEY] || !!unlocks[resultCode];
+}
+
+export function clearPremiumCache(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* storage unavailable */
+  }
 }
 
 export function unlockPremium(
@@ -36,10 +47,13 @@ export function unlockPremium(
   ownerMbti?: string,
 ): void {
   const current = loadUnlocks();
-  current[resultCode] = {
+  const entitlement = {
     unlockedAt: new Date().toISOString(),
     dogName,
     ownerMbti,
   };
+  current[GLOBAL_ENTITLEMENT_KEY] = entitlement;
+  // 이전 버전에서 결과 코드별 권한을 읽던 사용자와도 호환합니다.
+  current[resultCode] = entitlement;
   saveUnlocks(current);
 }

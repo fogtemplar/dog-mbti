@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 import { breedGroups } from "@/data/breeds";
+import { apiUrl } from "@/lib/apiUrl";
+import { authHeaders } from "@/lib/authClient";
 
 const PHOTO_STORAGE_KEY = "mungbti-photo";
 
@@ -50,6 +52,7 @@ export default function ProfilePage() {
   const [showBreedPicker, setShowBreedPicker] = useState(false);
   const [showPhotoMenu, setShowPhotoMenu] = useState(false);
   const [showWebcam, setShowWebcam] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -63,6 +66,24 @@ export default function ProfilePage() {
       streamRef.current?.getTracks().forEach((t) => t.stop());
     };
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(apiUrl("/api/auth/me"), { credentials: "include", headers: authHeaders(), signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!data?.loggedIn) {
+          router.replace("/");
+          return;
+        }
+        if (typeof data.name === "string") {
+          setOwnerNameInput((current) => current || data.name);
+        }
+        setAuthChecking(false);
+      })
+      .catch(() => router.replace("/"));
+    return () => controller.abort();
+  }, [router]);
 
   const openCamera = async () => {
     setShowPhotoMenu(false);
@@ -158,8 +179,16 @@ export default function ProfilePage() {
 
   const canStart = name.trim() && breed;
 
+  if (authChecking) {
+    return (
+      <div className="ait-screen flex items-center justify-center px-6 text-center">
+        <p className="text-sm text-[#8B7A8E]">로그인 상태를 확인하고 있어요...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col min-h-dvh px-6 py-10">
+    <div className="ait-screen flex flex-col px-6">
       {/* 사진 + 이름 */}
       <div className="flex flex-col items-center mb-8">
         {/* 앨범 선택용 */}
@@ -189,7 +218,7 @@ export default function ProfilePage() {
             <button
               onClick={() => setShowPhotoMenu(true)}
               aria-label="사진 변경"
-              className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#E879A4] text-white rounded-full text-sm flex items-center justify-center shadow-lg"
+              className="ait-touch-target absolute -bottom-2 -right-2 bg-[#E879A4] text-white rounded-full text-sm flex items-center justify-center shadow-lg"
             >
               📷
             </button>
@@ -204,7 +233,7 @@ export default function ProfilePage() {
                 }
               }}
               aria-label="사진 삭제"
-              className="absolute -top-1 -right-1 w-6 h-6 bg-gray-400 text-white rounded-full text-xs flex items-center justify-center"
+              className="ait-touch-target absolute -top-3 -right-3 bg-[#6B7684] text-white rounded-full text-xs flex items-center justify-center"
             >
               ✕
             </button>
@@ -212,7 +241,7 @@ export default function ProfilePage() {
         ) : (
           <button
             onClick={() => setShowPhotoMenu(true)}
-            className="w-32 h-32 rounded-full flex flex-col items-center justify-center mb-4 animate-pulse-slow"
+          className="ait-touch-target w-32 h-32 rounded-full flex flex-col items-center justify-center mb-4 animate-pulse-slow"
             style={{
               background: "linear-gradient(135deg, #FFF0F5, #F3E8FF)",
               border: "3px dashed #E879A4",
@@ -298,7 +327,7 @@ export default function ProfilePage() {
           onChange={(e) => setName(e.target.value)}
           placeholder="예: 뽀삐, 초코, 콩이"
           maxLength={10}
-          className="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-2xl text-lg text-center font-medium focus:border-[#E879A4] focus:outline-none transition-colors placeholder:text-gray-300"
+          className="w-full min-h-14 px-5 py-4 bg-white border border-[#E5E8EB] rounded-2xl text-lg text-center font-medium focus:border-[#E879A4] focus:outline-none transition-colors placeholder:text-gray-300 shadow-[0_5px_18px_rgba(0,0,0,0.03)]"
           autoFocus
         />
         <p className="text-xs text-gray-400 mt-1">최대 10자</p>
@@ -309,10 +338,10 @@ export default function ProfilePage() {
         <h2 className="text-base font-bold mb-3">견종을 알려주세요</h2>
         <button
           onClick={() => setShowBreedPicker(!showBreedPicker)}
-          className={`w-full px-5 py-4 bg-white border-2 rounded-2xl text-left transition-colors ${
+          className={`ait-touch-target w-full px-5 py-4 bg-white border rounded-2xl text-left transition-colors ${
             breed
               ? "border-[#E879A4] text-gray-800"
-              : "border-gray-200 text-gray-400"
+              : "border-[#E5E8EB] text-gray-400"
           }`}
         >
           {selectedBreed ? (
@@ -355,14 +384,14 @@ export default function ProfilePage() {
       {/* 견주 이름 */}
       <div className="mb-8">
         <h2 className="text-base font-bold mb-1">견주님 이름 (선택)</h2>
-        <p className="text-xs text-gray-400 mb-3">입력하면 결과에 견주님 이름이 표시돼요</p>
+        <p className="text-xs text-gray-400 mb-3">토스 로그인 시 자동으로 채워지고 결과에 표시돼요</p>
         <input
           type="text"
           value={ownerNameInput}
           onChange={(e) => setOwnerNameInput(e.target.value)}
           placeholder="예: 홍길동"
           maxLength={10}
-          className="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-2xl text-base font-medium focus:border-[#E879A4] focus:outline-none transition-colors placeholder:text-gray-300"
+          className="w-full min-h-14 px-5 py-4 bg-white border border-[#E5E8EB] rounded-2xl text-base font-medium focus:border-[#E879A4] focus:outline-none transition-colors placeholder:text-gray-300 shadow-[0_5px_18px_rgba(0,0,0,0.03)]"
         />
       </div>
 
@@ -425,12 +454,7 @@ export default function ProfilePage() {
         <button
           onClick={handleStart}
           disabled={!canStart}
-          className={`w-full py-4 rounded-full text-lg font-bold transition-all ${
-            canStart
-              ? "bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white hover:shadow-lg hover:shadow-pink-200/50 active:scale-[0.98]"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
-          }`}
-          style={canStart ? { boxShadow: "0 4px 20px rgba(232,121,164,0.3)" } : undefined}
+          className="ait-primary-button w-full"
         >
           시작하기 💕
         </button>

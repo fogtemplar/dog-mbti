@@ -1,6 +1,10 @@
 node_modules/
 .next/
 out/
+.granite/
+*.ait
+.mtls-check/
+test-results/
 *.tsbuildinfo
 next-env.d.ts
 

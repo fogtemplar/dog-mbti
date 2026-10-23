@@ -10,7 +10,7 @@ import {
   generateRecommendedActivities,
   generateLivingTips,
 } from "@/data/premiumSynergy";
-import { isPremiumUnlocked, unlockPremium } from "@/lib/premiumStore";
+import { syncPremiumEntitlement } from "@/lib/premiumEntitlement";
 import { fillName } from "@/lib/calculate";
 import { decodeSharePayload, pctArrayToPercentages } from "@/lib/sharePayload";
 import ShareCard from "@/components/ShareCard";
@@ -18,6 +18,7 @@ import { breeds } from "@/data/breeds";
 import { useQuizStore } from "@/store/quizStore";
 import { premiumExtraData } from "@/data/premiumExtra";
 import PersonalityReport from "@/components/premium/PersonalityReport";
+import PremiumPurchase from "@/components/premium/PremiumPurchase";
 
 export default function PremiumPage() {
   return (
@@ -49,11 +50,16 @@ function PremiumContent() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   const [unlocked, setUnlocked] = useState(false);
-  const [unlocking, setUnlocking] = useState(false);
+  const [checkingEntitlement, setCheckingEntitlement] = useState(true);
 
   useEffect(() => {
-    setUnlocked(isPremiumUnlocked(code));
-  }, [code]);
+    let cancelled = false;
+    setCheckingEntitlement(true);
+    syncPremiumEntitlement(code, dogName, ownerMbti)
+      .then((owned) => { if (!cancelled) setUnlocked(owned); })
+      .finally(() => { if (!cancelled) setCheckingEntitlement(false); });
+    return () => { cancelled = true; };
+  }, [code, dogName, ownerMbti]);
 
   useEffect(() => {
     if (storePhotoUrl) {
@@ -68,6 +74,10 @@ function PremiumContent() {
 
   const report = premiumReportData[code];
   const result = resultData[code];
+  const percentages = pctArrayToPercentages(payload?.pcts || [50, 50, 50, 50]);
+  const breedName = payload?.breedId
+    ? breeds.find((b) => b.id === payload.breedId)?.name
+    : undefined;
 
   if (!report || !result) {
     return (
@@ -84,15 +94,9 @@ function PremiumContent() {
     );
   }
 
-  const handleUnlock = () => {
-    setUnlocking(true);
-    // MVP: 즉시 잠금해제 (추후 실 결제 연동)
-    setTimeout(() => {
-      unlockPremium(code, dogName, ownerMbti);
-      setUnlocked(true);
-      setUnlocking(false);
-    }, 800);
-  };
+  if (checkingEntitlement) {
+    return <div className="flex min-h-dvh items-center justify-center" role="status" aria-live="polite"><div className="text-center"><div className="mb-2 text-4xl animate-bounce-slow">🐾</div><p className="text-sm text-gray-500">구매 내역을 확인하고 있어요</p></div></div>;
+  }
 
   // ─── 페이월 ───
   if (!unlocked) {
@@ -106,17 +110,38 @@ function PremiumContent() {
           ← 결과로 돌아가기
         </button>
 
-        <div className="text-center mb-8">
-          <div className="text-5xl mb-4">🔒</div>
-          <h1 className="text-2xl font-black mb-2">
-            <span className="bg-gradient-to-r from-[#E879A4] to-[#C084FC] bg-clip-text text-transparent">
-              {dogName}
-            </span>
-            의 심층 리포트
-          </h1>
-          <p className="text-sm text-gray-500">
-            {result.nickname} ({code})
-          </p>
+        {/* 사용자가 만든 결과 카드 안에서 바로 구매 */}
+        <div
+          className="mb-6 overflow-hidden rounded-3xl p-5 text-white shadow-[0_8px_24px_rgba(107,76,126,0.18)]"
+          style={{ background: `linear-gradient(145deg, ${result.bgColor}, #C084FC)` }}
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-white/60 bg-white/25 text-4xl">
+              {photoUrl ? <img src={photoUrl} alt={`${dogName} 사진`} className="h-full w-full object-cover" /> : result.emoji}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-white/80">{ownerName ? `${ownerName}님과 ` : ""}{dogName}의 성향 카드</p>
+              <p className="mt-1 truncate text-xl font-black">{result.nickname}</p>
+              <p className="text-sm font-bold text-white/90">{code}{breedName ? ` · ${breedName}` : ""}</p>
+            </div>
+          </div>
+          <div className="my-4 border-t border-white/25" />
+          <h1 className="mb-3 text-center text-lg font-black">🔒 {dogName}의 맞춤 심층 리포트</h1>
+          <PremiumPurchase
+            resultCode={code}
+            dogName={dogName}
+            ownerMbti={ownerMbti}
+            onUnlocked={() => setUnlocked(true)}
+          />
+          <div className="mt-4 grid grid-cols-4 gap-2">
+            {percentages.map((axis) => (
+              <div key={axis.axis} className="rounded-xl bg-white/20 px-2 py-2 text-center backdrop-blur-sm">
+                <p className="text-[10px] font-bold text-white/75">{axis.axis}</p>
+                <p className="text-xs font-black">{axis.left.pct}%</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-3 text-center text-[11px] text-white/85">이 카드에 담긴 {dogName}의 이야기를 더 자세히 풀어드릴게요.</p>
         </div>
 
         {/* 미리보기 */}
@@ -170,33 +195,12 @@ function PremiumContent() {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="bg-gradient-to-r from-[#E879A4] to-[#C084FC] rounded-2xl p-6 text-white text-center">
-          <p className="text-2xl font-black mb-1">990원</p>
-          <p className="text-xs opacity-80 mb-4">
-            {dogName}만을 위한 맞춤 리포트
-          </p>
-          <button
-            onClick={handleUnlock}
-            disabled={unlocking}
-            className="w-full py-3.5 bg-white text-[#E879A4] rounded-xl font-bold text-base hover:bg-gray-50 active:scale-[0.98] transition-all disabled:opacity-50"
-          >
-            {unlocking ? "잠금 해제 중..." : "잠금 해제하기"}
-          </button>
-          <p className="text-[10px] opacity-60 mt-3">
-            * MVP 테스트 버전으로 실제 결제 없이 잠금 해제됩니다
-          </p>
-        </div>
       </div>
     );
   }
 
   // ─── 잠금 해제된 콘텐츠 ───
   const extra = premiumExtraData[code];
-  const percentages = pctArrayToPercentages(payload?.pcts || [50, 50, 50, 50]);
-  const breedName = payload?.breedId
-    ? breeds.find((b) => b.id === payload.breedId)?.name
-    : undefined;
   const goodPoints = ownerMbti
     ? generateDeepSynergyGoodPoints(code, ownerMbti, dogName, ownerName)
     : [];
@@ -226,7 +230,7 @@ function PremiumContent() {
           <span className="bg-gradient-to-r from-[#E879A4] to-[#C084FC] bg-clip-text text-transparent">
             {dogName}
           </span>
-          의 심층 리포트
+          의 맞춤 심층 리포트
         </h1>
         <p className="text-xs text-gray-500 mt-1">
           {result.nickname} ({code})
@@ -247,6 +251,7 @@ function PremiumContent() {
           breedName={breedName}
           ownerName={ownerName}
           ownerMbti={ownerMbti}
+          shareUrl={`https://dogandme.vercel.app/result/?d=${dParam}`}
         />
       </div>
 
@@ -259,6 +264,7 @@ function PremiumContent() {
         nickname={result.nickname}
         typeCode={code}
         photoUrl={photoUrl}
+        shareUrl={`https://dogandme.vercel.app/result/?d=${dParam}`}
       />
 
       {/* ── 1. 축별 상세 해석 ── */}

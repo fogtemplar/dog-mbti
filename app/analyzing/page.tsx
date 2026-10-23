@@ -5,13 +5,15 @@ import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/quizStore";
 import { computeScores, getAxisPercentages } from "@/lib/calculate";
 import { encodeSharePayload, percentagesToPctArray } from "@/lib/sharePayload";
+import { prepareResultInterstitial, showResultInterstitial } from "@/lib/resultInterstitial";
 
 export default function AnalyzingPage() {
   const router = useRouter();
   const { dogName, ownerName, breedId, ownerMbti, answers, calculateResult } = useQuizStore();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    prepareResultInterstitial();
+    const timer = setTimeout(async () => {
       const code = calculateResult();
       const scores = computeScores(answers);
       const pcts = percentagesToPctArray(getAxisPercentages(scores));
@@ -23,6 +25,7 @@ export default function AnalyzingPage() {
         ownerMbti: ownerMbti || undefined,
         pcts,
       });
+      await showResultInterstitial();
       router.replace(`/result?d=${d}&self=1`);
     }, 2500);
     return () => clearTimeout(timer);

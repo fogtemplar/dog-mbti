@@ -28,12 +28,15 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-4 space-y-1">
             <li>반려견 이름, 견종</li>
             <li>반려견 사진 (선택)</li>
-            <li>보호자 이름, MBTI (선택)</li>
+            <li>토스 로그인 사용자 이름, 서비스별 사용자 식별키(userKey)</li>
+            <li>보호자 MBTI (선택)</li>
             <li>테스트 응답 결과</li>
+            <li>인앱결제 주문번호, 상품 SKU, 결제·지급·환불 상태</li>
           </ul>
           <p className="mt-2 text-[#E879A4] font-medium">
-            위 정보는 서버에 전송·저장되지 않으며, 이용자의 브라우저
-            (localStorage)에만 보관됩니다.
+            반려견 정보와 테스트 기록은 이용자의 기기에 저장됩니다. 토스 로그인
+            정보는 암호화된 보안 쿠키와 이 기기의 암호화·서명된 로그인 세션으로 처리하며, 결제 정보는 상품 지급과 구매
+            복원을 위해 토스 주문 조회 API로 확인합니다.
           </p>
         </Section>
 
@@ -43,14 +46,17 @@ export default function PrivacyPage() {
             <li>결과 카드 생성 및 공유 기능 지원</li>
             <li>프리미엄 심층 리포트 콘텐츠 제공</li>
             <li>테스트 히스토리 관리</li>
+            <li>토스 로그인 유지 및 동일 사용자 확인</li>
+            <li>유료 콘텐츠 지급, 구매 복원, 중복 지급 및 환불 확인</li>
           </ul>
         </Section>
 
         <Section title="제3조 (보유 및 이용 기간)">
           <ol className="list-decimal pl-4 space-y-1">
             <li>
-              모든 데이터는 이용자의 브라우저 localStorage에만 저장되며,
-              서비스 서버에는 저장되지 않습니다.
+              토스 로그인 세션은 암호화된 HttpOnly 쿠키와 브라우저 저장소에
+              암호화·서명된 인증 토큰 형태로 최대 30일간 보관됩니다. 로그아웃,
+              연결 해제 또는 기기 데이터 삭제 시 이 기기에서 즉시 삭제됩니다.
             </li>
             <li>
               이용자가 브라우저 데이터를 삭제하거나, 서비스 내 &quot;기록 삭제&quot;
@@ -60,14 +66,19 @@ export default function PrivacyPage() {
               공유 링크에 포함된 정보(강아지 이름, 타입, 퍼센트 등)는 URL
               자체에 인코딩되며, 별도의 서버 저장은 없습니다.
             </li>
+            <li>
+              AccessToken과 RefreshToken은 로그인 처리 중에만 사용하고 별도로
+              저장하지 않습니다. 결제 주문 정보는 토스의 보관 정책과 관련 법령상
+              의무 보존기간을 따릅니다.
+            </li>
           </ol>
         </Section>
 
         <Section title="제4조 (제3자 제공)">
-          서비스는 이용자의 개인정보를 제3자에게 제공하지 않습니다. 다만,
-          결제 서비스 이용 시 결제 대행사(PG사)에 결제에 필요한 최소한의
-          정보가 전달될 수 있으며, 이는 해당 PG사의 개인정보처리방침에
-          따릅니다.
+          서비스는 토스 로그인과 앱인토스 인앱결제를 제공하기 위해 주식회사
+          비바리퍼블리카와 필요한 정보를 주고받습니다. 로그인 시 이름과 userKey,
+          결제 시 주문번호·상품·상태 정보가 처리되며, 그 밖의 목적으로 제3자에게
+          판매하거나 제공하지 않습니다.
         </Section>
 
         <Section title="제5조 (쿠키 및 분석 도구)">
@@ -90,23 +101,24 @@ export default function PrivacyPage() {
               저장된 데이터를 삭제할 수 있습니다.
             </li>
             <li>
-              서비스 이용 중단 시 별도의 탈퇴 절차 없이 브라우저 데이터
-              삭제만으로 모든 정보가 제거됩니다.
+              계정 관리 화면에서 로그아웃, 토스 로그인 연결 해제, 기기 저장 데이터
+              삭제를 각각 요청할 수 있습니다.
             </li>
+            <li>토스 로그인 연결 해제 시 로그인 세션과 동의 정보가 삭제됩니다.</li>
           </ol>
         </Section>
 
         <Section title="제7조 (문의처)">
-          <p>
-            개인정보 관련 문의사항은 아래 연락처로 문의해 주세요.
-          </p>
+          <p>개인정보 관련 문의사항은 서비스 운영자에게 문의해 주세요.</p>
           <ul className="list-disc pl-4 mt-2 space-y-1">
-            <li>이메일: [email@example.com]</li>
+            <li>상호: 안단테 랩스(Andante Labs)</li>
+            <li>사업자등록번호: 775-12-03327</li>
+            <li>이메일: fogtemplar@gmail.com</li>
           </ul>
         </Section>
 
         <p className="text-[11px] text-gray-400 mt-6">
-          시행일: 2025년 2월 15일
+          시행일: 2026년 8월 1일
         </p>
       </div>
     </div>

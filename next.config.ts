@@ -1,24 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images: {
-    formats: ["image/webp", "image/avif"],
+  output: "export",
+  trailingSlash: false,
+  turbopack: {
+    root: process.cwd(),
   },
-  async headers() {
-    return [
-      {
-        source: "/:path*.(webp|png|jpg|svg|ico)",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
-    ];
+  images: {
+    unoptimized: true,
+    formats: ["image/webp", "image/avif"],
   },
 };
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
-import { toBlob } from "html-to-image";
 import SocialShare from "@/components/SocialShare";
 import type { ShareCardProps } from "./share/types";
 import { premiumGradients } from "./share/utils";
@@ -20,6 +19,7 @@ export default function ShareCard({
   breedName,
   ownerName,
   ownerMbti,
+  shareUrl = "https://dogandme.vercel.app/",
 }: ShareCardProps) {
   const verticalRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
@@ -39,6 +39,7 @@ export default function ShareCard({
 
     const scale = Math.min(2, Math.max(1, Math.round(window.devicePixelRatio || 2)));
 
+    const { toBlob } = await import("html-to-image");
     const blob = await toBlob(activeRef.current, {
       pixelRatio: scale,
       cacheBust: true,
@@ -82,7 +83,7 @@ export default function ShareCard({
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText("https://www.daeng.me");
+      await navigator.clipboard.writeText(shareUrl);
       alert("링크가 복사되었어요!");
     } catch {
       alert("링크 복사에 실패했어요. 주소창에서 직접 복사해 주세요.");
@@ -179,7 +180,7 @@ export default function ShareCard({
       {showSharePanel && (
         <div className="animate-slide-up">
           <SocialShare
-            url="https://www.daeng.me"
+            url={shareUrl}
             title={`우리 ${dogName}는 ${nickname}! 🐾 너네 강아지도 테스트 해봐!`}
             description={`강아지 성향 테스트 너는내운멍에서 확인해봐!`}
             dogName={dogName}

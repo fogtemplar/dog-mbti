@@ -14,7 +14,8 @@ import {
   percentagesToPctArray,
 } from "@/lib/sharePayload";
 import ShareCard from "@/components/ShareCard";
-import { isPremiumUnlocked } from "@/lib/premiumStore";
+import { readServerPremium } from "@/lib/premiumEntitlement";
+import PremiumPromptModal from "@/components/premium/PremiumPromptModal";
 import {
   generateKeywords,
   getRanking,
@@ -85,6 +86,11 @@ function ResultContent() {
   const STEP_SYNERGY = totalHintPages + 2;
   const STEP_FINAL = totalHintPages + 3;
   const [step, setStep] = useState(isSharedView ? STEP_FINAL : 0);
+  const [premiumUnlocked, setPremiumUnlocked] = useState(false);
+  useEffect(() => {
+    if (isSharedView) return;
+    readServerPremium().then(setPremiumUnlocked).catch(() => setPremiumUnlocked(false));
+  }, [isSharedView]);
 
   // 공유 페이로드 인코딩 (공유 URL + 프리미엄 URL에서 재사용)
   const shareEncoded = useMemo(() => {
@@ -424,6 +430,14 @@ function ResultContent() {
   // ─── Final: 카드 + 상세 정보 ───
   return (
     <div className="flex flex-col min-h-dvh px-6 py-8">
+      {!isSharedView && !premiumUnlocked && (
+        <PremiumPromptModal
+          ownerName={ownerName || undefined}
+          dogName={displayName}
+          resultCode={type}
+          onContinue={() => router.push(`/premium?d=${shareEncoded}`)}
+        />
+      )}
       <div className="mb-6 animate-scale-in">
         <ShareCard
           dogName={displayName}
@@ -437,11 +451,12 @@ function ResultContent() {
           breedName={breed?.name}
           ownerName={ownerName || undefined}
           ownerMbti={ownerMbti || ownerMatch?.mbti}
+          shareUrl={`https://dogandme.vercel.app/result/?d=${shareEncoded}`}
         />
       </div>
 
       {!isSharedView && (() => {
-        const unlocked = isPremiumUnlocked(type);
+        const unlocked = premiumUnlocked;
         const keywords = generateKeywords(percentages);
         const ranking = getRanking(percentages);
         const balance = calculateBalance(percentages);
@@ -455,7 +470,7 @@ function ResultContent() {
                   ✨ {displayName}의 숨겨진 성격, 궁금하지 않으세요?
                 </p>
                 <p className="text-white/80 text-xs mt-1">
-                  AI가 분석한 심층 리포트가 준비되어 있어요
+                  테스트 응답을 바탕으로 한 심층 리포트가 준비되어 있어요
                 </p>
               </div>
 
@@ -546,12 +561,7 @@ function ResultContent() {
                   className="w-full py-4 bg-gradient-to-r from-[#E879A4] to-[#C084FC] text-white rounded-2xl font-bold text-[15px] hover:shadow-lg active:scale-[0.98] transition-all"
                   style={{ boxShadow: "0 4px 20px rgba(232,121,164,0.35)" }}
                 >
-                  {unlocked ? "🩺 심층 리포트 보기" : (
-                    <>
-                      <span className="line-through text-white/50 text-xs mr-1.5">₩3,900</span>
-                      990원으로 전체 분석 보기
-                    </>
-                  )}
+                  {unlocked ? "🩺 심층 리포트 보기" : "990원으로 전체 분석 보기"}
                 </button>
                 <p className="text-[10px] text-gray-400 mt-2 text-center">
                   ☕ 커피 한 잔 가격으로 우리 아이를 더 잘 이해해보세요

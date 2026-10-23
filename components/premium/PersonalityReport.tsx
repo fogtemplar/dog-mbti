@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useCallback, useMemo } from "react";
-import { toBlob } from "html-to-image";
 import type { AxisPercentage } from "@/lib/calculate";
 import RadarChart from "./RadarChart";
 import AxisGauge from "./AxisGauge";
@@ -15,6 +14,7 @@ interface PersonalityReportProps {
   nickname: string;
   typeCode?: string;
   photoUrl?: string | null;
+  shareUrl?: string;
 }
 
 const AXIS_NAMES = ["사교성", "활동성", "호기심", "주도성"];
@@ -103,6 +103,7 @@ export default function PersonalityReport({
   nickname,
   typeCode,
   photoUrl,
+  shareUrl = "https://dogandme.vercel.app/",
 }: PersonalityReportProps) {
   const captureRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
@@ -120,6 +121,7 @@ export default function PersonalityReport({
     }
     await new Promise<void>((r) => requestAnimationFrame(() => r()));
     const scale = Math.min(2, Math.max(1, Math.round(window.devicePixelRatio || 2)));
+    const { toBlob } = await import("html-to-image");
     const blob = await toBlob(captureRef.current, {
       pixelRatio: scale,
       cacheBust: true,
@@ -243,7 +245,7 @@ export default function PersonalityReport({
         <div className="mt-4 pt-3 border-t border-gray-50 flex items-center justify-center gap-1.5">
           <span className="text-[10px] text-[#D4C0D8]">너는내운멍</span>
           <span className="w-0.5 h-0.5 rounded-full bg-[#D4C0D8]" />
-          <span className="text-[10px] text-[#D4C0D8]">Daeng.me</span>
+          <span className="text-[10px] text-[#D4C0D8]">dogandme</span>
         </div>
       </div>
 
@@ -282,7 +284,7 @@ export default function PersonalityReport({
       {/* ── SNS 공유 패널 ── */}
       {showSharePanel && (
         <SocialShare
-          url="https://www.daeng.me"
+          url={shareUrl}
           title={`우리 ${dogName} 성향 분석 완료! "${nickname}" 타입이래 🐾 너도 해봐!`}
           description={`강아지 성향 테스트 너는내운멍에서 확인해봐!`}
           dogName={dogName}

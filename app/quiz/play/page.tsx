@@ -36,7 +36,7 @@ export default function QuizPlayPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-dvh px-6 py-8">
+    <div className="ait-screen flex flex-col px-6">
       <ProgressBar current={currentIndex} total={allQuestions.length} />
 
       <div className="h-10 flex items-center justify-center">
@@ -74,7 +74,7 @@ export default function QuizPlayPage() {
       {currentIndex > 0 && (
         <button
           onClick={goBack}
-          className="mt-4 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+          className="ait-touch-target mt-4 px-3 self-center text-sm text-[#6B7684] hover:text-gray-700 transition-colors"
         >
           ← 이전 질문
         </button>

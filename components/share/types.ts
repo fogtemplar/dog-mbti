@@ -14,6 +14,7 @@ export interface ShareCardProps {
   breedName?: string;
   ownerName?: string;
   ownerMbti?: string;
+  shareUrl?: string;
 }
 
 export interface CardInnerProps {

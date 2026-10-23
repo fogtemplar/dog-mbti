@@ -159,7 +159,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, CardInnerProps>(function Horiz
                 color: "#fff",
                 textShadow: `1px 1px 0 ${colors.accent}40, -1px -1px 0 ${colors.accent}40, 1px -1px 0 ${colors.accent}40, -1px 1px 0 ${colors.accent}40, 0 1px 0 ${colors.accent}40, 0 -1px 0 ${colors.accent}40, 1px 0 0 ${colors.accent}40, -1px 0 0 ${colors.accent}40`,
               }}>
-                Daeng.me
+                dogandme
               </span>
             </div>
           </div>
